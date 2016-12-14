@@ -7,7 +7,7 @@
 fullEstimate(exprData, genes, geneColName, groups, outDir,
   seekConsensus = FALSE, groupRotations = FALSE,
   outlierSampleRemove = FALSE, removeNegatives = TRUE,
-  geneTransform = function(x) {     mouse2human(x)$humanGene },
+  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene },
   comparisons = "all", pAdjMethod = p.adjust.methods, PC = 1,
   estimateFile = NULL)
 }

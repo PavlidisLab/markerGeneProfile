@@ -32,7 +32,7 @@ fullEstimate = function(exprData, # expression data
                         groupRotations=FALSE, # output rotations of individiual genes
                         outlierSampleRemove=FALSE, # if T outliers in each sample is removed
                         removeNegatives = TRUE,
-                        geneTransform = function(x){mouse2human(x)$humanGene}, # function to use when translating gene names
+                        geneTransform = function(x){homologene::mouse2human(x)$humanGene}, # function to use when translating gene names
                         comparisons = 'all',
                         pAdjMethod = p.adjust.methods, # method for multiple testing correction. defaults to holm
                         PC = 1, # which PC to use. mostly you want this to be 1
@@ -114,8 +114,8 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
     }
     # create p value lists for correction
     if (!is.null(comparisons)){
-        pList = matrix(data = NA, ncol = ncol(comparisons), nrow = len(estimates))
-        for (i in 1:len(estimates)) {
+        pList = matrix(data = NA, ncol = ncol(comparisons), nrow = length(estimates))
+        for (i in 1:length(estimates)) {
 
             for (j in 1:ncol(comparisons)){
                 pList[i, j] = sigTest(estimates[[i]][groups[[i]] %in% comparisons[1,j]],
@@ -124,12 +124,12 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
         }
 
         # p value adjustment
-        pList = matrix(p.adjust(pList,pAdjMethod),nrow = len(estimates))
+        pList = matrix(p.adjust(pList,pAdjMethod),nrow = length(estimates))
     }
 
 
     # plotting of things
-    for (i in 1:len(estimates)){
+    for (i in 1:length(estimates)){
         frame = data.frame(PC1 = estimates[[i]], group = groups[[i]])
         # windowUp = max((frame$PC1)) + 1
         # windowDown = min((frame$PC1)) - 0.5
@@ -150,9 +150,9 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
             ggplot2::scale_y_continuous(limits=c(-.05, 1.05),
                                         name="Relative estimate of cell type amounts") +
             ggplot2::theme_bw() +
-            ggplot2::theme(axis.text.x  = element_text(size=25, angle=90),
-                           axis.title.y = element_text(vjust=0.5, size=25),
-                           axis.title.x = element_text(vjust=0.5, size=0) ,
+            ggplot2::theme(axis.text.x  = ggplot2::element_text(size=25, angle=90),
+                           axis.title.y = ggplot2::element_text(vjust=0.5, size=25),
+                           axis.title.x = ggplot2::element_text(vjust=0.5, size=0) ,
                            title = element_text(vjust=0.5, size=25),
                            axis.text.y = element_text(size = 13))
         if (!is.null(comparisons)){
@@ -176,7 +176,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 #' type 'double'
 #' @param genes a named list containing marker gene lists of each cell type
 #' @param geneColName character. name of the column containing the gene names in the expression file
-#' @param outlierSampleRemove logical. should the outlier samples be removed from the final output
+#' @param outlierSampleRemove logical. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group
 #' @param synonymTaxID Taxonomy identifier of the source of cell type markers. If provided, synonyms of the genes will
 #' be added as markers, not recommended since unrelated genes can share names
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
@@ -199,14 +199,20 @@ mgpEstimate = function(exprData,
                             geneColName = 'Gene.Symbol',
                             outlierSampleRemove = FALSE,
                             synonymTaxID = NULL, # do you want to add synonyms? no you don't. don't touch this
-                            geneTransform = function(x){mouse2human(x)$humanGene},
-                            groups, # a vector designating the groups. must be defined.
+                            geneTransform = function(x){homologene::mouse2human(x)$humanGene},
+                            groups = NULL, # a vector designating the groups. must be defined.
                             tableOut = NULL,
                             indivGenePlot = NULL, # where should it plot individual gene expression plots.
                             seekConsensus = F, # seeking concensus accross groups
                             removeNegatives = TRUE,
                             plotType = c('groupBased','cummulative'), # group based plot requires groups
                             PC = 1){
+    if(is.null(groups)){
+        assertthat::assert_that(seekConsensus==F)
+        list[, exp] = sepExpr(exprData)
+        groups = rep(1,ncol(exp))
+    }
+
     if (!is.null(indivGenePlot[1])){
         toCreate = unique(dirname(indivGenePlot))
         sapply(toCreate,dir.create,showWarnings = F,recursive=T)
@@ -227,10 +233,10 @@ mgpEstimate = function(exprData,
                                         synonymTaxID = synonymTaxID)
     }
 
-    estimateOut = vector(mode = 'list', length = len(genes))
-    groupsOut = vector(mode = 'list', length = len(genes))
-    rotations = vector(mode = 'list', length = len(genes))
-    for (i in 1:len(genes)){
+    estimateOut = vector(mode = 'list', length = length(genes))
+    groupsOut = vector(mode = 'list', length = length(genes))
+    rotations = vector(mode = 'list', length = length(genes))
+    for (i in 1:length(genes)){
         if(!is.null(geneTransform)){
             genes[[i]] = geneTransform(genes[[i]])
         }
@@ -258,19 +264,19 @@ mgpEstimate = function(exprData,
         }
 
         rownames(relevantData) = relevantData[, geneColName]
-        list[,relevantExpr] = sepExpr(relevantData)
+        list[,relevantExpr] = ogbox::sepExpr(relevantData)
 
 
         if (!is.null(indivGenePlot[1])){
             tempExp = relevantExpr
             tempExp$gene = rownames(tempExp)
-            indivGenes = melt(tempExp)
+            indivGenes = reshape2::melt(tempExp)
             names(indivGenes) = c( 'gene','GSM','expression')
 
             indivGenes = indivGenes %>%
-                mutate(group = groups[match(GSM, colnames(tempExp))]) %>%
+                dplyr::mutate(group = groups[match(GSM, colnames(tempExp))]) %>%
                 # order based on the order of input
-                mutate(gene = factor(gene, levels = genes[[i]]) %>% droplevels)
+                dplyr::mutate(gene = factor(gene, levels = genes[[i]]) %>% droplevels)
 
 
             switch(plotType[1],
@@ -352,7 +358,6 @@ mgpEstimate = function(exprData,
 }
 
 #' Calculates rotations based on each group
-#' @param exprData
 #' @param exprData data.frame. Expression data. First collumns of the expression data should include gene names in the
 #' same format as the ones specified in the marker gene lists. Any other non-expression related fields must not be of
 #' type 'double'
@@ -373,10 +378,10 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         genes = list(genes)
     }
 
-    allRotations = vector(mode = 'list', length=len(unique(genes)))
-    for (i in 1:len(genes)){
+    allRotations = vector(mode = 'list', length=length(unique(genes)))
+    for (i in 1:length(genes)){
 
-        rotations = vector(mode = 'list', length=len(unique(groups)))
+        rotations = vector(mode = 'list', length=length(unique(groups)))
 
         if(!is.null(geneTransform)){
             genes[[i]] = geneTransform(genes[[i]])
@@ -391,9 +396,9 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         }
 
         rownames(relevantData) = relevantData[, geneColName]
-        list[,relevantExpr] = sepExpr(relevantData)
+        list[,relevantExpr] = ogbox::sepExpr(relevantData)
 
-        for (j in 1:len(unique(groups))){
+        for (j in 1:length(unique(groups))){
             pca = prcomp(t(relevantExpr[groups %in% unique(groups)[j]]), scale = T)
             pca$rotation = pca$rotation * ((sum(pca$rotation[,1])<0)*(-2)+1)
             rotations[[j]] = pca$rotation[,1]

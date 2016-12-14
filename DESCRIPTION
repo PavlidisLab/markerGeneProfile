@@ -7,7 +7,18 @@ Description: This package is for estimation of cell type marker gene profiles
     brain cell type marker genes detected in the original study
 Depends:
     R (>= 3.3.2)
+Imports:
+    ogbox,
+    homologene,
+    ggplot2,
+    dplyr,
+    reshape2,
+    assertthat,
+    magrittr
+Enhances:
+    geneSynonym
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 5.0.1
+Suggests: testthat
