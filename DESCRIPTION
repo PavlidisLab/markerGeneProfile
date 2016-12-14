@@ -6,7 +6,7 @@ Description: This package is for estimation of cell type marker gene profiles
     (MGP) in whole tissue samples. It includes functions for MGP estimation and
     brain cell type marker genes detected in the original study
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.1)
 Imports:
     ogbox,
     homologene,
