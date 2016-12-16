@@ -7,14 +7,16 @@ This package includes functions responsible for marker gene selection and marker
 Table of contents
 =================
 
--   [Installation](#)
+-   [Installation](#install)
 
 Installation
 ============
 
-Use devtools to install
+<id='install'> Use devtools to install
 
     devtools::install_github('oganm/markerGeneProfile')
 
 Usage
 =====
+
+<id='usage'>
