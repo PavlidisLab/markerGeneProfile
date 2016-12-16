@@ -1,0 +1,10 @@
+language: r
+sudo: true
+r_binary_packages:
+    - RCurl
+    - testthat
+r_github_packages:
+    - jimhester/covr
+after_success:
+    - Rscript -e 'covr::codecov()'
+warnings_are_errors: false
