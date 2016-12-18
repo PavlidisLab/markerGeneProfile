@@ -141,7 +141,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
             sigText = paste0(sigText,': ',sprintf('%.5f',pList[i,]),collapse = '\n')
         }
 
-        lePlot = ggplot2::ggplot(frame,aes(x=group, y = PC1)) +
+        lePlot = ggplot2::ggplot(frame,ggplot2::aes(x=group, y = PC1)) +
             ggplot2::geom_violin( color="#C4C4C4", fill="#C4C4C4") +
             ggplot2::geom_boxplot(width=0.1,fill = 'lightblue') +
             ggplot2::geom_point(size = 3) +
@@ -153,8 +153,8 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
             ggplot2::theme(axis.text.x  = ggplot2::element_text(size=25, angle=90),
                            axis.title.y = ggplot2::element_text(vjust=0.5, size=25),
                            axis.title.x = ggplot2::element_text(vjust=0.5, size=0) ,
-                           title = element_text(vjust=0.5, size=25),
-                           axis.text.y = element_text(size = 13))
+                           title = ggplot2::element_text(vjust=0.5, size=25),
+                           axis.text.y = ggplot2::element_text(size = 13))
         if (!is.null(comparisons)){
             lePlot = lePlot +   # annotate('text', x = 0.1 , y = windowUp ,
                 ggplot2::annotate('text', x = 0.1 , y = 1.05 ,
@@ -209,7 +209,7 @@ mgpEstimate = function(exprData,
                             PC = 1){
     if(is.null(groups)){
         assertthat::assert_that(seekConsensus==F)
-        list[, exp] = sepExpr(exprData)
+        list[, exp] = ogbox::sepExpr(exprData)
         groups = rep(1,ncol(exp))
     }
 
@@ -286,13 +286,13 @@ mgpEstimate = function(exprData,
                        indivGenes$group =''
                    })
 
-            p = ggplot2::ggplot(indivGenes,aes(y = expression, x = group )) +
+            p = ggplot2::ggplot(indivGenes,ggplot2::aes(y = expression, x = group )) +
                 ggplot2::facet_wrap('gene') +
-                ggplot2::geom_boxplot(fill = 'lightblue')+ geom_point() +
-                ggplot2::theme(axis.text.x  = element_text( size=20,angle=90),
-                               axis.title.y = element_text(vjust=0.5, size=20),
-                               axis.title.x = element_text(vjust=0.5, size=0) ,
-                               title = element_text(vjust=0.5, size=20))+
+                ggplot2::geom_boxplot(fill = 'lightblue')+ ggplot2::geom_point() +
+                ggplot2::theme(axis.text.x  = ggplot2::element_text( size=20,angle=90),
+                               axis.title.y = ggplot2::element_text(vjust=0.5, size=20),
+                               axis.title.x = ggplot2::element_text(vjust=0.5, size=0) ,
+                               title = ggplot2::element_text(vjust=0.5, size=20))+
                 ggplot2::scale_x_discrete(name = '')+
                 ggplot2::scale_y_discrete(name = 'log2 Expression')
             (p)
