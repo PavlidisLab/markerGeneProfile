@@ -1,13 +1,12 @@
 language: r
 sudo: true
-install:
-    - ./travis-tool.sh install_github oganm/ogbox
-    - ./travis-tool.sh install_github oganm/homologene
 r_binary_packages:
     - RCurl
     - testthat
 r_github_packages:
     - jimhester/covr
+    - oganm/ogbox
+    - oganm/homologene
 after_success:
     - Rscript -e 'covr::codecov()'
 warnings_are_errors: false
