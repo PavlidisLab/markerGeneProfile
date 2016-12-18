@@ -371,7 +371,7 @@ mgpEstimate = function(exprData,
 #' be added as markers, not recommended since unrelated genes can share names
 #' @export
 groupRotations = function(exprData, genes,geneColName, groups, outDir,
-                          geneTransform = function(x){mouse2human(x)$humanGene},
+                          geneTransform = function(x){homologene::mouse2human(x)$humanGene},
                           synonymTaxID = NULL)
 {
     if (typeof(genes)!='list'){
@@ -387,7 +387,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
             genes[[i]] = geneTransform(genes[[i]])
         }
         if (!is.null(synonymTaxID)){
-            genes[[i]] == unlist(geneSynonym(genes=genes[[i]],tax=synonymTaxID))
+            genes[[i]] == unlist(geneSynonym::geneSynonym(genes=genes[[i]],tax=synonymTaxID))
         }
         relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
         if (nrow(relevantData)==0){
