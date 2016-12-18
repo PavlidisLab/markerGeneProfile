@@ -41,8 +41,8 @@ markerCandidates = function(design,
                             seed = NULL){
     # source('R/regionHierarchy.R')
     # so that I wont fry my laptop
-    if (detectCores()<cores){
-        cores = detectCores()
+    if (parallel::detectCores()<cores){
+        cores = parallel::detectCores()
         print('max cores exceeded')
         print(paste('set core no to',cores))
     }
@@ -97,14 +97,14 @@ markerCandidates = function(design,
         clustering = clustering[1:nrow(design) %in% c(groupInfo1, groupInfo2)]
         data = (exprData[ (1:nrow(design) %in% c(groupInfo1, groupInfo2)),  daGeneIndex])
         cluster = list(clustering = clustering, data = data)
-        silo = silhouette(cluster,dist(data))
+        silo = cluster::silhouette(cluster,stats::dist(data))
         return(mean(silo[,3]))
     }
     # data prep. you transpose exprData -----
     #design = read.design(designLoc)
 
     #expression = read.csv(exprLoc, header = T)
-    list[geneData, exprData] = sepExpr(expression)
+    list[geneData, exprData] = ogbox::sepExpr(expression)
 
     if (!all(colnames(exprData) %in% design[[sampleName]])){
         if(is.null(rotate)){
@@ -159,7 +159,7 @@ markerCandidates = function(design,
     foreach (i = 1:len(nameGroups)) %dorng% {
         #for (i in 1:len(nameGroups)){
         #debub point for groups
-        typeNames = trimNAs(unique(nameGroups[[i]]))
+        typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
         names(realGroups) = typeNames
         for (j in 1:length(typeNames)){
@@ -252,7 +252,7 @@ markerCandidates = function(design,
         # dir.create(paste0(outLoc , '/Relax/' , names(nameGroups)[i] , '/'), showWarnings = F, recursive =T)
         dir.create(paste0(outLoc ,'/' , names(nameGroups)[i] , '/'), showWarnings = F, recursive =T)
         if (!is.null(rotate)){
-            write.table(removed,
+            utils::write.table(removed,
                         file = paste0(outLoc,'/',names(nameGroups)[i] , '/removed'),
                         col.names=F)
         }
@@ -300,7 +300,7 @@ markerCandidates = function(design,
 
             print(fileName)
             # print(nameGroups[[i]])
-            write.table(fChangePrint, quote = F, row.names = F, col.names = F, fileName)
+            utils::write.table(fChangePrint, quote = F, row.names = F, col.names = F, fileName)
             # write.table(fMarker, quote = F, row.names = F, col.names = F, fileName2)
 
         }# end of for around groupAverages
@@ -329,7 +329,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
     filenames = filenames[!filenames %in% 'removed']
     fileContents = lapply(paste0(geneLoc,'/', filenames), function(x){
         tryCatch(
-            read.table(x,stringsAsFactors=FALSE),
+            utils::read.table(x,stringsAsFactors=FALSE),
             error = function(e){
                 NULL
             })
@@ -393,7 +393,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
     # place later since the point of this function was supposed to be filtering the genes as well
     if (ncol(fileContents[[1]])!=1){
         for (i in 1:length(geneList)){
-            puristList[[i]] = trimElement(geneList[[i]], unlist(geneList[-i]))
+            puristList[[i]] = ogbox::trimElement(geneList[[i]], unlist(geneList[-i]))
         }
     } else {
         puristList = geneList
@@ -412,7 +412,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
 # lapply(c('Eno2','Mog'), findGene, list)
 findGene = function(gene,list){
     out = lapply(list, function(x){
-        findInList(gene,x)
+        ogbox::findInList(gene,x)
     })
     matches = out[lapply(out,len)>0]
     if (len(matches)<1){

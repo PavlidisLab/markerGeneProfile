@@ -17,7 +17,9 @@ Imports:
     magrittr,
     utils,
     graphics,
-    stats
+    stats,
+    parallel,
+    cluster
 Enhances:
     geneSynonym
 License: MIT + file LICENSE
