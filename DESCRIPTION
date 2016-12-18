@@ -14,7 +14,10 @@ Imports:
     dplyr,
     reshape2,
     assertthat,
-    magrittr
+    magrittr,
+    utils,
+    graphics,
+    stats
 Enhances:
     geneSynonym
 License: MIT + file LICENSE

@@ -34,7 +34,7 @@ fullEstimate = function(exprData, # expression data
                         removeNegatives = TRUE,
                         geneTransform = function(x){homologene::mouse2human(x)$humanGene}, # function to use when translating gene names
                         comparisons = 'all',
-                        pAdjMethod = p.adjust.methods, # method for multiple testing correction. defaults to holm
+                        pAdjMethod = stats::p.adjust.methods, # method for multiple testing correction. defaults to holm
                         PC = 1, # which PC to use. mostly you want this to be 1
                         estimateFile = NULL
 ){
@@ -56,7 +56,7 @@ fullEstimate = function(exprData, # expression data
     if (!is.null(estimateFile) & !outlierSampleRemove){
         estimateFrame = cbind(as.data.frame(estimates$estimates), estimates$groups[[1]])
         names(estimateFrame)[ncol(estimateFrame)] = 'groups'
-        write.table(estimateFrame, file=estimateFile , quote=F,sep='\t')
+        utils::write.table(estimateFrame, file=estimateFile , quote=F,sep='\t')
     }
 
     if (groupRotations){
@@ -92,7 +92,7 @@ fullEstimate = function(exprData, # expression data
 #' combn(groups,2)
 #' @export
 plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
-                         pAdjMethod = p.adjust.methods,
+                         pAdjMethod = stats::p.adjust.methods,
                          comparisons = 'all' # if p value correction should happen in per plot or for the entire list of ps
 ){
     toCreate = unique(dirname(plotNames))
@@ -109,7 +109,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 
     if (!is.null(comparisons)){
         if (comparisons == 'all'){
-            comparisons = combn(groupNames,2)
+            comparisons = utils::combn(groupNames,2)
         }
     }
     # create p value lists for correction
@@ -124,7 +124,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
         }
 
         # p value adjustment
-        pList = matrix(p.adjust(pList,pAdjMethod),nrow = length(estimates))
+        pList = matrix(stats::p.adjust(pList,pAdjMethod),nrow = length(estimates))
     }
 
 
@@ -300,14 +300,14 @@ mgpEstimate = function(exprData,
         }
 
         # get rotations
-        pca = prcomp(t(relevantExpr), scale = T)
+        pca = stats::prcomp(t(relevantExpr), scale = T)
         pca$rotation = pca$rotation * ((sum(pca$rotation[,PC])<0)*(-2)+1)
 
         # do not allow negative rotated genes
         if(removeNegatives){
             while(any(pca$rotation[,PC]<0)){
                 relevantExpr = relevantExpr[pca$rotation[,PC]>0,]
-                pca = prcomp(t(relevantExpr), scale = T)
+                pca = stats::prcomp(t(relevantExpr), scale = T)
                 pca$rotation = pca$rotation * ((sum(pca$rotation[,PC])<0)*(-2)+1)
             }
         }
@@ -326,7 +326,7 @@ mgpEstimate = function(exprData,
                               paste(summary(pca)$importance[2,], collapse=' ')),
                        fileConn)
             close(fileConn)
-            write.table(pca$rotation[,PC,drop=F],
+            utils::write.table(pca$rotation[,PC,drop=F],
                         file = tableOut[i],
                         quote = F, row.names = T, col.names = F, sep='\t',
                         append = T)
@@ -341,7 +341,7 @@ mgpEstimate = function(exprData,
                 pca$x[groups %in% x,PC]
             },simplify=F)
             names(groupData) = unique(groups)
-            box = boxplot(groupData, plot = F)
+            box = graphics::boxplot(groupData, plot = F)
             # because of this part, sample names are important!!! uses them
             # to match outliers
             groupsOut[[i]] = groups[!rownames(pca$x) %in% names(box$out)]
@@ -399,7 +399,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         list[,relevantExpr] = ogbox::sepExpr(relevantData)
 
         for (j in 1:length(unique(groups))){
-            pca = prcomp(t(relevantExpr[groups %in% unique(groups)[j]]), scale = T)
+            pca = stats::prcomp(t(relevantExpr[groups %in% unique(groups)[j]]), scale = T)
             pca$rotation = pca$rotation * ((sum(pca$rotation[,1])<0)*(-2)+1)
             rotations[[j]] = pca$rotation[,1]
         }
@@ -408,7 +408,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         names(rotations) = unique(groups)
         allRotations[[i]] = rotations
         if (!is.null(outDir)){
-            write.table(rotations[order(apply(rotations,1,sum),decreasing=T),],
+            utils::write.table(rotations[order(apply(rotations,1,sum),decreasing=T),],
                         file = paste0(outDir,'/',names(genes)[i], ' groupRots'), quote=F,sep = '\t')
         }
     }
