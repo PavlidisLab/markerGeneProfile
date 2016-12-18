@@ -5,7 +5,7 @@
 \title{Plot cell type profile estimates}
 \usage{
 plotEstimates(estimates, groups, plotNames, sigTest = wilcox.test,
-  pAdjMethod = p.adjust.methods, comparisons = "all")
+  pAdjMethod = stats::p.adjust.methods, comparisons = "all")
 }
 \arguments{
 \item{groups}{A names list of groups $groups part pf the mgpEstimate function's output}

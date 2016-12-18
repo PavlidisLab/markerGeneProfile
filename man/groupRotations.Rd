@@ -5,7 +5,7 @@
 \title{Calculates rotations based on each group}
 \usage{
 groupRotations(exprData, genes, geneColName, groups, outDir,
-  geneTransform = function(x) {     mouse2human(x)$humanGene },
+  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene },
   synonymTaxID = NULL)
 }
 \arguments{
