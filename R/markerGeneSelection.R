@@ -39,6 +39,7 @@ markerCandidates = function(design,
                             regionHierarchy = NULL,
                             geneID = 'Gene.Symbol',
                             seed = NULL){
+    browser()
     # source('R/regionHierarchy.R')
     # so that I wont fry my laptop
     if (parallel::detectCores()<cores){
@@ -46,7 +47,9 @@ markerCandidates = function(design,
         print('max cores exceeded')
         print(paste('set core no to',cores))
     }
-    registerDoMC(cores)
+
+    cl<-parallel::makeCluster(cores)
+    doSNOW::registerDoSNOW(cl)
 
     #gene selector, outputs selected genes and their fold changes
     foldChange = function (group1, group2, f = 10){
@@ -152,11 +155,11 @@ markerCandidates = function(design,
 
     # the main loop around groups ------
     if (!is.null(seed)){
-        registerDoRNG(seed)
+        doRNG::registerDoRNG(seed)
     } else {
-        registerDoRNG()
+        doRNG::registerDoRNG()
     }
-    foreach (i = 1:len(nameGroups)) %dorng% {
+    foreach::foreach (i = 1:len(nameGroups)) %dorng% {
         #for (i in 1:len(nameGroups)){
         #debub point for groups
         typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
@@ -306,6 +309,7 @@ markerCandidates = function(design,
         }# end of for around groupAverages
 
     } # end of foreach loop around groups
+    parallel::stopCluster(cl)
 } # end of function
 
 

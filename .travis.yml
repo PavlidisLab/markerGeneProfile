@@ -1,5 +1,6 @@
 language: r
 sudo: true
+cache: packages
 r_binary_packages:
     - testthat
 r_github_packages:

@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{\%<>\%}
 \alias{\%>\%}
+\alias{\%dorng\%}
 \alias{list}
 \alias{reexports}
 \title{Objects exported from other packages}
@@ -12,6 +13,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
+  \item{doRNG}{\code{\link[doRNG]{\%dorng\%}}}
+
   \item{magrittr}{\code{\link[magrittr]{\%>\%}}, \code{\link[magrittr]{\%<>\%}}}
 
   \item{ogbox}{\code{\link[ogbox]{list}}}

@@ -19,7 +19,9 @@ Imports:
     graphics,
     stats,
     parallel,
-    cluster
+    cluster,
+    doRNG,
+    doSNOW
 Enhances:
     geneSynonym
 License: MIT + file LICENSE

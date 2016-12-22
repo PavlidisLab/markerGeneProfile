@@ -9,3 +9,24 @@ test_that("Basic estimation works",{
 })
 
 
+test_that("Estimation in actual dataset",{
+    estimates = mgpEstimate(exprData = mgp_LesnickCroppedExpression,
+                genes = mouseMarkerGenes$Midbrain,
+                geneColName = 'Gene.Symbol',
+                groups = mgp_LesnickCroppedMeta$disease)
+    cells = names(mouseMarkerGenes$Midbrain)
+
+    less = sapply(1:length(estimates$estimates),function(i){
+        wilcox.test(estimates$estimates[[i]][estimates$groups[[i]] %in% "parkinson's"],
+                    estimates$estimates[[i]][estimates$groups[[i]] %in% "control"],alternative = 'less')$p.value
+    })
+
+    greater = sapply(1:length(estimates$estimates),function(i){
+        wilcox.test(estimates$estimates[[i]][estimates$groups[[i]] %in% "parkinson's"],
+                    estimates$estimates[[i]][estimates$groups[[i]] %in% "control"],alternative = 'greater')$p.value
+    })
+
+    expect_that(less[cells %in% 'Dopaminergic'], testthat::is_less_than(0.05))
+    expect_that(min(less[!cells %in% 'Dopaminergic']), testthat::is_more_than(0.05))
+    expect_that(min(greater), testthat::is_more_than(0.05))
+})

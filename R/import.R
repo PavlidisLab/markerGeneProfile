@@ -11,3 +11,8 @@ magrittr::`%<>%`
 #' @importFrom ogbox list
 #' @export
 ogbox::list
+
+
+#' @importFrom doRNG %dorng%
+#' @export
+doRNG::`%dorng%`
