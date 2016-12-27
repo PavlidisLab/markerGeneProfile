@@ -16,3 +16,7 @@ ogbox::list
 #' @importFrom doRNG %dorng%
 #' @export
 doRNG::`%dorng%`
+
+#' @importFrom foreach %dopar%
+#' @export
+foreach::`%dopar%`

@@ -39,7 +39,6 @@ markerCandidates = function(design,
                             regionHierarchy = NULL,
                             geneID = 'Gene.Symbol',
                             seed = NULL){
-    browser()
     # source('R/regionHierarchy.R')
     # so that I wont fry my laptop
     if (parallel::detectCores()<cores){
@@ -137,12 +136,12 @@ markerCandidates = function(design,
     }
 
     # generate nameGroups to loop around -----
-    nameGroups = vector(mode = 'list', length = len(groupNamesEn))
+    nameGroups = vector(mode = 'list', length = length(groupNamesEn))
 
 
     names(nameGroups) = c(groupNamesEn)
 
-    for (i in 1:len(groupNamesEn)){
+    for (i in 1:length(groupNamesEn)){
         nameGroups[[i]] = design[,groupNamesEn[i]]
     }
     nameGroups = nameGroups[unlist(lapply(lapply(lapply(nameGroups,unique),trimNAs),length)) > 1]
@@ -159,8 +158,8 @@ markerCandidates = function(design,
     } else {
         doRNG::registerDoRNG()
     }
-    foreach::foreach (i = 1:len(nameGroups)) %dorng% {
-        #for (i in 1:len(nameGroups)){
+    foreach::foreach (i = 1:length(nameGroups)) %dorng% {
+        #for (i in 1:length(nameGroups)){
         #debub point for groups
         typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
@@ -178,15 +177,15 @@ markerCandidates = function(design,
                 minRepresentation = articles %>%
                     table(useNA = 'ifany') %>%
                     min
-                lapply (1:len(unique(articles)),function(j){
+                lapply (1:length(unique(articles)),function(j){
                     # this turned into a list because if it is not a list, single length vectors behave differently
                     # in sample.
-                    if (len( x[articles %in% unique(articles)[j]]) ==1){
+                    if (length( x[articles %in% unique(articles)[j]]) ==1){
                         return(x[articles %in% unique(articles)[j]])
                     }
                     x[articles %in% unique(articles)[j]] %>%
                         sample(size=minRepresentation,replace=FALSE) %>% unlist #%>% #if you decide to remove samples per study comment this part in, delete the part below
-                    #sample(.,size = len(.)-round(len(.)*rotate), replace= FALSE)
+                    #sample(.,size = length(.)-round(length(.)*rotate), replace= FALSE)
                 }) %>% unlist
             })
             removed = unlist(realGroups)[!unlist(realGroups) %in% unlist(realGroups2)]
@@ -194,11 +193,11 @@ markerCandidates = function(design,
 
             # if rotation is checked, get a subset of the samples. result is rounded. so too low numbers can make it irrelevant
             realGroups2 = lapply(realGroups,function(x){
-                if(len(x)==1){
+                if(length(x)==1){
                     warning('Samples with single replicates. Bad brenna! bad!')
                     return(x)
                 }
-                sort(sample(x,len(x)-round(len(x)*rotate)) %>% unlist)
+                sort(sample(x,length(x)-round(length(x)*rotate)) %>% unlist)
             })
             removed = c(removed, unlist(realGroups)[!unlist(realGroups) %in% unlist(realGroups2)])
             realGroups = realGroups2
@@ -216,7 +215,7 @@ markerCandidates = function(design,
 
 
 
-        repMeanExpr = sapply(1:len(indexes), function(j){
+        repMeanExpr = sapply(1:length(indexes), function(j){
             tryCatch({
                 apply(tempExpr[tempDesign[[replicates]] == indexes[j],], 2,mean)},
                 error= function(e){
@@ -341,7 +340,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
     names(fileContents) = filenames
 
     # empty first file protection
-    lengths = sapply(fileContents,len)
+    lengths = sapply(fileContents,length)
     destinedToBeFirst = which.max(lengths>0)
 
     theFirst = fileContents[1]
@@ -355,7 +354,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
         # this if for a combination of fold change and silhouette coefficient
         for (i in 1:length(fileContents)){
             tempContent = fileContents[[i]][!fileContents[[i]][,1] %in%
-                                                unlist(sapply((1:len(fileContents))[-i], function(x){
+                                                unlist(sapply((1:length(fileContents))[-i], function(x){
                                                     fileContents[[x]][,1]
                                                 })),]
 
@@ -366,7 +365,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
         # this if for lilah's selection method
         for (i in 1:length(fileContents)){
             tempContent = fileContents[[i]][!fileContents[[i]][,1] %in%
-                                                unlist(sapply((1:len(fileContents))[-i], function(x){
+                                                unlist(sapply((1:length(fileContents))[-i], function(x){
                                                     fileContents[[x]][,1]
                                                 })),]
             geneList[[i]] = as.character(tempContent$V1[as.numeric(as.character(tempContent$V3))*
@@ -418,11 +417,11 @@ findGene = function(gene,list){
     out = lapply(list, function(x){
         ogbox::findInList(gene,x)
     })
-    matches = out[lapply(out,len)>0]
-    if (len(matches)<1){
+    matches = out[lapply(out,length)>0]
+    if (length(matches)<1){
         return(NULL)
     }
-    matches = sapply(1:len(matches), function(i){
+    matches = sapply(1:length(matches), function(i){
         paste0(names(matches[i]),'_', names(list[[names(matches[i])]][matches[[i]]]))
     })
     return(matches)

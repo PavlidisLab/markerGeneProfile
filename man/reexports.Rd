@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{\%<>\%}
 \alias{\%>\%}
+\alias{\%dopar\%}
 \alias{\%dorng\%}
 \alias{list}
 \alias{reexports}
@@ -14,6 +15,8 @@ below to see their documentation.
 
 \describe{
   \item{doRNG}{\code{\link[doRNG]{\%dorng\%}}}
+
+  \item{foreach}{\code{\link[foreach]{\%dopar\%}}}
 
   \item{magrittr}{\code{\link[magrittr]{\%>\%}}, \code{\link[magrittr]{\%<>\%}}}
 

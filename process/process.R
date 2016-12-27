@@ -3,32 +3,32 @@
 library(ogbox)
 library(magrittr)
 library(dplyr)
-loadURL("https://github.com/oganm/neuroExpressoAnalysis/blob/master/data/mouseMarkerGenes.rda?raw=true")
+loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
 use_data(mouseMarkerGenes)
 
 
 mgp_sampleProfiles = data.frame(
-    Gene.Symbol = c("Gene1",'Gene2','Gene3'),
-    Sample01 = c(16,1,1),
-    Sample02 = c(16,1,1),
-    Sample03 = c(16,1,1),
-    Sample04 = c(16,1,1),
-    Sample05 = c(16,1,1),
-    Sample06 = c(16,1,1),
-    Sample07 = c(1,16,1),
-    Sample08 = c(1,16,1),
-    Sample09 = c(1,16,1),
-    Sample10 = c(1,16,1),
-    Sample11 = c(1,16,1),
-    Sample12 = c(1,16,1),
-    Sample13 = c(1,1,16),
-    Sample14 = c(1,1,16),
-    Sample15 = c(1,1,16),
-    Sample16 = c(1,1,16),
-    Sample17 = c(1,1,16),
-    Sample18 = c(1,1,16))
+    Gene.Symbol = c("Gene1",'Gene2','Gene3','Gene4','Gene5','Gene6'),
+    Sample01 = c(16,1,1,1,1,1),
+    Sample02 = c(16,1,1,1,1,1),
+    Sample03 = c(16,1,1,1,1,1),
+    Sample04 = c(16,1,1,1,1,1),
+    Sample05 = c(16,1,1,1,1,1),
+    Sample06 = c(16,1,1,1,1,1),
+    Sample07 = c(1,16,1,1,1,1),
+    Sample08 = c(1,16,1,1,1,1),
+    Sample09 = c(1,16,1,1,1,1),
+    Sample10 = c(1,16,1,1,1,1),
+    Sample11 = c(1,16,1,1,1,1),
+    Sample12 = c(1,16,1,1,1,1),
+    Sample13 = c(1,1,16,13,9,7),
+    Sample14 = c(1,1,16,13,9,7),
+    Sample15 = c(1,1,16,13,9,7),
+    Sample16 = c(1,1,16,13,9,7),
+    Sample17 = c(1,1,16,13,9,7),
+    Sample18 = c(1,1,16,13,9,7))
 
-use_data(mgp_sampleProfiles)
+use_data(mgp_sampleProfiles, overwrite = TRUE)
 
 
 mgp_sampleProfilesMeta = data.frame(sampleName = paste0('Sample', formatC(1:18,width=2, flag="0")),
@@ -44,8 +44,8 @@ mpg_sampleRegionHiearchy = list(All = list('Region 1' ='',
 
 
 # cropped Lesnick et al
-loadURL("https://github.com/oganm/neuroExpressoAnalysis/blob/master/data/LesnickParkinsonsExp.rda?raw=true")
-loadURL("https://github.com/oganm/neuroExpressoAnalysis/blob/master/data/LesnickParkinsonsMeta.rda?raw=true")
+loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsExp.rda')
+loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsMeta.rda')
 
 mgp_LesnickCroppedExpression = LesnickParkinsonsExp[LesnickParkinsonsExp$Gene.Symbol %in%
                                                         (mouseMarkerGenes$Midbrain %>%

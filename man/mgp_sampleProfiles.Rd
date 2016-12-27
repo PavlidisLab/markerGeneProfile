@@ -4,7 +4,7 @@
 \name{mgp_sampleProfiles}
 \alias{mgp_sampleProfiles}
 \title{Mock dataset for cell type profiles}
-\format{An object of class \code{data.frame} with 3 rows and 19 columns.}
+\format{An object of class \code{data.frame} with 6 rows and 19 columns.}
 \usage{
 mgp_sampleProfiles
 }

@@ -21,7 +21,9 @@ Imports:
     parallel,
     cluster,
     doRNG,
-    doSNOW
+    doSNOW,
+    foreach,
+    memoise
 Enhances:
     geneSynonym
 License: MIT + file LICENSE
