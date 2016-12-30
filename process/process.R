@@ -35,8 +35,8 @@ mgp_sampleProfilesMeta = data.frame(sampleName = paste0('Sample', formatC(1:18,w
                                     replicate = ogbox::repIndiv(1:6,3),
                                     PMID = ogbox::repIndiv(1:6,3),
                                     CellType = ogbox::repIndiv(c('Cell A','Cell B', 'Cell C'),6),
-                                    region = ogbox::repIndiv(c('Region 1', 'Region 2', 'Region 2'), 6))
-use_data(mgp_sampleProfilesMeta)
+                                    region = ogbox::repIndiv(c('Region 1', 'Region 2', 'Region 2'), 6),stringsAsFactors = FALSE)
+use_data(mgp_sampleProfilesMeta, overwrite = TRUE)
 
 
 mpg_sampleRegionHiearchy = list(All = list('Region 1' ='',
