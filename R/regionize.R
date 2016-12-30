@@ -12,7 +12,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
     # if a hierarchy is not provided, create one with a single layer
     if (is.null(regionHierarchy)){
         regionHierarchy = vector(mode='list',
-                                 length = design[,regionNames] %>% unique %>% len)
+                                 length = design[,regionNames] %>% unique %>% length)
         regionHierarchy = lapply(regionHierarchy,function(x){''})
         names(regionHierarchy)  = design[,regionNames] %>% unique
     }
@@ -29,10 +29,10 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
 
     # some non used samples have undefined regions, trim those since you don't use them anyway
     regionsData = design[design[,groupNames, drop=F]%>% apply(1,function(x){all(!is.na(x))}),
-                         regionNames] %>% as.character %>% strsplit(',') %>% unlist %>% trimNAs %>% unique
+                         regionNames] %>% as.character %>% strsplit(',') %>% unlist %>% (ogbox::trimNAs) %>% unique
 
     # ensure that every region in the dataset is somewhere in the tree
-    assertthat::assert_that(len(regionsData[!(regionsData %in%  regionsTree)]) == 0)
+    assertthat::assert_that(length(regionsData[!(regionsData %in%  regionsTree)]) == 0)
 
 
     # get the region names with their parents so children can inherit their parents sins
@@ -41,7 +41,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
         names
 
     regions = childrenRegions %>% strsplit(split='\\.') %>% lapply(function(x){
-        sapply(1:len(x), function(i){
+        sapply(1:length(x), function(i){
             paste(x[1:i],collapse='.')
         })
 
@@ -50,19 +50,19 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
 
     regionBased = expand.grid(groupNames, regions)
     names(regionBased) = c('groupName','region')
-    regionBased %<>% mutate(groupName = as.char(groupName)) %>% mutate(region = as.char(region))
+    regionBased %<>% dplyr::mutate(groupName = as.character(groupName)) %>% dplyr::mutate(region = as.character(region))
 
     regionGroups = vector(mode = 'list', length = nrow(regionBased))
     names(regionGroups) = paste0(regionBased$region,'_',regionBased$groupName)
 
     # have translation to short names
     regions = data.frame(region = regions)  %>%
-        mutate(shortNames = region %>% as.char %>% strsplit(split='\\.') %>% lapply(function(x){x[len(x)]}) %>% unlist)
+        dplyr::mutate(shortNames = region %>% as.character %>% strsplit(split='\\.') %>% lapply(function(x){x[length(x)]}) %>% unlist)
 
     # get a full name for all listed regions per sample (samples can have multiple regions if they are specifically
     # extracted from a lower level region but we want to use them for others)
     regionList = design[,regionNames] %>% strsplit(',') %>% lapply(function(x){
-        as.char(regions$region[match(x,regions$shortNames)])
+        as.character(regions$region[match(x,regions$shortNames)])
     })
 
     # i is the region groups to assign
@@ -71,7 +71,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
         regionGroups[[i]] = design[,as.character(regionBased$groupName[i])]
 
         # decide which samples should belong to the region
-        inRegion = sapply(1:len(regionList), function(j){
+        inRegion = sapply(1:length(regionList), function(j){
             # get the ones that are directly listed in the region
             inReg = regionBased$region[i] %in%  regionList[[j]]
 
@@ -95,7 +95,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
                 }) %>% all
                 if (!override){
                     toChild = regionBased$region[i] %>%
-                        grepl(paste0('^',regexMerge( regionList[[j]], exact=TRUE)), .)
+                        grepl(paste0('^',ogbox::regexMerge( regionList[[j]], exact=TRUE)), .)
                     inReg = inReg | toChild
                 }
 

@@ -144,7 +144,7 @@ markerCandidates = function(design,
     for (i in 1:length(groupNamesEn)){
         nameGroups[[i]] = design[,groupNamesEn[i]]
     }
-    nameGroups = nameGroups[unlist(lapply(lapply(lapply(nameGroups,unique),trimNAs),length)) > 1]
+    nameGroups = nameGroups[unlist(lapply(lapply(lapply(nameGroups,unique),ogbox::trimNAs),length)) > 1]
     #debug exclude
     if (!is.null(debug)){
         nameGroups = nameGroups[names(nameGroups) %in% debug]
