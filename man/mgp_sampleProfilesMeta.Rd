@@ -4,7 +4,7 @@
 \name{mgp_sampleProfilesMeta}
 \alias{mgp_sampleProfilesMeta}
 \title{Mock metadata for the mock dataset for cell type profiles}
-\format{An object of class \code{data.frame} with 18 rows and 4 columns.}
+\format{An object of class \code{data.frame} with 18 rows and 5 columns.}
 \usage{
 mgp_sampleProfilesMeta
 }

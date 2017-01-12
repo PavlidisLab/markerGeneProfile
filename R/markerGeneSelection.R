@@ -125,7 +125,6 @@ markerCandidates = function(design,
         noReg = T
     }
 
-
     regionGroups = regionize(design,regionNames,groupNames,regionHierarchy)
     # concatanate new region based groups to design and to groupNames so they'll be processed normally
     if (!noReg){

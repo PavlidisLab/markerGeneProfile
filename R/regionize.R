@@ -8,7 +8,6 @@
 #' it will be represented as an NA, otherwise it'll have the cell type name indicated in the region
 #' @export
 regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
-
     # if a hierarchy is not provided, create one with a single layer
     if (is.null(regionHierarchy)){
         regionHierarchy = vector(mode='list',
@@ -61,7 +60,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
 
     # get a full name for all listed regions per sample (samples can have multiple regions if they are specifically
     # extracted from a lower level region but we want to use them for others)
-    regionList = design[,regionNames] %>% strsplit(',') %>% lapply(function(x){
+    regionList = design[,regionNames] %>% as.character %>% strsplit(',') %>% lapply(function(x){
         as.character(regions$region[match(x,regions$shortNames)])
     })
 
