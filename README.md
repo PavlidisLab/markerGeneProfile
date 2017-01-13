@@ -4,18 +4,18 @@
 markerGeneProfile
 =================
 
-This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et a. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
+This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et al. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
-**Table of Contents**
+Table of Contents
+=================
 
--   [markerGeneProfile](#)
--   [Table of contents](#)
--   [Installation](#)
--   [Usage](#)
-    -   [Marker genes](#)
-        -   [Sample data for marker gene selection](#)
-        -   [Selection of marker genes](#)
-        -   [Better selection of marker genes](#)
+-   [markerGeneProfile](#markergeneprofile)
+-   [Installation](#installation)
+-   [Usage](#usage)
+    -   [Marker genes](#marker-genes)
+        -   [Sample data for marker gene selection](#sample-data-for-marker-gene-selection)
+        -   [Selection of marker genes](#selection-of-marker-genes)
+        -   [Better selection of marker genes](#better-selection-of-marker-genes)
 
 Installation
 ============
