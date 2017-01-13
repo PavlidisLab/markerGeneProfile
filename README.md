@@ -200,37 +200,32 @@ pickMarkersAll('readmeDocs/quickSelection')
 
 The above method is a quick way to pick markers but it does not handle bimodality in expression distribution well. To ensure robustness of the results it is better to perform multiple selections with permutations. `markerCandidates` function has variables to handle permutations for you. `rotate` controls what is the percentage of samples that should be removed every time. seed controls the random seed and is there to ensure reproducibility.
 
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
+``` r
+for (i in 1:10){
+    markerCandidates(design = mgp_sampleProfilesMeta, # the design file
+                     expression = mgp_sampleProfiles, # expression file 
+                     outLoc = file.path('readmeDocs/Rotation',i), # output directory
+                     groupNames = 'CellType', # name of the column with cell types. can be a vector
+                     regionNames = 'region', # name of the column with brain regions. leave NULL if no region seperation is desired
+                     PMID = 'PMID', # name of the column with study identifiers
+                     sampleName = 'sampleName', # name of the column with sample names
+                     replicates = 'replicate', # name of the column with replicates
+                     foldChangeThresh = 10, # threshold of fold change for gene selection (default is 10)
+                     minimumExpression = 8, # minimum expression level that a gene can be considered a marker gene (default is 8)
+                     background = 6, # background level of expression (default is 6)
+                     regionHierarchy = mpg_sampleRegionHiearchy, # hierarchy of brain regions to be used
+                     geneID = 'Gene.Symbol', # column name with with gene idenditifers
+                     cores = 16, # number of cores to use in parallelization 
+                     rotate = 0.33,
+                     seed = i
+    )
+}
+```
 
 This creates multiple selection directories. `rotateSelect` can be used to count the number of times a gene is selected for each cell type in each region. This creates another directory similar to the output of `markerCandidates`. Again, valid markers can be acquired using `pickMarkers`
 
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
-
-    ## [[1]]
-    ## NULL
-    ## 
-    ## [[2]]
-    ## NULL
-    ## 
-    ## [[3]]
-    ## NULL
+``` r
+rotateSelect(rotationOut='readmeDocs/Rotation',
+                 rotSelOut='readmeDocs/RotSel',
+                 cores = 16,foldChange = 1)
+```
