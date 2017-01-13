@@ -14,11 +14,16 @@ markerGeneProfile
 ==================
 This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et a. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
-Table of contents
-=============================
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Marker genes]
+**Table of Contents** 
+
+- [markerGeneProfile](#)
+- [Table of contents](#)
+- [Installation](#)
+- [Usage](#)
+	- [Marker genes](#)
+		- [Sample data for marker gene selection](#)
+		- [Selection of marker genes](#)
+		- [Better selection of marker genes](#)
 
 Installation
 =============
@@ -110,12 +115,14 @@ This file shows the candidate genes for cell type `Cell C` in region `All`. The 
 
 ```{r}
 pickMarkers('readmeDocs/quickSelection/All_CellType/',
-            foldChange = 10,
+            foldChange = 1,  # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
             silhouette = 0.5)
 ```
 If all genes for all regions needs to be seen
 ```{r}
-pickMarkersAll('readmeDocs/quickSelection')
+pickMarkersAll('readmeDocs/quickSelection',
+               foldChange = 1,
+               silhouette = 0.5)
 
 ```
 
@@ -150,7 +157,13 @@ This creates multiple selection directories. `rotateSelect` can be used to count
 ```{r, results= 'hide'}
 rotateSelect(rotationOut='readmeDocs/Rotation',
                  rotSelOut='readmeDocs/RotSel',
-                 cores = 16,foldChange = 1)
-
-
+                 cores = 16,
+                 foldChange = 1 # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
+             )
 ```
+
+```{r}
+pickMarkers('readmeDocs/RotSel/All_CellType/',rotationThresh = 0.95)
+pickMarkersAll('readmeDocs/RotSel',rotationThresh = 0.95)
+```
+

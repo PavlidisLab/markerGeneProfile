@@ -6,12 +6,16 @@ markerGeneProfile
 
 This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et a. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
-Table of contents
-=================
+**Table of Contents**
 
--   [Installation](#installation)
--   [Usage](#usage)
--   [Marker genes](#marker-genes)
+-   [markerGeneProfile](#)
+-   [Table of contents](#)
+-   [Installation](#)
+-   [Usage](#)
+    -   [Marker genes](#)
+        -   [Sample data for marker gene selection](#)
+        -   [Selection of marker genes](#)
+        -   [Better selection of marker genes](#)
 
 Installation
 ============
@@ -148,7 +152,7 @@ This file shows the candidate genes for cell type `Cell C` in region `All`. The 
 
 ``` r
 pickMarkers('readmeDocs/quickSelection/All_CellType/',
-            foldChange = 10,
+            foldChange = 1,  # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
             silhouette = 0.5)
 ```
 
@@ -164,7 +168,9 @@ pickMarkers('readmeDocs/quickSelection/All_CellType/',
 If all genes for all regions needs to be seen
 
 ``` r
-pickMarkersAll('readmeDocs/quickSelection')
+pickMarkersAll('readmeDocs/quickSelection',
+               foldChange = 1,
+               silhouette = 0.5)
 ```
 
     ## $All_CellType
@@ -227,5 +233,53 @@ This creates multiple selection directories. `rotateSelect` can be used to count
 ``` r
 rotateSelect(rotationOut='readmeDocs/Rotation',
                  rotSelOut='readmeDocs/RotSel',
-                 cores = 16,foldChange = 1)
+                 cores = 16,
+                 foldChange = 1 # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
+             )
 ```
+
+``` r
+pickMarkers('readmeDocs/RotSel/All_CellType/',rotationThresh = 0.95)
+```
+
+    ## $`Cell A`
+    ## [1] "Gene1"
+    ## 
+    ## $`Cell B`
+    ## [1] "Gene2"
+    ## 
+    ## $`Cell C`
+    ## [1] "Gene3" "Gene4" "Gene5"
+
+``` r
+pickMarkersAll('readmeDocs/RotSel',rotationThresh = 0.95)
+```
+
+    ## $All_CellType
+    ## $All_CellType$`Cell A`
+    ## [1] "Gene1"
+    ## 
+    ## $All_CellType$`Cell B`
+    ## [1] "Gene2"
+    ## 
+    ## $All_CellType$`Cell C`
+    ## [1] "Gene3" "Gene4" "Gene5"
+    ## 
+    ## 
+    ## $CellType
+    ## $CellType$`Cell A`
+    ## [1] "Gene1"
+    ## 
+    ## $CellType$`Cell B`
+    ## [1] "Gene2"
+    ## 
+    ## $CellType$`Cell C`
+    ## [1] "Gene3" "Gene4" "Gene5"
+    ## 
+    ## 
+    ## $`Region 2_CellType`
+    ## $`Region 2_CellType`$`Cell B`
+    ## [1] "Gene2"
+    ## 
+    ## $`Region 2_CellType`$`Cell C`
+    ## [1] "Gene3" "Gene4" "Gene5"

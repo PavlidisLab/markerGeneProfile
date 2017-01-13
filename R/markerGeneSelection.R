@@ -315,11 +315,11 @@ markerCandidates = function(design,
 
 
 #' @export
-pickMarkersAll = function(genesLoc,lilah=F,regex='*'){
+pickMarkersAll = function(genesLoc,lilah=F,regex='*',...){
     allGenLocs = list.dirs(genesLoc)
     allGenLocs = allGenLocs[-1]
     allGenLocs = grep(regex,allGenLocs,value=T)
-    geneLists = lapply(allGenLocs, pickMarkers)
+    geneLists = lapply(allGenLocs, pickMarkers,...)
     names(geneLists) = basename(allGenLocs)
     return(geneLists)
 }
