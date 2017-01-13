@@ -5,7 +5,7 @@
 \title{Write candidate marker genes to a file}
 \usage{
 markerCandidates(design, expression, outLoc, groupNames, regionNames = NULL,
-  PMID = "PMID", rotate = NULL, cores = 4, debug = NULL,
+  PMID = "PMID", rotate = NULL, cores = 1, debug = NULL,
   sampleName = "sampleName", replicates = "originalIndex",
   foldChangeThresh = 10, minimumExpression = 8, regionHierarchy = NULL,
   geneID = "Gene.Symbol", seed = NULL)

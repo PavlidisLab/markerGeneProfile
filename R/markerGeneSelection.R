@@ -20,6 +20,7 @@
 #' @param replicates column of the \code{design} that groups replicates
 #' @param foldChangeThresh minimum fold change required for selection
 #' @param minimumExpression minimum level of expression for a marker gene in its cell type
+#' @param background level of expression that should be considered as background level
 #' @param regionHiearchy hiearchy of regions.
 #' @param seed seed for random generation. if NULL will be set to random
 #' @export
@@ -30,12 +31,13 @@ markerCandidates = function(design,
                             regionNames=NULL,
                             PMID = 'PMID',
                             rotate = NULL,
-                            cores = 4,
+                            cores = 1,
                             debug=NULL,
                             sampleName = 'sampleName',
                             replicates = 'originalIndex',
                             foldChangeThresh = 10,
                             minimumExpression = 8,
+                            background = 6,
                             regionHierarchy = NULL,
                             geneID = 'Gene.Symbol',
                             seed = NULL){
@@ -64,10 +66,10 @@ markerCandidates = function(design,
                                      return(group2)
                                  })
 
-        g19 = groupAverage1 < 9.5 & groupAverage1 > 8
-        g16 = groupAverage1  < 6
-        g29 = groupAverage2 < 9.5 & groupAverage2 > 8
-        g26 = groupAverage2 < 6
+        g19 = groupAverage1 < (background + log(foldChangeThresh,base=2)) & groupAverage1 > minimumExpression
+        g16 = groupAverage1  < background
+        g29 = groupAverage2 < (background + log(foldChangeThresh, base=2)) & groupAverage2 > minimumExpression
+        g26 = groupAverage2 < background
         # this is a late addition preventing anything that is below 8 from being
         # selected. ends up removing the the differentially underexpressed stuff as well
         gMinTresh = groupAverage1 > minimumExpression
@@ -424,5 +426,67 @@ findGene = function(gene,list){
         paste0(names(matches[i]),'_', names(list[[names(matches[i])]][matches[[i]]]))
     })
     return(matches)
+}
+
+
+rotateSelect = function(rotationOut,rotSelOut,cores=4, lilah=F, ...){
+
+    # so that I wont fry my laptop
+    if (detectCores()<cores){
+        cores = detectCores()
+        print('max cores exceeded')
+        print(paste('set core no to',cores))
+    }
+    doMC::registerDoMC(cores)
+
+    dirFols = list.dirs(rotationOut, recursive = F)
+
+    loopAround = list.dirs(dirFols[1],full.names = F)
+
+    # in server version full.names input of list.dirs do not work. This fixes it. Might add this to ogbox as an overwrite.
+    loopAround = gsub(paste0(dirFols[1],'/'),'',loopAround)
+    loopAround = loopAround[!grepl(dirFols[1],loopAround)]
+
+    loopAround = loopAround[!loopAround %in% '']
+    #loopAround = loopAround [-which(loopAround %in% c('Relax','Marker',''))]
+    #loopAroundRel = loopAround[grepl('Relax',loopAround)]
+    #loopAroundMar = loopAround[grepl('Marker',loopAround)]
+    dir.create(paste0(rotSelOut), showWarnings = F)
+
+    # for relaxed selection. forces unique selection with matching criteria in puristOut
+    # for (i in loopAroundRel){
+    foreach::foreach (i  = loopAround) %dopar% {
+        print(i)
+        dir.create(paste0(rotSelOut,'/',i),recursive = T, showWarnings = F)
+        files = list.files(paste0(dirFols[1],'/',i))
+        # remove the list of removed samples from the mix
+        files = files[!files %in% 'removed']
+
+        pureConfidence = vector(mode = 'list', length =length(files))
+        for (j in dirFols){
+            #print(paste0(j,'/',i))
+            pureSample = pickMarkers(paste0(j,'/',i), lilah,
+                                     ...
+            )
+            pureConfidence = mapply(c,pureSample,pureConfidence,SIMPLIFY=FALSE)
+            #print(names(pureConfidence))
+            if(length(pureConfidence)>length(files)){
+                stop('dafaq man')
+            }
+        }
+        confidence = lapply(pureConfidence,function(x){table(x)/length(dirFols)})
+
+        #         if (any(grepl('removed',names(confidence)))){
+        #             confidence = confidence[-which(grepl('removed',names(confidence)))]
+        #         }
+
+        for (j in 1:length(confidence)){
+            # genes = names(confidence[[j]])[confidence[[j]]>0.95]
+            write.table(confidence[[j]],row.names=F,quote=F,col.names=F,
+                        file = paste0(rotSelOut,'/',i,'/',
+                                      names(confidence)[j]))
+        }
+        #return(invisible())
+    }
 }
 
