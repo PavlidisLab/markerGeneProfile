@@ -4,7 +4,7 @@ library(ogbox)
 library(magrittr)
 library(dplyr)
 loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
-use_data(mouseMarkerGenes)
+use_data(mouseMarkerGenes,overwrite = TRUE)
 
 
 mgp_sampleProfiles = data.frame(
@@ -54,11 +54,13 @@ mgp_LesnickCroppedExpression = LesnickParkinsonsExp[LesnickParkinsonsExp$Gene.Sy
                                                         (mouseMarkerGenes$Midbrain %>%
                                                              unlist %>%
                                                              (homologene::mouse2human) %$%
-                                                             humanGene),]
+                                                             humanGene),] %>%
+    select(-GOTerms)
+
 mgp_LesnickCroppedMeta = LesnickParkinsonsMeta %>%
     mutate(disease = replaceElement(parkinson,
                                     c('TRUE' = "parkinson's", 'FALSE' = 'control'))$newVector) %>%
     select(GSM,disease)
 
-use_data(mgp_LesnickCroppedExpression)
-use_data(mgp_LesnickCroppedMeta)
+use_data(mgp_LesnickCroppedExpression, overwrite = TRUE)
+use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
