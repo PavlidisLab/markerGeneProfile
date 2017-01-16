@@ -4,6 +4,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
+library(ggplot2)
 devtools::load_all()
 ```
 
@@ -14,24 +15,25 @@ markerGeneProfile
 ==================
 This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et al. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
-Table of Contents
-=================
-
    * [markerGeneProfile](#markergeneprofile)
+   * [Table of Contents](#table-of-contents)
    * [Installation](#installation)
    * [Usage](#usage)
       * [Marker genes](#marker-genes)
          * [Sample data for marker gene selection](#sample-data-for-marker-gene-selection)
          * [Selection of marker genes](#selection-of-marker-genes)
          * [Better selection of marker genes](#better-selection-of-marker-genes)
-
-
+      * [Marker gene profiles (MGP)](#marker-gene-profiles-mgp)
+         * [Sample data for MGP estimation](#sample-data-for-mgp-estimation)
+         * [MGP estimation](#mgp-estimation)
 
 Installation
 =============
 
-Use devtools to install
+Use devtools to install. Additional github packages needs to be installed for it work
 ```
+devtools::install_github('oganm/homologene')
+devtools::install_github('oganm/ogbox')
 devtools::install_github('oganm/markerGeneProfile')
 ```
 
@@ -41,7 +43,7 @@ Usage
 
 Marker genes
 ------------------
-A marker gene list is needed in order to estimate cell type profiles. In this package, a copy of mouse brain cell type markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included. If an different marker gene set is needed steps below can be followed to create one
+A marker gene list is needed in order to estimate cell type profiles. In this package, a copy of mouse brain cell type markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed steps below can be followed to create one
 
 ### Sample data for marker gene selection
 
@@ -89,7 +91,7 @@ Marker gene selection is performed using three functions: `markerCandidates`, `p
 ```{r}
 markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                  expression = mgp_sampleProfiles, # expression file 
-                 outLoc = 'readmeDocs/quickSelection', # output directory
+                 outLoc = 'README_files/quickSelection', # output directory
                  groupNames = 'CellType', # name of the column with cell types. can be a vector
                  regionNames = 'region', # name of the column with brain regions. leave NULL if no region seperation is desired
                  PMID = 'PMID', # name of the column with study identifiers
@@ -105,24 +107,24 @@ markerCandidates(design = mgp_sampleProfilesMeta, # the design file
 ```
 This creates 3 directories in the output directory 
 ```{r}
-list.files('readmeDocs/quickSelection')
+list.files('README_files/quickSelection')
 ```
 The `CellType` directory is a list of marker genes that disregards all region specifications (redundant with `All_CellType` in this case) while `Region 2_CellType` and `All_CellType` directories inlcude cell types from the relevant region. Note the absence of `Region 1_CellType` since that region only has a single cell type. 
 
 ```{r}
-read.table('readmeDocs/quickSelection/All_CellType/Cell C') %>% kable
+read.table('README_files/quickSelection/All_CellType/Cell C') %>% kable
 ```
 
 This file shows the candidate genes for cell type `Cell C` in region `All`. The first column is the gene identifier, the second is change in expression in log_2 scale and the third one is the silhouette coefficient. Note that `Gene6` is absent since its expression level was below the minimum level allowed. `markerCandidates` function does not apply a threshold for silhouette coefficient it also doesn't check to see if a gene satisfies fold change threshold for multiple genes. `pickMarkers` function does that.
 
 ```{r}
-pickMarkers('readmeDocs/quickSelection/All_CellType/',
+pickMarkers('README_files/quickSelection/All_CellType/',
             foldChange = 1,  # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
             silhouette = 0.5)
 ```
 If all genes for all regions needs to be seen
 ```{r}
-pickMarkersAll('readmeDocs/quickSelection',
+pickMarkersAll('README_files/quickSelection',
                foldChange = 1,
                silhouette = 0.5)
 
@@ -137,7 +139,7 @@ The above method is a quick way to pick markers but it does not handle bimodalit
 for (i in 1:10){
     markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                      expression = mgp_sampleProfiles, # expression file 
-                     outLoc = file.path('readmeDocs/Rotation',i), # output directory
+                     outLoc = file.path('README_files/Rotation',i), # output directory
                      groupNames = 'CellType', # name of the column with cell types. can be a vector
                      regionNames = 'region', # name of the column with brain regions. leave NULL if no region seperation is desired
                      PMID = 'PMID', # name of the column with study identifiers
@@ -157,15 +159,71 @@ for (i in 1:10){
 This creates multiple selection directories. `rotateSelect` can be used to count the number of times a gene is selected for each cell type in each region. This creates another directory similar to the output of `markerCandidates`. Again, valid markers can be acquired using `pickMarkers`
 
 ```{r, results= 'hide'}
-rotateSelect(rotationOut='readmeDocs/Rotation',
-                 rotSelOut='readmeDocs/RotSel',
+rotateSelect(rotationOut='README_files/Rotation',
+                 rotSelOut='README_files/RotSel',
                  cores = 16,
                  foldChange = 1 # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
              )
 ```
 
 ```{r}
-pickMarkers('readmeDocs/RotSel/All_CellType/',rotationThresh = 0.95)
-pickMarkersAll('readmeDocs/RotSel',rotationThresh = 0.95)
+pickMarkers('README_files/RotSel/All_CellType/',rotationThresh = 0.95)
+pickMarkersAll('README_files/RotSel',rotationThresh = 0.95)
 ```
 
+Marker gene profiles (MGP)
+---------------------------
+
+###Sample data for MGP estimation
+
+
+The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621). Lesnick et al. data available in this package is a subset of the whole expression matrix which only includes cell type markers from the midbrain to reduce the size of the package.
+
+Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
+```{r}
+names(mouseMarkerGenes)
+
+lapply(mouseMarkerGenes$Midbrain,head)
+```
+
+Available Lesnick et al. data is stored in `mgp_LesnickCroppedExpression` and `mgp_LesnickCroppedMeta` objects
+
+```{r}
+mgp_LesnickCroppedExpression %>% head 
+```
+
+```{r}
+mgp_LesnickCroppedMeta %>% head
+```
+
+### MGP estimation
+
+Primary function that deals with MGP estimation is `mgpEstimate`. This function will take in expression data and marker gene lists to return MGPs. `exprData` is the expression matrix which should include gene identifiers as a column. Other columns can be present at the beginning of the data frame but should not be of class `double`. `genes` is the list of markers. It is assumed to be a list of character vectors, each vector containing gene names for a cell type. `geneColName` is the name of the column where gene names are found. `geneTransform` is a function that will be applied to the gene names provided in `genes`. Note that this by default tranforms mouse gene names to human gene names. Set it to NULL if this is not desired.
+
+Below a basic estimation performed with other important variables briefly explained.
+
+```{r}
+estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
+                           genes=mouseMarkerGenes$Midbrain,
+                           geneColName='Gene.Symbol',
+                           outlierSampleRemove=F, # should outlier samples removed. This is done using boxplot stats.
+                           geneTransform =function(x){homologene::mouse2human(x)$humanGene}, # this is the default option for geneTransform
+                           groups=mgp_LesnickCroppedMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
+                           seekConsensus = FALSE, # ensures gene rotations are positive in both of the groups
+                           removeNegatives = TRUE) # removes negatively rotated genes from estimation process
+```
+
+Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
+
+```{r}
+ls(estimations)
+
+ls(estimations$estimates)
+
+dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopaminergic, 
+                               state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
+                               check.names=FALSE)
+
+ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
+    ogbox::geom_ogboxvio()
+```

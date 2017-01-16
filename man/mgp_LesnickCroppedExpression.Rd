@@ -4,7 +4,7 @@
 \name{mgp_LesnickCroppedExpression}
 \alias{mgp_LesnickCroppedExpression}
 \title{Crop of Lesnick et al. dataset of Parkinson's disease patients and controls}
-\format{An object of class \code{data.frame} with 462 rows and 31 columns.}
+\format{An object of class \code{data.frame} with 462 rows and 29 columns.}
 \usage{
 mgp_LesnickCroppedExpression
 }
