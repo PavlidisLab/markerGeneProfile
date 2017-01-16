@@ -5,8 +5,7 @@
 \title{Calculates rotations based on each group}
 \usage{
 groupRotations(exprData, genes, geneColName, groups, outDir,
-  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene },
-  synonymTaxID = NULL)
+  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene })
 }
 \arguments{
 \item{exprData}{data.frame. Expression data. First collumns of the expression data should include gene names in the
@@ -23,9 +22,6 @@ type 'double'}
 
 \item{geneTransform}{a function that will be applied to the gene list. the default behavior is to change mouse genes
 to human genes. set to NULL to keep the genes as they are}
-
-\item{synonymTaxID}{Taxonomy identifier of the source of cell type markers. If provided, synonyms of the genes will
-be added as markers, not recommended since unrelated genes can share names}
 }
 \description{
 Calculates rotations based on each group

@@ -177,8 +177,6 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 #' @param genes a named list containing marker gene lists of each cell type
 #' @param geneColName character. name of the column containing the gene names in the expression file
 #' @param outlierSampleRemove logical. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group
-#' @param synonymTaxID Taxonomy identifier of the source of cell type markers. If provided, synonyms of the genes will
-#' be added as markers, not recommended since unrelated genes can share names
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
 #' to human genes. set to NULL to keep the genes as they are
 #' @param groups a vector stating which groups each sample belongs to
@@ -198,7 +196,6 @@ mgpEstimate = function(exprData,
                             genes,
                             geneColName = 'Gene.Symbol',
                             outlierSampleRemove = FALSE,
-                            synonymTaxID = NULL, # do you want to add synonyms? no you don't. don't touch this
                             geneTransform = function(x){homologene::mouse2human(x)$humanGene},
                             groups = NULL, # a vector designating the groups. must be defined.
                             tableOut = NULL,
@@ -229,8 +226,7 @@ mgpEstimate = function(exprData,
     if(seekConsensus){
         groupRotations = groupRotations(exprData, genes,
                                         geneColName, groups, outDir=NULL,
-                                        geneTransform = geneTransform,
-                                        synonymTaxID = synonymTaxID)
+                                        geneTransform = geneTransform)
     }
 
     estimateOut = vector(mode = 'list', length = length(genes))
@@ -239,10 +235,6 @@ mgpEstimate = function(exprData,
     for (i in 1:length(genes)){
         if(!is.null(geneTransform)){
             genes[[i]] = geneTransform(genes[[i]])
-        }
-        # add gene synonyms to the list as well. you don't want to do this with gemma annotations
-        if (!is.null(synonymTaxID)){
-            genes[[i]] == unlist(geneSynonym::geneSynonym(genes=genes[[i]],tax=synonymTaxID))
         }
 
 
@@ -367,12 +359,9 @@ mgpEstimate = function(exprData,
 #' @param outDir if provided group rotations will be saved there
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
 #' to human genes. set to NULL to keep the genes as they are
-#' @param synonymTaxID Taxonomy identifier of the source of cell type markers. If provided, synonyms of the genes will
-#' be added as markers, not recommended since unrelated genes can share names
 #' @export
 groupRotations = function(exprData, genes,geneColName, groups, outDir,
-                          geneTransform = function(x){homologene::mouse2human(x)$humanGene},
-                          synonymTaxID = NULL)
+                          geneTransform = function(x){homologene::mouse2human(x)$humanGene})
 {
     if (typeof(genes)!='list'){
         genes = list(genes)
@@ -386,9 +375,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         if(!is.null(geneTransform)){
             genes[[i]] = geneTransform(genes[[i]])
         }
-        if (!is.null(synonymTaxID)){
-            genes[[i]] == unlist(geneSynonym::geneSynonym(genes=genes[[i]],tax=synonymTaxID))
-        }
+
         relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
         if (nrow(relevantData)==0){
             allRotations[[i]]=NA
