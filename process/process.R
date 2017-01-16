@@ -55,7 +55,7 @@ mgp_LesnickCroppedExpression = LesnickParkinsonsExp[LesnickParkinsonsExp$Gene.Sy
                                                              unlist %>%
                                                              (homologene::mouse2human) %$%
                                                              humanGene),] %>%
-    select(-GOTerms)
+    select(-GOTerms,-GemmaIDs)
 
 mgp_LesnickCroppedMeta = LesnickParkinsonsMeta %>%
     mutate(disease = replaceElement(parkinson,
