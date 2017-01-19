@@ -64,3 +64,9 @@ mgp_LesnickCroppedMeta = LesnickParkinsonsMeta %>%
 
 use_data(mgp_LesnickCroppedExpression, overwrite = TRUE)
 use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
+
+library(memoise)
+ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R')
+mouseRegionHiearchy = regionHierarchy
+use_data(mouseRegionHiearchy, overwrite = TRUE)
+ogbox::purge()
