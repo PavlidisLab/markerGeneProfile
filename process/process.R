@@ -66,7 +66,6 @@ use_data(mgp_LesnickCroppedExpression, overwrite = TRUE)
 use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
 
 library(memoise)
-ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R')
+ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R',lines = 5:18 )
 mouseRegionHiearchy = regionHierarchy
 use_data(mouseRegionHiearchy, overwrite = TRUE)
-ogbox::purge()
