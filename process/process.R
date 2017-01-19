@@ -3,6 +3,7 @@
 library(ogbox)
 library(magrittr)
 library(dplyr)
+library(devtools)
 loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
 use_data(mouseMarkerGenes,overwrite = TRUE)
 
@@ -65,7 +66,7 @@ mgp_LesnickCroppedMeta = LesnickParkinsonsMeta %>%
 use_data(mgp_LesnickCroppedExpression, overwrite = TRUE)
 use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
 
-library(memoise)
+
 ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R',lines = 5:18 )
-mouseRegionHiearchy = regionHierarchy
-use_data(mouseRegionHiearchy, overwrite = TRUE)
+mouseRegionHierarchy = regionHierarchy
+use_data(mouseRegionHierarchy, overwrite = TRUE)
