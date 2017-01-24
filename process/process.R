@@ -70,3 +70,7 @@ use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
 ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R',lines = 5:18 )
 mouseRegionHierarchy = regionHierarchy
 use_data(mouseRegionHierarchy, overwrite = TRUE)
+
+ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/cellColors.R')
+mouseCellColor = cellColors()
+use_data(mouseCellColor, overwrite = TRUE)
