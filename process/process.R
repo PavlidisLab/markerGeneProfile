@@ -4,8 +4,12 @@ library(ogbox)
 library(magrittr)
 library(dplyr)
 library(devtools)
-loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
+#loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenes.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeep.rda')
+
 use_data(mouseMarkerGenes,overwrite = TRUE)
+use_data(mouseMarkerGenesPyramidalDeep,overwrite = TRUE)
 
 
 mgp_sampleProfiles = data.frame(
