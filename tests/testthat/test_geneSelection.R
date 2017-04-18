@@ -13,7 +13,8 @@ test_that('single run gene selection',{
                      foldChangeThresh = 10,
                      minimumExpression = 8,
                      regionHierarchy = mpg_sampleRegionHiearchy,
-                     geneID = 'Gene.Symbol')
+                     geneID = 'Gene.Symbol',
+                     cores = 1)
     expect_that(list.files(file.path(tempDir,'markers')),
                 testthat::equals(c("All_CellType", "CellType", "Region 2_CellType")))
     markers = pickMarkersAll(file.path(tempDir,'markers'))
