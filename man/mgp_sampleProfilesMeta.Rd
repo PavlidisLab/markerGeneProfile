@@ -33,4 +33,3 @@ indicate regions that are subsets of each other.
   \code{\link{mpg_markerCandidates}}
 }
 \keyword{datasets}
-

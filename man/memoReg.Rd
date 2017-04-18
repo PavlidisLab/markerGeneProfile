@@ -9,4 +9,3 @@ memoReg(design, regionNames, groupNames, regionHierarchy = NULL)
 \description{
 This function is a \code{\link[memoise]{memoise}}d version of the \code{\link{regionize}} function
 }
-

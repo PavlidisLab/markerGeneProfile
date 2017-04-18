@@ -46,4 +46,3 @@ cummulative plots a single value}
 \description{
 Primary function for cell type profile estimations.
 }
-

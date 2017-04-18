@@ -22,4 +22,3 @@ it will be represented as an NA, otherwise it'll have the cell type name indicat
 \description{
 For each brain region, based on a defined hierarchy, it choses which samples to take in
 }
-

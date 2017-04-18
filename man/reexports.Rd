@@ -2,13 +2,18 @@
 % Please edit documentation in R/import.R
 \docType{import}
 \name{reexports}
-\alias{\%<>\%}
+\alias{reexports}
 \alias{\%>\%}
-\alias{\%dopar\%}
-\alias{\%dorng\%}
+\alias{reexports}
+\alias{\%<>\%}
+\alias{reexports}
 \alias{list}
 \alias{reexports}
+\alias{\%dorng\%}
+\alias{reexports}
+\alias{\%dopar\%}
 \title{Objects exported from other packages}
+\keyword{internal}
 \description{
 These objects are imported from other packages. Follow the links
 below to see their documentation.
@@ -22,5 +27,4 @@ below to see their documentation.
 
   \item{ogbox}{\code{\link[ogbox]{list}}}
 }}
-\keyword{internal}
 

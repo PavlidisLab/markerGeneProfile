@@ -26,4 +26,3 @@ to human genes. set to NULL to keep the genes as they are}
 \description{
 Calculates rotations based on each group
 }
-

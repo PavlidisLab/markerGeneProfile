@@ -10,4 +10,3 @@ pickMarkers(geneLoc, rotationThresh = 0.95, silhouette = 0.5,
 \description{
 Picks marker genes out of candidate lists. Behaves differently based on the number of columns the files have.
 }
-

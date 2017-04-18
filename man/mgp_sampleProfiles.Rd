@@ -23,4 +23,3 @@ for marker gene selection needs to be adjusted accordingly.
 \code{\link{mpg_sampleProfilesMeta}}, \code{\link{mpg_sampleRegionHiearchy}}, input of \code{\link{mpg_markerCandidates}}
 }
 \keyword{datasets}
-

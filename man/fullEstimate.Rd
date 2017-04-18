@@ -53,4 +53,3 @@ of data with discrete experimental groups
 \seealso{
 \code{\link{mgpEstimate}}
 }
-

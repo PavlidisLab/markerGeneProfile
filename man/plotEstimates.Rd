@@ -25,4 +25,3 @@ combn(groups,2)}
 \description{
 A convenience function to plot the estimates
 }
-

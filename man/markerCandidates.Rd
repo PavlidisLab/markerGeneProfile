@@ -51,4 +51,3 @@ Writes candidate marker genes to a file along with other required information (f
 Selects candidates based on fold change to the median expression of other samples and a minimum expression in the
 cell type
 }
-

@@ -16,4 +16,3 @@ columns are left behind. Full dataset is available in the analyiss pakcage from 
 \code{\link{mgp_LesnickCroppedExpression}}
 }
 \keyword{datasets}
-
