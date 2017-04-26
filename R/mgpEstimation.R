@@ -12,7 +12,8 @@
 #' removed. Use if there is a high likelihood of gene regulation between the groups.
 #' @param groupRotations logical. should the outputs include loadings calculated for individual genes
 #' @param outlierSampleRemove logical. should the outlier samples be removed from the final output
-#' @param removeNegatives logical. should the genes with negative loadings be removed from the estimation. Setting
+#' @param removeMinority logical. If TRUE, decides which sign is the most common and removes genes from the minority sign.
+#' Note that results will always be rotated in the positive direction Setting
 #' seekConsensus to TRUE makes this irrelevant.
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
 #' to human genes. set to NULL to keep the genes as they are
@@ -31,7 +32,7 @@ fullEstimate = function(exprData, # expression data
                         seekConsensus=FALSE, # for trimming genes that behave differently in different groups
                         groupRotations=FALSE, # output rotations of individiual genes
                         outlierSampleRemove=FALSE, # if T outliers in each sample is removed
-                        removeNegatives = TRUE,
+                        removeMinority = TRUE,
                         geneTransform = function(x){homologene::mouse2human(x)$humanGene}, # function to use when translating gene names
                         comparisons = 'all',
                         pAdjMethod = stats::p.adjust.methods, # method for multiple testing correction. defaults to holm
@@ -46,7 +47,7 @@ fullEstimate = function(exprData, # expression data
                                  tableOut = paste0(outDir,'/',names(genes),' rotTable.tsv'),
                                  indivGenePlot= paste0(outDir,'/',names(genes),' indivExp','.png'),
                                  seekConsensus = seekConsensus,
-                                 removeNegatives = removeNegatives,
+                                 removeMinority = removeMinority,
                                  PC = PC,
                                  geneTransform = geneTransform)
     estimates$estimates = ogbox::trimNAs(estimates$estimates)
@@ -186,7 +187,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 #' marker gene list. Is not guaranteed to look pretty.
 #' @param seekConsensus logical. If TRUE any gene with negative loadings in any of the groups individually will be
 #' removed. Use if there is a high likelihood of gene regulation between the groups.
-#' @param removeNegatives logical. should the genes with negative loadings be removed from the estimation. Setting
+#' @param removeMinority logical. should the genes with negative loadings be removed from the estimation. Setting
 #' seekConsensus to TRUE makes this irrelevant. As all negatives will be removed at that step
 #' @param plotType if indivGenePlot is provided, type of plot to be saved. groupBased separates expression between groups
 #' cummulative plots a single value
@@ -201,7 +202,7 @@ mgpEstimate = function(exprData,
                             tableOut = NULL,
                             indivGenePlot = NULL, # where should it plot individual gene expression plots.
                             seekConsensus = F, # seeking concensus accross groups
-                            removeNegatives = TRUE,
+                            removeMinority = TRUE,
                             plotType = c('groupBased','cummulative'), # group based plot requires groups
                             PC = 1){
     if(is.null(groups)){
@@ -296,7 +297,7 @@ mgpEstimate = function(exprData,
         pca$rotation = pca$rotation * ((sum(pca$rotation[,PC])<0)*(-2)+1)
 
         # do not allow negative rotated genes
-        if(removeNegatives){
+        if(removeMinority){
             while(any(pca$rotation[,PC]<0)){
                 relevantExpr = relevantExpr[pca$rotation[,PC]>0,]
                 pca = stats::prcomp(t(relevantExpr), scale = T)

@@ -427,7 +427,7 @@ estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
                            geneTransform =function(x){homologene::mouse2human(x)$humanGene}, # this is the default option for geneTransform
                            groups=mgp_LesnickCroppedMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
                            seekConsensus = FALSE, # ensures gene rotations are positive in both of the groups
-                           removeNegatives = TRUE) # removes negatively rotated genes from estimation process
+                           removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
 
 Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients

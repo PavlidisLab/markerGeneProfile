@@ -6,7 +6,7 @@
 \usage{
 fullEstimate(exprData, genes, geneColName, groups, outDir,
   seekConsensus = FALSE, groupRotations = FALSE,
-  outlierSampleRemove = FALSE, removeNegatives = TRUE,
+  outlierSampleRemove = FALSE, removeMinority = TRUE,
   geneTransform = function(x) {     homologene::mouse2human(x)$humanGene },
   comparisons = "all", pAdjMethod = stats::p.adjust.methods, PC = 1,
   estimateFile = NULL)
@@ -30,7 +30,8 @@ removed. Use if there is a high likelihood of gene regulation between the groups
 
 \item{outlierSampleRemove}{logical. should the outlier samples be removed from the final output}
 
-\item{removeNegatives}{logical. should the genes with negative loadings be removed from the estimation. Setting
+\item{removeMinority}{logical. If TRUE, decides which sign is the most common and removes genes from the minority sign.
+Note that results will always be rotated in the positive direction Setting
 seekConsensus to TRUE makes this irrelevant.}
 
 \item{geneTransform}{a function that will be applied to the gene list. the default behavior is to change mouse genes

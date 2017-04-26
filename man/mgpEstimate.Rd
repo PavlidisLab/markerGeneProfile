@@ -7,7 +7,7 @@
 mgpEstimate(exprData, genes, geneColName = "Gene.Symbol",
   outlierSampleRemove = FALSE, geneTransform = function(x) {    
   homologene::mouse2human(x)$humanGene }, groups = NULL, tableOut = NULL,
-  indivGenePlot = NULL, seekConsensus = F, removeNegatives = TRUE,
+  indivGenePlot = NULL, seekConsensus = F, removeMinority = TRUE,
   plotType = c("groupBased", "cummulative"), PC = 1)
 }
 \arguments{
@@ -35,7 +35,7 @@ marker gene list. Is not guaranteed to look pretty.}
 \item{seekConsensus}{logical. If TRUE any gene with negative loadings in any of the groups individually will be
 removed. Use if there is a high likelihood of gene regulation between the groups.}
 
-\item{removeNegatives}{logical. should the genes with negative loadings be removed from the estimation. Setting
+\item{removeMinority}{logical. should the genes with negative loadings be removed from the estimation. Setting
 seekConsensus to TRUE makes this irrelevant. As all negatives will be removed at that step}
 
 \item{plotType}{if indivGenePlot is provided, type of plot to be saved. groupBased separates expression between groups
