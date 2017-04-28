@@ -66,9 +66,9 @@ markerCandidates = function(design,
                                      return(group2)
                                  })
 
-        g19 = groupAverage1 < (background + log(foldChangeThresh,base=2)) & groupAverage1 > minimumExpression
+        g19 = groupAverage1 < (log(f,base=2) + background) & groupAverage1 > minimumExpression
         g16 = groupAverage1  < background
-        g29 = groupAverage2 < (background + log(foldChangeThresh, base=2)) & groupAverage2 > minimumExpression
+        g29 = groupAverage2 < (log(f,base=2) +background) & groupAverage2 > minimumExpression
         g26 = groupAverage2 < background
         # this is a late addition preventing anything that is below 8 from being
         # selected. ends up removing the the differentially underexpressed stuff as well
@@ -84,13 +84,13 @@ markerCandidates = function(design,
 
 
         add1 = g19 & g26 & groupAverage1>tempGroupAv2
-        add2 = g29 & g16 & tempGroupAv2>groupAverage1
+        # add2 = g29 & g16 & tempGroupAv2>groupAverage1
 
 
         fold = groupAverage1 - groupAverage2
         # take everything below 6 as the same when selecting
         # fold =  sapply(groupAverage1,max,6) - sapply(groupAverage2,max,6)
-        chosen =  which(({(fold >= (log(f)/log(2))) & !(g19 & g26) } | {(fold <= log(1/f)/log(2)) &  !(g29 & g16)}| add1 | add2)&gMinTresh)
+        chosen =  which(({(fold >= (log(f)/log(2))) & !(g19 & g26) } | add1 )&gMinTresh)
         return(
             data.frame(index = chosen, foldChange = fold[chosen])
         )
@@ -127,7 +127,8 @@ markerCandidates = function(design,
         noReg = T
     }
 
-    regionGroups = regionize(design,regionNames,groupNames,regionHierarchy)
+
+    regionGroups = memoReg(design,regionNames,groupNames,regionHierarchy)
     # concatanate new region based groups to design and to groupNames so they'll be processed normally
     if (!noReg){
         design = cbind(design,regionGroups)
@@ -256,8 +257,8 @@ markerCandidates = function(design,
         dir.create(paste0(outLoc ,'/' , names(nameGroups)[i] , '/'), showWarnings = F, recursive =T)
         if (!is.null(rotate)){
             utils::write.table(removed,
-                        file = paste0(outLoc,'/',names(nameGroups)[i] , '/removed'),
-                        col.names=F)
+                               file = paste0(outLoc,'/',names(nameGroups)[i] , '/removed'),
+                               col.names=F)
         }
 
         # for loop around groupAverages
@@ -414,6 +415,8 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
 }
 
 # lapply(c('Eno2','Mog'), findGene, list)
+#' Find if a marg
+#' @export
 findGene = function(gene,list){
     out = lapply(list, function(x){
         ogbox::findInList(gene,x)
@@ -429,13 +432,16 @@ findGene = function(gene,list){
 }
 
 
+#' @export
 rotateSelect = function(rotationOut,rotSelOut,cores=4, lilah=F, ...){
 
     # so that I wont fry my laptop
-    if (detectCores()<cores){
-        cores = detectCores()
-        print('max cores exceeded')
-        print(paste('set core no to',cores))
+    if(!is.na(parallel::detectCores())){
+        if (parallel::detectCores()<cores){
+            cores = parallel::detectCores()
+            print('max cores exceeded')
+            print(paste('set core no to',cores))
+        }
     }
     doMC::registerDoMC(cores)
 
