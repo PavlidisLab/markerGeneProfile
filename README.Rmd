@@ -52,6 +52,7 @@ The package includes a sample cell type profile dataset aimed to demonstrate the
 `mgp_sampleProfilesMeta` includes the basic metadata required for the cell type specific expression dataset.
 
 ```{r}
+data(mgp_sampleProfilesMeta)
 kable(head(mgp_sampleProfilesMeta))
 ```
 
@@ -72,12 +73,14 @@ kable(head(mgp_sampleProfilesMeta))
 `mgp_sampleProfiles` is a sample expression data. **Gene.Symbol** column is the gene identifier that should be composed of unique IDs while the rest are sample names that corresponds to the relevant column in the metadata file. Other columns can be present before the sample data but they should not be of class `double`.
 
 ```{r}
+data(mgp_sampleProfiles)
 kable(mgp_sampleProfiles)
 ```
 
 `mpg_sampleRegionHiearchy` is a sample region hiearchy. It is a nested named list.
 
 ```{r}
+data(mpg_sampleRegionHiearchy)
 mpg_sampleRegionHiearchy
 
 ogbox::nametree(mpg_sampleRegionHiearchy)
@@ -181,6 +184,7 @@ The package includes mouse brain cell type markers published in Mancarci et al. 
 
 Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
 ```{r}
+data(mouseMarkerGenes)
 names(mouseMarkerGenes)
 
 lapply(mouseMarkerGenes$Midbrain,head)
@@ -189,10 +193,12 @@ lapply(mouseMarkerGenes$Midbrain,head)
 Available Lesnick et al. data is stored in `mgp_LesnickCroppedExpression` and `mgp_LesnickCroppedMeta` objects
 
 ```{r}
+data(mgp_LesnickCroppedExpression)
 mgp_LesnickCroppedExpression %>% head 
 ```
 
 ```{r}
+data(mgp_LesnickCroppedMeta)
 mgp_LesnickCroppedMeta %>% head
 ```
 

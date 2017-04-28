@@ -42,6 +42,7 @@ The package includes a sample cell type profile dataset aimed to demonstrate the
 `mgp_sampleProfilesMeta` includes the basic metadata required for the cell type specific expression dataset.
 
 ``` r
+data(mgp_sampleProfilesMeta)
 kable(head(mgp_sampleProfilesMeta))
 ```
 
@@ -71,6 +72,7 @@ kable(head(mgp_sampleProfilesMeta))
 `mgp_sampleProfiles` is a sample expression data. **Gene.Symbol** column is the gene identifier that should be composed of unique IDs while the rest are sample names that corresponds to the relevant column in the metadata file. Other columns can be present before the sample data but they should not be of class `double`.
 
 ``` r
+data(mgp_sampleProfiles)
 kable(mgp_sampleProfiles)
 ```
 
@@ -86,6 +88,7 @@ kable(mgp_sampleProfiles)
 `mpg_sampleRegionHiearchy` is a sample region hiearchy. It is a nested named list.
 
 ``` r
+data(mpg_sampleRegionHiearchy)
 mpg_sampleRegionHiearchy
 ```
 
@@ -297,6 +300,7 @@ The package includes mouse brain cell type markers published in Mancarci et al. 
 Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
 
 ``` r
+data(mouseMarkerGenes)
 names(mouseMarkerGenes)
 ```
 
@@ -341,67 +345,55 @@ lapply(mouseMarkerGenes$Midbrain,head)
 Available Lesnick et al. data is stored in `mgp_LesnickCroppedExpression` and `mgp_LesnickCroppedMeta` objects
 
 ``` r
+data(mgp_LesnickCroppedExpression)
 mgp_LesnickCroppedExpression %>% head 
 ```
 
-    ##          Probe Gene.Symbol
-    ## 3  202917_s_at      S100A8
-    ## 4  208291_s_at          TH
-    ## 8    216834_at        RGS1
-    ## 21   206836_at      SLC6A3
-    ## 28   227697_at       SOCS3
-    ## 53 216598_s_at        CCL2
-    ##                                                           GeneNames
-    ## 3                                   S100 calcium binding protein A8
-    ## 4                                              tyrosine hydroxylase
-    ## 8                                regulator of G-protein signaling 1
-    ## 21 solute carrier family 6 (neurotransmitter transporter), member 3
-    ## 28                               suppressor of cytokine signaling 3
-    ## 53                                   chemokine (C-C motif) ligand 2
-    ##    NCBIids GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel
-    ## 3     6279      9.126349      5.034600     10.463754      8.103236
-    ## 4     7054      6.524368      5.538375      9.198448      7.090749
-    ## 8     5996      8.596405      7.924570      9.539450     10.198445
-    ## 21    6531      8.170089      6.748936      9.894145      7.772563
-    ## 28    9021      4.603325      3.445777      7.074304      7.552168
-    ## 53    6347      5.345813      5.122109     10.079571     10.338678
-    ##    GSM184358.cel GSM184359.cel GSM184360.cel GSM184361.cel GSM184362.cel
-    ## 3       9.267794      9.414326      4.019552      4.341766      3.274215
-    ## 4       5.743301      7.398403     10.174961      8.825882      9.980838
-    ## 8       5.952968      4.719138      4.418748      5.138161      8.300479
-    ## 21      6.930421      9.190338     10.960251      9.780396     10.558519
-    ## 28      5.649698      8.769056      3.001108      3.087655      2.972539
-    ## 53      5.200846      6.291224      5.663971      5.431302      5.715362
-    ##    GSM184363.cel GSM184364.cel GSM184365.cel GSM184366.cel GSM184367.cel
-    ## 3       9.589431      6.350356     10.165020      3.807312      7.114899
-    ## 4       3.657692      4.951000      4.567920      3.189990      4.550447
-    ## 8       7.972177      4.311922      8.354867      3.612780      8.345713
-    ## 21      5.722526      6.686396      6.138254      4.360904      6.075605
-    ## 28      8.018467      4.656988      6.332446      3.458445      5.294458
-    ## 53      6.994307      6.081336      7.573381      4.632613      7.124289
-    ##    GSM184368.cel GSM184369.cel GSM184370.cel GSM184371.cel GSM184372.cel
-    ## 3       8.046410      9.817192      9.918461      7.576448      8.074591
-    ## 4       6.824303      3.530755      4.067793      7.120302      2.800120
-    ## 8      10.144965      9.439518      8.363230      8.329681      3.462754
-    ## 21      8.644282      5.339298      5.260781      8.327744      5.369671
-    ## 28      8.451226      6.131602      5.448518      6.114317      6.162109
-    ## 53      9.034979      5.793956      5.838041      5.578684      5.415048
-    ##    GSM184373.cel GSM184374.cel GSM184375.cel GSM184376.cel GSM184377.cel
-    ## 3       8.754681      9.145964      7.182151      8.202873      8.864878
-    ## 4       6.892503      6.182081      4.762476      6.050174      3.302302
-    ## 8       9.002247      7.920078      8.330892      8.157036      8.138868
-    ## 21      8.116793      6.402701      6.003159      5.999922      6.268051
-    ## 28      6.581619      6.593346      5.878050      6.203412      7.604824
-    ## 53      6.285994      5.319363      5.970766      7.182194      6.607386
-    ##    GSM184378.cel
-    ## 3       8.989151
-    ## 4       6.503277
-    ## 8       8.691955
-    ## 21      7.959468
-    ## 28      7.916418
-    ## 53      8.296765
+    ##          Probe Gene.Symbol                          GeneNames NCBIids
+    ## 3  202917_s_at      S100A8    S100 calcium binding protein A8    6279
+    ## 4  208291_s_at          TH               tyrosine hydroxylase    7054
+    ## 8    216834_at        RGS1 regulator of G-protein signaling 1    5996
+    ## 21   206836_at      SLC6A3   solute carrier family 6 member 3    6531
+    ## 28   227697_at       SOCS3 suppressor of cytokine signaling 3    9021
+    ## 53 216598_s_at        CCL2       C-C motif chemokine ligand 2    6347
+    ##    GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel GSM184358.cel
+    ## 3       9.126349      5.034600     10.463754      8.103236      9.267794
+    ## 4       6.524368      5.538375      9.198448      7.090749      5.743301
+    ## 8       8.596405      7.924570      9.539450     10.198445      5.952968
+    ## 21      8.170089      6.748936      9.894145      7.772563      6.930421
+    ## 28      4.603325      3.445777      7.074304      7.552168      5.649698
+    ## 53      5.345813      5.122109     10.079571     10.338678      5.200846
+    ##    GSM184359.cel GSM184360.cel GSM184361.cel GSM184362.cel GSM184363.cel
+    ## 3       9.414326      4.019552      4.341766      3.274215      9.589431
+    ## 4       7.398403     10.174961      8.825882      9.980838      3.657692
+    ## 8       4.719138      4.418748      5.138161      8.300479      7.972177
+    ## 21      9.190338     10.960251      9.780396     10.558519      5.722526
+    ## 28      8.769056      3.001108      3.087655      2.972539      8.018467
+    ## 53      6.291224      5.663971      5.431302      5.715362      6.994307
+    ##    GSM184364.cel GSM184365.cel GSM184366.cel GSM184367.cel GSM184368.cel
+    ## 3       6.350356     10.165020      3.807312      7.114899      8.046410
+    ## 4       4.951000      4.567920      3.189990      4.550447      6.824303
+    ## 8       4.311922      8.354867      3.612780      8.345713     10.144965
+    ## 21      6.686396      6.138254      4.360904      6.075605      8.644282
+    ## 28      4.656988      6.332446      3.458445      5.294458      8.451226
+    ## 53      6.081336      7.573381      4.632613      7.124289      9.034979
+    ##    GSM184369.cel GSM184370.cel GSM184371.cel GSM184372.cel GSM184373.cel
+    ## 3       9.817192      9.918461      7.576448      8.074591      8.754681
+    ## 4       3.530755      4.067793      7.120302      2.800120      6.892503
+    ## 8       9.439518      8.363230      8.329681      3.462754      9.002247
+    ## 21      5.339298      5.260781      8.327744      5.369671      8.116793
+    ## 28      6.131602      5.448518      6.114317      6.162109      6.581619
+    ## 53      5.793956      5.838041      5.578684      5.415048      6.285994
+    ##    GSM184374.cel GSM184375.cel GSM184376.cel GSM184377.cel GSM184378.cel
+    ## 3       9.145964      7.182151      8.202873      8.864878      8.989151
+    ## 4       6.182081      4.762476      6.050174      3.302302      6.503277
+    ## 8       7.920078      8.330892      8.157036      8.138868      8.691955
+    ## 21      6.402701      6.003159      5.999922      6.268051      7.959468
+    ## 28      6.593346      5.878050      6.203412      7.604824      7.916418
+    ## 53      5.319363      5.970766      7.182194      6.607386      8.296765
 
 ``` r
+data(mgp_LesnickCroppedMeta)
 mgp_LesnickCroppedMeta %>% head
 ```
 
