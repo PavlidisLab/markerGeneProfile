@@ -10,6 +10,9 @@ test_that("Basic estimation works",{
 
 
 test_that("Estimation in actual dataset",{
+    data(mgp_LesnickCroppedExpression)
+    data(mgp_LesnickCroppedMeta)
+    data(mouseMarkerGenes)
     estimates = mgpEstimate(exprData = mgp_LesnickCroppedExpression,
                 genes = mouseMarkerGenes$Midbrain,
                 geneColName = 'Gene.Symbol',
