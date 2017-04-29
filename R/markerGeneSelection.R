@@ -105,7 +105,11 @@ markerCandidates = function(design,
             data = (exprData[ (1:nrow(design) %in% c(groupInfo1, groupInfo2)),  daGeneIndex])
             cluster = list(clustering = clustering, data = data)
             silo = cluster::silhouette(cluster,stats::dist(data))
-            return(mean(silo[,3]))
+            if(!is.na(silo)){
+                return(mean(silo[,3]))
+            } else{
+                2*(exprData[1:nrow(design) %in% groupInfo1,daGeneIndex] > exprData[1:nrow(design) %in% groupInfo2,daGeneIndex])-1
+            }
         })
 
         mainSil = silos[length(silos)]
@@ -170,8 +174,8 @@ markerCandidates = function(design,
     } else {
         doRNG::registerDoRNG()
     }
-    #foreach::foreach (i = 1:length(nameGroups)) %dorng% {
-        for (i in 1:length(nameGroups)){
+    foreach::foreach (i = 1:length(nameGroups)) %dorng% {
+    # for (i in 1:length(nameGroups)){
         #debub point for groups
         typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
