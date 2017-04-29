@@ -97,12 +97,22 @@ markerCandidates = function(design,
     }
 
     giveSilhouette = function(daGeneIndex,groupInfo1,groupInfo2){
-        clustering = as.integer(rep(1,nrow(design))*(1:nrow(design) %in% groupInfo1)+1)
-        clustering = clustering[1:nrow(design) %in% c(groupInfo1, groupInfo2)]
-        data = (exprData[ (1:nrow(design) %in% c(groupInfo1, groupInfo2)),  daGeneIndex])
-        cluster = list(clustering = clustering, data = data)
-        silo = cluster::silhouette(cluster,stats::dist(data))
-        return(mean(silo[,3]))
+        compareGroups  = c(groupInfo2, list(all = unlist(groupInfo2)))
+
+        silos = sapply(compareGroups, function(groupInfo2){
+            clustering = as.integer(rep(1,nrow(design))*(1:nrow(design) %in% groupInfo1)+1)
+            clustering = clustering[1:nrow(design) %in% c(groupInfo1, groupInfo2)]
+            data = (exprData[ (1:nrow(design) %in% c(groupInfo1, groupInfo2)),  daGeneIndex])
+            cluster = list(clustering = clustering, data = data)
+            silo = cluster::silhouette(cluster,stats::dist(data))
+            return(mean(silo[,3]))
+        })
+
+        mainSil = silos[length(silos)]
+
+        minSil = min(silos[-length(silos)])
+
+        return(c(mainSil,minSil))
     }
     # data prep. you transpose exprData -----
     #design = read.design(designLoc)
@@ -160,8 +170,8 @@ markerCandidates = function(design,
     } else {
         doRNG::registerDoRNG()
     }
-    foreach::foreach (i = 1:length(nameGroups)) %dorng% {
-        #for (i in 1:length(nameGroups)){
+    #foreach::foreach (i = 1:length(nameGroups)) %dorng% {
+        for (i in 1:length(nameGroups)){
         #debub point for groups
         typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
@@ -283,19 +293,16 @@ markerCandidates = function(design,
             #silhouette. selects group members based on the original data matrix
             # puts them into two clusters to calculate silhouette coefficient
             groupInfo1 = realGroups[[j]]
-            groupInfo2 = unlist(realGroups[-j])
+            groupInfo2 = realGroups[-j]
 
-            silo = vector(length = nrow(fChangePrint))
+            # silo = vector(length = nrow(fChangePrint))
             if (!nrow(fChangePrint) == 0){
-                for (t in 1:nrow(fChangePrint)){
-                    # gene specific debug point
-                    # if(fChangePrint$geneNames[t] == 'Lmo7'){
-                    #     print('gaaaaa')
-                    # }
-                    silo[t] = giveSilhouette(which(geneData[[geneID]] == fChangePrint$geneNames[t]),
-                                             groupInfo1,
-                                             groupInfo2)
-                }
+                silo = 1:nrow(fChangePrint) %>% sapply(function(t){
+                    giveSilhouette(which(geneData[[geneID]] == fChangePrint$geneNames[t]),
+                                   groupInfo1,
+                                   groupInfo2)
+                }) %>% t
+
                 fChangePrint = cbind(fChangePrint, silo)
             } else {
                 fChangePrint = data.frame(fChangePrint, silo=numeric(0))
