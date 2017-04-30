@@ -32,6 +32,6 @@ test_that('single run gene selection',{
 })
 
 test_that('file read trial',{
-    markers =pickMarkers('tests/testthat/Cortex_PyramidalDeep')
+    markers =pickMarkers('Cortex_PyramidalDeep')
     expect_true(!"Amn" %in% markers$GabaPV)
 })
