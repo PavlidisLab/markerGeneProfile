@@ -340,7 +340,7 @@ pickMarkersAll = function(genesLoc,lilah=F,regex='*',...){
 #'
 #' Picks marker genes out of candidate lists. Behaves differently based on the number of columns the files have.
 #' @export
-pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChange = 10,lilah = F){
+pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,minSilhouette = 0,foldChange = 10,lilah = F){
     filenames = list.files(geneLoc,include.dirs = FALSE)
     filenames = filenames[!filenames %in% 'removed']
     fileContents = lapply(paste0(geneLoc,'/', filenames), function(x){
@@ -363,7 +363,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
     geneList = vector(mode = 'list', length = length(fileContents))
     names(geneList) = names(fileContents)
 
-    if (ncol(fileContents[[1]])==3 & lilah == F){
+    if (ncol(fileContents[[1]])==4 & lilah == F){
         # this if for a combination of fold change and silhouette coefficient
         for (i in 1:length(fileContents)){
             tempContent = fileContents[[i]][!fileContents[[i]][,1] %in%
@@ -372,9 +372,10 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
                                                 })),]
 
             geneList[[i]] = as.character(tempContent$V1[as.numeric(as.character(tempContent$V3))>silhouette
-                                                        & as.numeric(as.character(tempContent$V2))>log(foldChange,base=2)])
+                                                        & as.numeric(as.character(tempContent$V2))>log(foldChange,base=2)
+                                                        & as.numeric(as.character(tempContent$V4))>minSilhouette])
         }
-    }else if (ncol(fileContents[[1]])==3 & lilah == T){
+    }else if (ncol(fileContents[[1]])==4 & lilah == T){
         # this if for lilah's selection method
         for (i in 1:length(fileContents)){
             tempContent = fileContents[[i]][!fileContents[[i]][,1] %in%
@@ -393,11 +394,6 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,foldChang
         # this is for selection of percentages from confidence output
         for (i in 1:length(fileContents)){
             geneList[[i]] = as.character(fileContents[[i]]$V1[as.numeric(as.character(fileContents[[i]]$V2))>rotationThresh])
-        }
-    } else if(ncol(fileContents[[1]])==4){
-        # this is for 10 fold changed markers. none of the other collumns matter. just get the genes dammit
-        for (i in 1:length(fileContents)){
-            geneList[[i]] = as.character(fileContents[[i]]$V1)
         }
     } else {
         stop('What kind of gibberish is this')

@@ -5,7 +5,7 @@
 \title{Pick marker genes out of candidate lists}
 \usage{
 pickMarkers(geneLoc, rotationThresh = 0.95, silhouette = 0.5,
-  foldChange = 10, lilah = F)
+  minSilhouette = 0, foldChange = 10, lilah = F)
 }
 \description{
 Picks marker genes out of candidate lists. Behaves differently based on the number of columns the files have.
