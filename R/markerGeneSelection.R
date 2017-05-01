@@ -175,7 +175,7 @@ markerCandidates = function(design,
         doRNG::registerDoRNG()
     }
     foreach::foreach (i = 1:length(nameGroups)) %dorng% {
-    # for (i in 1:length(nameGroups)){
+        # for (i in 1:length(nameGroups)){
         #debub point for groups
         typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
@@ -291,7 +291,7 @@ markerCandidates = function(design,
             #
             #             fMarker = data.frame(geneData$Gene.Symbol[isMarker], groupAverages[j,isMarker], apply(groupAverages[-j,isMarker,drop=F],2,max), apply(groupAverages[-j,isMarker,drop=F],2,min))
             fChange = foldChange(groupAverages[j, ], groupAverages[-j,,drop=F] ,foldChangeThresh)
-            fChangePrint = data.frame(geneNames = geneData[[geneID]][fChange$index], geneFoldChange= fChange$foldChange )
+            fChangePrint = data.frame(geneNames = geneData[[geneID]][fChange$index], geneFoldChange= fChange$foldChange,index = fChange$index)
             fChangePrint = fChangePrint[order(fChangePrint$geneFoldChange, decreasing=T) ,]
 
             #silhouette. selects group members based on the original data matrix
@@ -302,7 +302,7 @@ markerCandidates = function(design,
             # silo = vector(length = nrow(fChangePrint))
             if (!nrow(fChangePrint) == 0){
                 silo = 1:nrow(fChangePrint) %>% sapply(function(t){
-                    giveSilhouette(which(geneData[[geneID]] == fChangePrint$geneNames[t]),
+\                    giveSilhouette(fChangePrint$index[t], #which(geneData[[geneID]] == fChangePrint$geneNames[t])[1], # this is here because duplicates primarily genes with | in them. YOu don't use those so it should be fine but be careful
                                    groupInfo1,
                                    groupInfo2)
                 }) %>% t
