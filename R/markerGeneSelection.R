@@ -302,7 +302,7 @@ markerCandidates = function(design,
             # silo = vector(length = nrow(fChangePrint))
             if (!nrow(fChangePrint) == 0){
                 silo = 1:nrow(fChangePrint) %>% sapply(function(t){
-\                    giveSilhouette(fChangePrint$index[t], #which(geneData[[geneID]] == fChangePrint$geneNames[t])[1], # this is here because duplicates primarily genes with | in them. YOu don't use those so it should be fine but be careful
+                    giveSilhouette(fChangePrint$index[t], #which(geneData[[geneID]] == fChangePrint$geneNames[t])[1], # this is here because duplicates primarily genes with | in them. YOu don't use those so it should be fine but be careful
                                    groupInfo1,
                                    groupInfo2)
                 }) %>% t
@@ -311,6 +311,8 @@ markerCandidates = function(design,
             } else {
                 fChangePrint = data.frame(fChangePrint, silo=numeric(0))
             }
+
+            fChangePrint = fChangePrint[!colnames(fChangePrint) =='index']
 
 
             print(fileName)
