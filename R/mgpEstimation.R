@@ -205,6 +205,21 @@ mgpEstimate = function(exprData,
                             removeMinority = TRUE,
                             plotType = c('groupBased','cummulative'), # group based plot requires groups
                             PC = 1){
+    if(exprData[[geneColName]] %>% duplicated %>% any){
+        warning('You have duplicate genes in your expression data. Function will fail if marker genes have duplicates. Please summarize your data to gene level.')
+    }
+
+    if(!is.null(geneTransform)){
+        transformedGenes = genes %>% lapply(geneTransform)
+        dataGenes = exprData[[geneColName]]
+
+        if(sum(unlist(transformedGenes) %in% dataGenes) < (sum(unlist(genes) %in% dataGenes))){
+            warning('geneTransform function reduces the number of matches between marker gene list and the expression data. Default method is to transform mouse genes to human genes. If this is not what you want please set geneTransform to NULL. Please read to documentary to make sure you are doing it right.')
+        }
+        genes = transformedGenes
+
+    }
+
     if(is.null(groups)){
         assertthat::assert_that(seekConsensus==F)
         list[, exp] = ogbox::sepExpr(exprData)
@@ -234,11 +249,6 @@ mgpEstimate = function(exprData,
     groupsOut = vector(mode = 'list', length = length(genes))
     rotations = vector(mode = 'list', length = length(genes))
     for (i in 1:length(genes)){
-        if(!is.null(geneTransform)){
-            genes[[i]] = geneTransform(genes[[i]])
-        }
-
-
         #remove non concenting genes (based on group) if is nested because there
         #will be no group rotations to look at if seekConsensus=F some redundancy
         # exists but oh well

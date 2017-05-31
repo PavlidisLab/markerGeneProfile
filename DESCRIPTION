@@ -23,7 +23,8 @@ Imports:
     doRNG,
     doSNOW,
     foreach,
-    memoise
+    memoise,
+    doMC
 Enhances:
     geneSynonym
 License: MIT + file LICENSE

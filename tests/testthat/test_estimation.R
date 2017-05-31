@@ -33,3 +33,20 @@ test_that("Estimation in actual dataset",{
     expect_that(min(less[!cells %in% 'Dopaminergic']), testthat::is_more_than(0.05))
     expect_that(min(greater), testthat::is_more_than(0.05))
 })
+
+test_that('Wrong parameters',{
+    data(mgp_LesnickCroppedExpression)
+    data(mgp_LesnickCroppedMeta)
+    data(mouseMarkerGenes)
+    mockMouseGenes = mgp_LesnickCroppedExpression$Gene.Symbol %>% homologene::human2mouse()
+
+    mockMouseData = mgp_LesnickCroppedExpression[match(mockMouseGenes$humanGene,mgp_LesnickCroppedExpression$Gene.Symbol),]
+    mockMouseData$Gene.Symbol = mockMouseGenes$mouseGene
+    mockMouseData  = mockMouseData[!duplicated(mockMouseData$Gene.Symbol),]
+
+    testthat::expect_warning(mgpEstimate(exprData = mockMouseData,
+                            genes = mouseMarkerGenes$Midbrain,
+                            geneColName = 'Gene.Symbol',
+                            groups = mgp_LesnickCroppedMeta$disease),regexp = 'geneTransform function reduces the number of matches')
+
+})
