@@ -273,6 +273,11 @@ mgpEstimate = function(exprData,
         relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
         rownames(relevantData) = relevantData[, geneColName]
         list[,relevantExpr] = ogbox::sepExpr(relevantData)
+        if (nrow(relevantData)==0){
+            estimateOut[[i]]=NA
+            groupsOut[[i]]=NA
+            next
+        }
 
         pca = stats::prcomp(t(relevantExpr), scale = TRUE)
         originalPCA = pca
