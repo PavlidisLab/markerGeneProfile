@@ -7,7 +7,7 @@
 mgpEstimate(exprData, genes, geneColName = "Gene.Symbol",
   outlierSampleRemove = FALSE, geneTransform = function(x) {    
   homologene::mouse2human(x)$humanGene }, groups = NULL, tableOut = NULL,
-  indivGenePlot = NULL, seekConsensus = F, removeMinority = TRUE,
+  indivGenePlot = NULL, seekConsensus = FALSE, removeMinority = TRUE,
   plotType = c("groupBased", "cummulative"), PC = 1)
 }
 \arguments{
@@ -26,10 +26,10 @@ to human genes. set to NULL to keep the genes as they are}
 
 \item{groups}{a vector stating which groups each sample belongs to}
 
-\item{tableOut}{character, filename. If provided outputs loadings of individual genes and variance explained by
+\item{tableOut}{character, directory name. If provided outputs loadings of individual genes and variance explained by
 principal components}
 
-\item{indivGenePlot}{a character vector. If provided, plots expression of marker genes in individual groups per
+\item{indivGenePlot}{character, directory name. If provided, plots expression of marker genes in individual groups per
 marker gene list. Is not guaranteed to look pretty.}
 
 \item{seekConsensus}{logical. If TRUE any gene with negative loadings in any of the groups individually will be
@@ -42,6 +42,17 @@ seekConsensus to TRUE makes this irrelevant. As all negatives will be removed at
 cummulative plots a single value}
 
 \item{PC}{which principal component to use. For debugging purposes. Recommended value is always 1}
+}
+\value{
+A list.
+\itemize{
+\item estimates. A named vector of marker gene profiles estimated bythe function.
+\item groups. if provided this lists the groups that the samples belong to. Unless \code{outlierSampleRemove} is set to \code{TRUE}, this will be the same as the groups for all cell types. So in most cases ignore this.
+\item rotations. Loadings from the PCA. These values are modified to ensure the chosen PC (1st by default) has a positive direction.
+\item trimmedPCAs. Raw PCA object used to calculate the estimates. Rotation direction is not changed
+\item fullPCAs. Raw PCA object with all marker genes before their removal by \code{removeMinority} and \code{seekConsensus} options.
+\item removedMarkerRatios. Ratio of markers removed by  \code{removeMinority} and \code{seekConsensus} options.
+}
 }
 \description{
 Primary function for cell type profile estimations.

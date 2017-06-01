@@ -181,9 +181,9 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
 #' to human genes. set to NULL to keep the genes as they are
 #' @param groups a vector stating which groups each sample belongs to
-#' @param tableOut character, filename. If provided outputs loadings of individual genes and variance explained by
+#' @param tableOut character, directory name. If provided outputs loadings of individual genes and variance explained by
 #' principal components
-#' @param indivGenePlot a character vector. If provided, plots expression of marker genes in individual groups per
+#' @param indivGenePlot character, directory name. If provided, plots expression of marker genes in individual groups per
 #' marker gene list. Is not guaranteed to look pretty.
 #' @param seekConsensus logical. If TRUE any gene with negative loadings in any of the groups individually will be
 #' removed. Use if there is a high likelihood of gene regulation between the groups.
@@ -192,6 +192,15 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 #' @param plotType if indivGenePlot is provided, type of plot to be saved. groupBased separates expression between groups
 #' cummulative plots a single value
 #' @param PC which principal component to use. For debugging purposes. Recommended value is always 1
+#' @return A list.
+#' \itemize{
+#' \item estimates. A named vector of marker gene profiles estimated bythe function.
+#' \item groups. if provided this lists the groups that the samples belong to. Unless \code{outlierSampleRemove} is set to \code{TRUE}, this will be the same as the groups for all cell types. So in most cases ignore this.
+#' \item rotations. Loadings from the PCA. These values are modified to ensure the chosen PC (1st by default) has a positive direction.
+#' \item trimmedPCAs. Raw PCA object used to calculate the estimates. Rotation direction is not changed
+#' \item fullPCAs. Raw PCA object with all marker genes before their removal by \code{removeMinority} and \code{seekConsensus} options.
+#' \item removedMarkerRatios. Ratio of markers removed by  \code{removeMinority} and \code{seekConsensus} options.
+#' }
 #' @export
 mgpEstimate = function(exprData,
                             genes,
@@ -201,7 +210,7 @@ mgpEstimate = function(exprData,
                             groups = NULL, # a vector designating the groups. must be defined.
                             tableOut = NULL,
                             indivGenePlot = NULL, # where should it plot individual gene expression plots.
-                            seekConsensus = F, # seeking concensus accross groups
+                            seekConsensus = FALSE, # seeking concensus accross groups
                             removeMinority = TRUE,
                             plotType = c('groupBased','cummulative'), # group based plot requires groups
                             PC = 1){
@@ -221,16 +230,21 @@ mgpEstimate = function(exprData,
     }
 
     if(is.null(groups)){
-        assertthat::assert_that(seekConsensus==F)
+        assertthat::assert_that(seekConsensus == FALSE & is.null(groups))
         list[, exp] = ogbox::sepExpr(exprData)
         groups = rep(1,ncol(exp))
     }
-
     if (!is.null(indivGenePlot[1])){
+        if(length(indivGenePlot) == 1){
+            indivGenePlot =  paste0(indivGenePlot,'/',names(genes), 'indivExp.png')
+        }
         toCreate = unique(dirname(indivGenePlot))
         sapply(toCreate,dir.create,showWarnings = F,recursive=T)
     }
     if (!is.null(tableOut[1])){
+        if(length(tableOut) == 1){
+            tableOut =  paste0(tableOut,'/',names(genes),' rotTable.tsv')
+        }
         toCreate = unique(dirname(tableOut))
         sapply(toCreate,dir.create,showWarnings = F,recursive=T)
     }
@@ -242,13 +256,27 @@ mgpEstimate = function(exprData,
     if(seekConsensus){
         groupRotations = groupRotations(exprData, genes,
                                         geneColName, groups, outDir=NULL,
-                                        geneTransform = geneTransform)
+                                        geneTransform = NULL)
     }
 
     estimateOut = vector(mode = 'list', length = length(genes))
     groupsOut = vector(mode = 'list', length = length(genes))
     rotations = vector(mode = 'list', length = length(genes))
+
+    trimmedPCAs = vector(mode = 'list', length = length(genes))
+    fullPCAs = vector(mode = 'list', length = length(genes))
+    removedMarkerRatios = vector(length = length(genes))
+
+
     for (i in 1:length(genes)){
+        # some repetition here because I want to capture the original PCA's before removing anything else/
+        relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
+        rownames(relevantData) = relevantData[, geneColName]
+        list[,relevantExpr] = ogbox::sepExpr(relevantData)
+
+        pca = stats::prcomp(t(relevantExpr), scale = TRUE)
+        originalPCA = pca
+        fullPCAs[[i]] = originalPCA
         #remove non concenting genes (based on group) if is nested because there
         #will be no group rotations to look at if seekConsensus=F some redundancy
         # exists but oh well
@@ -303,7 +331,8 @@ mgpEstimate = function(exprData,
         }
 
         # get rotations
-        pca = stats::prcomp(t(relevantExpr), scale = T)
+        pca = stats::prcomp(t(relevantExpr), scale = TRUE)
+        trimmedPCA = pca
         pca$rotation = pca$rotation * ((sum(pca$rotation[,PC])<0)*(-2)+1)
 
         # do not allow negative rotated genes
@@ -311,10 +340,17 @@ mgpEstimate = function(exprData,
             while(any(pca$rotation[,PC]<0)){
                 relevantExpr = relevantExpr[pca$rotation[,PC]>0,]
                 pca = stats::prcomp(t(relevantExpr), scale = T)
+                trimmedPCA = pca
                 pca$rotation = pca$rotation * ((sum(pca$rotation[,PC])<0)*(-2)+1)
             }
         }
 
+        trimmedPCAs[[i]] = trimmedPCA
+
+        ngenes = trimmedPCA$rotation %>% nrow
+        ngenesBefore = originalPCA$rotation %>% nrow
+
+        removedMarkerRatios[[i]] = (ngenesBefore - ngenes)/ngenesBefore
 
         # get the final rotations
         rotations[[i]] = pca$rotation
@@ -355,7 +391,19 @@ mgpEstimate = function(exprData,
     names(estimateOut) = names(genes)
     names(groupsOut) = names(genes)
     names(rotations) = names(genes)
-    output = list(estimates=estimateOut,groups=groupsOut, rotations  = rotations)
+
+    names(trimmedPCAs) = names(genes)
+    names(fullPCAs) = names(genes)
+    names(removedMarkerRatios) = names(genes)
+
+    problematic = which(removedMarkerRatios > 0.4) %>% names
+    if(length(problematic)>0){
+        warning(
+            paste0('Several cell types have a high proportion (>0.4) of their genes filtered out. Excercise caution.\nProblematic cell types are: ',
+                   paste(problematic,collapse = ', ')))
+    }
+
+    output = list(estimates=estimateOut,groups=groupsOut, rotations  = rotations, trimmedPCAs = trimmedPCAs , fullPCAs = fullPCAs,removedMarkerRatios = removedMarkerRatios )
 
     return(output)
 }
