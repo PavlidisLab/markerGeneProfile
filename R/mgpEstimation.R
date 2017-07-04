@@ -92,11 +92,13 @@ fullEstimate = function(exprData, # expression data
 #' calculating the p values. or "all" which will make comparison between all available groups by setting it to
 #' combn(groups,2)
 #' @export
-plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
+plotEstimates = function(estimates,groups,plotNames= NULL, sigTest =  wilcox.test,
                          pAdjMethod = stats::p.adjust.methods,
                          comparisons = 'all' # if p value correction should happen in per plot or for the entire list of ps
 ){
-    toCreate = unique(dirname(plotNames))
+    if(!is.null(plotNames)){
+        toCreate = unique(dirname(plotNames))
+    }
     sapply(toCreate,dir.create,showWarnings = F,recursive=T)
 
 
@@ -130,6 +132,7 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
 
 
     # plotting of things
+    plots = list()
     for (i in 1:length(estimates)){
         frame = data.frame(PC1 = estimates[[i]], group = groups[[i]])
         # windowUp = max((frame$PC1)) + 1
@@ -162,11 +165,13 @@ plotEstimates = function(estimates,groups,plotNames, sigTest =  wilcox.test,
                                   label = sigText ,
                                   hjust = 0, vjust=1, size = 4.5)
         }
-        (lePlot)
-        ggplot2::ggsave(plotNames[i],width=8,height=8)
-
+        plots[i] = lePlot
+        if(is.null(plotNames)){
+            ggplot2::ggsave(plotNames[i],plot = lePlot, width=8,height=8)
+        }
     }
-
+    names(plots) = names(estimates)
+    return(plots)
 }
 
 
