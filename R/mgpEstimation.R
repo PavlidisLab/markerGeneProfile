@@ -182,7 +182,7 @@ plotEstimates = function(estimates,groups,plotNames= NULL, sigTest =  wilcox.tes
 #' type 'double'
 #' @param genes a named list containing marker gene lists of each cell type
 #' @param geneColName character. name of the column containing the gene names in the expression file
-#' @param outlierSampleRemove logical. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group
+#' @param outlierSampleRemove logical. Deprecated. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group
 #' @param geneTransform a function that will be applied to the gene list. the default behavior is to change mouse genes
 #' to human genes. set to NULL to keep the genes as they are
 #' @param groups a vector stating which groups each sample belongs to
@@ -271,6 +271,9 @@ mgpEstimate = function(exprData,
     trimmedPCAs = vector(mode = 'list', length = length(genes))
     fullPCAs = vector(mode = 'list', length = length(genes))
     removedMarkerRatios = vector(length = length(genes))
+
+    meanUsedMarkerExpression = vector(mode = 'list', length = length(genes))
+    usedMarkerExpression = vector(mode = 'list', length = length(genes))
 
 
     for (i in 1:length(genes)){
@@ -383,9 +386,17 @@ mgpEstimate = function(exprData,
 
 
         pca$x = t(as.matrix(t(scale(t(relevantExpr))))) %*% as.matrix(pca$rotation)
+
+        markerGeneExpression = relevantExpr
+
+
+        usedMarkerExpression[[i]] = relevantExpr
+        meanUsedMarkerExpression[[i]] = relevantExpr %>% apply(2,mean)
+
         groupsOut[[i]] = groups
         # outlier removal
         if (outlierSampleRemove){
+            warning('Outlier sample removal is deprecated and will be removed. If you were using and this caused problems for you this please mail ogan.mancarcii@gmail.com')
             groupData = sapply(unique(groups),function(x){
                 pca$x[groups %in% x,PC]
             },simplify=F)
@@ -398,6 +409,9 @@ mgpEstimate = function(exprData,
         }
         estimateOut[[i]]=(pca$x[,PC])
     } # end of main loop over genes
+    names(markerGeneExpression) =  names(genes)
+    names(meanUsedMarkerExpression) =  names(genes)
+
     names(estimateOut) = names(genes)
     names(groupsOut) = names(genes)
     names(rotations) = names(genes)

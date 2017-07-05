@@ -231,5 +231,6 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                check.names=FALSE)
 
 ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio()
+    ogbox::geom_ogboxvio() # this is just a convenience function that outputs a list of ggplot elements.
 ```
+

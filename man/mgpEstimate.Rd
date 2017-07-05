@@ -19,7 +19,7 @@ type 'double'}
 
 \item{geneColName}{character. name of the column containing the gene names in the expression file}
 
-\item{outlierSampleRemove}{logical. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group}
+\item{outlierSampleRemove}{logical. Deprecated. If TRUE, outlier samples will be removed from the output. Outliers are calculated in the context of a group}
 
 \item{geneTransform}{a function that will be applied to the gene list. the default behavior is to change mouse genes
 to human genes. set to NULL to keep the genes as they are}

@@ -148,11 +148,11 @@ The `CellType` directory is a list of marker genes that disregards all region sp
 read.table('README_files/quickSelection/All_CellType/Cell C') %>% kable
 ```
 
-| V1    |   V2|   V3|
-|:------|----:|----:|
-| Gene3 |   15|    1|
-| Gene4 |   12|    1|
-| Gene5 |    8|    1|
+| V1    |   V2|   V3|   V4|
+|:------|----:|----:|----:|
+| Gene3 |   15|    1|    1|
+| Gene4 |   12|    1|    1|
+| Gene5 |    8|    1|    1|
 
 This file shows the candidate genes for cell type `Cell C` in region `All`. The first column is the gene identifier, the second is change in expression in log\_2 scale and the third one is the silhouette coefficient. Note that `Gene6` is absent since its expression level was below the minimum level allowed. `markerCandidates` function does not apply a threshold for silhouette coefficient it also doesn't check to see if a gene satisfies fold change threshold for multiple genes. `pickMarkers` function does that.
 
@@ -428,7 +428,8 @@ Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this 
 ls(estimations)
 ```
 
-    ## [1] "estimates" "groups"    "rotations"
+    ## [1] "estimates"           "fullPCAs"            "groups"             
+    ## [4] "removedMarkerRatios" "rotations"           "trimmedPCAs"
 
 ``` r
 ls(estimations$estimates)
@@ -445,7 +446,7 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                check.names=FALSE)
 
 ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio()
+    ogbox::geom_ogboxvio() # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)

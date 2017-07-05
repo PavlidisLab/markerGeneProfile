@@ -4,7 +4,7 @@
 \alias{plotEstimates}
 \title{Plot cell type profile estimates}
 \usage{
-plotEstimates(estimates, groups, plotNames, sigTest = wilcox.test,
+plotEstimates(estimates, groups, plotNames = NULL, sigTest = wilcox.test,
   pAdjMethod = stats::p.adjust.methods, comparisons = "all")
 }
 \arguments{
