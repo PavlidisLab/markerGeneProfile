@@ -274,6 +274,7 @@ mgpEstimate = function(exprData,
 
     meanUsedMarkerExpression = vector(mode = 'list', length = length(genes))
     usedMarkerExpression = vector(mode = 'list', length = length(genes))
+    simpleScaledEstimation = vector(mode = 'list', length = length(genes))
 
 
     for (i in 1:length(genes)){
@@ -387,6 +388,11 @@ mgpEstimate = function(exprData,
 
         pca$x = t(as.matrix(t(scale(t(relevantExpr))))) %*% as.matrix(pca$rotation)
 
+        # experimental simple scaling -----
+        simpleScaleWeights = ogbox::scale01(pca$rotation[,PC])/(sum(ogbox::scale01(pca$rotation[,PC])))
+        simpleScale =  apply((relevantExpr * simpleScaleWeights),2,sum)
+        simpleScaledEstimation[[i]] = simpleScale # this is an experimental output
+
         markerGeneExpression = relevantExpr
 
 
@@ -396,7 +402,7 @@ mgpEstimate = function(exprData,
         groupsOut[[i]] = groups
         # outlier removal
         if (outlierSampleRemove){
-            warning('Outlier sample removal is deprecated and will be removed. If you were using and this caused problems for you this please mail ogan.mancarcii@gmail.com')
+            warning('Outlier sample removal is deprecated and will be removed. If you were using it and this caused problems for you this please mail ogan.mancarcii@gmail.com')
             groupData = sapply(unique(groups),function(x){
                 pca$x[groups %in% x,PC]
             },simplify=F)
@@ -419,6 +425,7 @@ mgpEstimate = function(exprData,
     names(trimmedPCAs) = names(genes)
     names(fullPCAs) = names(genes)
     names(removedMarkerRatios) = names(genes)
+    names(simpleScaledEstimation) = names(genes)
 
     problematic = which(removedMarkerRatios > 0.4) %>% names
     if(length(problematic)>0){
@@ -427,7 +434,15 @@ mgpEstimate = function(exprData,
                    paste(problematic,collapse = ', ')))
     }
 
-    output = list(estimates=estimateOut,groups=groupsOut, rotations  = rotations, trimmedPCAs = trimmedPCAs , fullPCAs = fullPCAs,removedMarkerRatios = removedMarkerRatios )
+    output = list(estimates=estimateOut,
+                  groups=groupsOut,
+                  rotations  = rotations,
+                  trimmedPCAs = trimmedPCAs ,
+                  fullPCAs = fullPCAs,
+                  removedMarkerRatios = removedMarkerRatios,
+                  markerGeneExpression = markerGeneExpression,
+                  meanUsedMarkerExpression = meanUsedMarkerExpression,
+                  simpleScaledEstimation = simpleScaledEstimation)
 
     return(output)
 }
