@@ -56,20 +56,16 @@ mpg_sampleRegionHiearchy = list(All = list('Region 1' ='',
 loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsExp.rda')
 loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsMeta.rda')
 
-mgp_LesnickCroppedExpression = LesnickParkinsonsExp[LesnickParkinsonsExp$Gene.Symbol %in%
-                                                        (mouseMarkerGenes$Midbrain %>%
-                                                             unlist %>%
-                                                             (homologene::mouse2human) %$%
-                                                             humanGene),] %>%
-    select(-GOTerms,-GemmaIDs)
+mgp_LesnickParkinsonsExp =  LesnickParkinsonsExp %>% select(-GOTerms,-GemmaIDs)
 
-mgp_LesnickCroppedMeta = LesnickParkinsonsMeta %>%
+
+mgp_LesnickParkinsonsMeta = LesnickParkinsonsMeta %>%
     mutate(disease = replaceElement(parkinson,
                                     c('TRUE' = "parkinson's", 'FALSE' = 'control'))$newVector) %>%
     select(GSM,disease)
 
-use_data(mgp_LesnickCroppedExpression, overwrite = TRUE)
-use_data(mgp_LesnickCroppedMeta, overwrite = TRUE)
+use_data(mgp_LesnickParkinsonsExp, overwrite = TRUE)
+use_data(mgp_LesnickParkinsonsMeta, overwrite = TRUE)
 
 
 ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R',lines = 5:18 )
