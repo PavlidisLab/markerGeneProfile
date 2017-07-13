@@ -201,7 +201,7 @@ Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_L
 
 ```{r}
 data(mgp_LesnickParkinsonsExp)
-mgp_LesnickParkinsonsExp %>% head 
+mgp_LesnickParkinsonsExp %>% head %>% {.[,1:10]}
 ```
 
 ```{r}
@@ -240,7 +240,7 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                check.names=FALSE)
 
 ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio() # this is just a convenience function that outputs a list of ggplot elements.
+    ogbox::geom_ogboxvio() + geom_point() # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
 To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
