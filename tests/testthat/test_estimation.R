@@ -10,13 +10,13 @@ test_that("Basic estimation works",{
 
 
 test_that("Estimation in actual dataset",{
-    data(mgp_LesnickCroppedExpression)
-    data(mgp_LesnickCroppedMeta)
+    data(mgp_LesnickParkinsonsExp)
+    data(mgp_LesnickParkinsonsMeta)
     data(mouseMarkerGenes)
-    estimates = mgpEstimate(exprData = mgp_LesnickCroppedExpression,
+    estimates = mgpEstimate(exprData = mgp_LesnickParkinsonsExp,
                 genes = mouseMarkerGenes$Midbrain,
                 geneColName = 'Gene.Symbol',
-                groups = mgp_LesnickCroppedMeta$disease)
+                groups = mgp_LesnickParkinsonsMeta$disease)
     cells = names(mouseMarkerGenes$Midbrain)
 
     less = sapply(1:length(estimates$estimates),function(i){

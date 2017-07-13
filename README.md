@@ -21,11 +21,17 @@ This package includes functions responsible for marker gene selection and marker
 Installation
 ============
 
-Use devtools to install. Additional github packages needs to be installed for it work
+Use devtools to install. Additional github packages needs to be installed for it work.
 
     devtools::install_github('oganm/homologene')
     devtools::install_github('oganm/ogbox')
     devtools::install_github('oganm/markerGeneProfile')
+
+In this document additional packages are used that are not package dependencies
+
+    install.packages(ggplot2)
+    install.packages(gplots)
+    install.packages(viridis)
 
 Usage
 =====
@@ -342,59 +348,73 @@ lapply(mouseMarkerGenes$Midbrain,head)
     ## [1] "2010204K13Rik" "Apol9a|Apol9b" "Ceacam10"      "Cited1"       
     ## [5] "Crct1"         "Ctla2a"
 
-Available Lesnick et al. data is stored in `mgp_LesnickCroppedExpression` and `mgp_LesnickCroppedMeta` objects
+Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_LesnickParkinsonsMeta` objects
 
 ``` r
-data(mgp_LesnickCroppedExpression)
-mgp_LesnickCroppedExpression %>% head 
+data(mgp_LesnickParkinsonsExp)
+mgp_LesnickParkinsonsExp %>% head 
 ```
 
-    ##          Probe Gene.Symbol                          GeneNames NCBIids
-    ## 3  202917_s_at      S100A8    S100 calcium binding protein A8    6279
-    ## 4  208291_s_at          TH               tyrosine hydroxylase    7054
-    ## 8    216834_at        RGS1 regulator of G-protein signaling 1    5996
-    ## 21   206836_at      SLC6A3   solute carrier family 6 member 3    6531
-    ## 28   227697_at       SOCS3 suppressor of cytokine signaling 3    9021
-    ## 53 216598_s_at        CCL2       C-C motif chemokine ligand 2    6347
-    ##    GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel GSM184358.cel
-    ## 3       9.126349      5.034600     10.463754      8.103236      9.267794
-    ## 4       6.524368      5.538375      9.198448      7.090749      5.743301
-    ## 8       8.596405      7.924570      9.539450     10.198445      5.952968
-    ## 21      8.170089      6.748936      9.894145      7.772563      6.930421
-    ## 28      4.603325      3.445777      7.074304      7.552168      5.649698
-    ## 53      5.345813      5.122109     10.079571     10.338678      5.200846
-    ##    GSM184359.cel GSM184360.cel GSM184361.cel GSM184362.cel GSM184363.cel
-    ## 3       9.414326      4.019552      4.341766      3.274215      9.589431
-    ## 4       7.398403     10.174961      8.825882      9.980838      3.657692
-    ## 8       4.719138      4.418748      5.138161      8.300479      7.972177
-    ## 21      9.190338     10.960251      9.780396     10.558519      5.722526
-    ## 28      8.769056      3.001108      3.087655      2.972539      8.018467
-    ## 53      6.291224      5.663971      5.431302      5.715362      6.994307
-    ##    GSM184364.cel GSM184365.cel GSM184366.cel GSM184367.cel GSM184368.cel
-    ## 3       6.350356     10.165020      3.807312      7.114899      8.046410
-    ## 4       4.951000      4.567920      3.189990      4.550447      6.824303
-    ## 8       4.311922      8.354867      3.612780      8.345713     10.144965
-    ## 21      6.686396      6.138254      4.360904      6.075605      8.644282
-    ## 28      4.656988      6.332446      3.458445      5.294458      8.451226
-    ## 53      6.081336      7.573381      4.632613      7.124289      9.034979
-    ##    GSM184369.cel GSM184370.cel GSM184371.cel GSM184372.cel GSM184373.cel
-    ## 3       9.817192      9.918461      7.576448      8.074591      8.754681
-    ## 4       3.530755      4.067793      7.120302      2.800120      6.892503
-    ## 8       9.439518      8.363230      8.329681      3.462754      9.002247
-    ## 21      5.339298      5.260781      8.327744      5.369671      8.116793
-    ## 28      6.131602      5.448518      6.114317      6.162109      6.581619
-    ## 53      5.793956      5.838041      5.578684      5.415048      6.285994
-    ##    GSM184374.cel GSM184375.cel GSM184376.cel GSM184377.cel GSM184378.cel
-    ## 3       9.145964      7.182151      8.202873      8.864878      8.989151
-    ## 4       6.182081      4.762476      6.050174      3.302302      6.503277
-    ## 8       7.920078      8.330892      8.157036      8.138868      8.691955
-    ## 21      6.402701      6.003159      5.999922      6.268051      7.959468
-    ## 28      6.593346      5.878050      6.203412      7.604824      7.916418
-    ## 53      5.319363      5.970766      7.182194      6.607386      8.296765
+    ##         Probe   Gene.Symbol
+    ## 1   205000_at         DDX3Y
+    ## 2   201909_at RPS4Y1|RPS4Y2
+    ## 3 202917_s_at        S100A8
+    ## 4 208291_s_at            TH
+    ## 5    36711_at          MAFF
+    ## 6   205857_at       SLC18A2
+    ##                                                           GeneNames
+    ## 1                                     DEAD-box helicase 3, Y-linked
+    ## 2 ribosomal protein S4, Y-linked 1|ribosomal protein S4, Y-linked 2
+    ## 3                                   S100 calcium binding protein A8
+    ## 4                                              tyrosine hydroxylase
+    ## 5                                   MAF bZIP transcription factor F
+    ## 6                                solute carrier family 18 member A2
+    ##       NCBIids GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel
+    ## 1        8653      2.954793      7.694810      2.977750      2.978962
+    ## 2 6192|140032      4.147991      9.324542      4.473757      5.099047
+    ## 3        6279      9.126349      5.034600     10.463754      8.103236
+    ## 4        7054      6.524368      5.538375      9.198448      7.090749
+    ## 5       23764      6.336297      4.422673      9.543631     10.681983
+    ## 6        6571      8.864810      7.220538     10.379606      8.892777
+    ##   GSM184358.cel GSM184359.cel GSM184360.cel GSM184361.cel GSM184362.cel
+    ## 1      3.122248      3.152198      7.401020      7.319674      7.277149
+    ## 2      4.776180      4.434288      9.231904      9.233777      9.568688
+    ## 3      9.267794      9.414326      4.019552      4.341766      3.274215
+    ## 4      5.743301      7.398403     10.174961      8.825882      9.980838
+    ## 5      5.690197      7.102226      4.812415      5.366161      5.120846
+    ## 6      5.888305      9.018395     11.426153      9.953309     10.899097
+    ##   GSM184363.cel GSM184364.cel GSM184365.cel GSM184366.cel GSM184367.cel
+    ## 1      8.371614      9.239346      8.446476      7.424021      8.966415
+    ## 2      9.134096      9.411066      9.501753      8.972095      9.124524
+    ## 3      9.589431      6.350356     10.165020      3.807312      7.114899
+    ## 4      3.657692      4.951000      4.567920      3.189990      4.550447
+    ## 5      9.584586      8.348142     10.485145      3.463165      9.315499
+    ## 6      5.242257      6.225520      5.495611      4.862025      5.923240
+    ##   GSM184368.cel GSM184369.cel GSM184370.cel GSM184371.cel GSM184372.cel
+    ## 1      3.024555      8.193522      8.119687      3.163070      7.865346
+    ## 2      4.105230      9.480972      9.474219      4.396728      8.743347
+    ## 3      8.046410      9.817192      9.918461      7.576448      8.074591
+    ## 4      6.824303      3.530755      4.067793      7.120302      2.800120
+    ## 5      8.352969      8.094124      6.170650      6.436098      7.655844
+    ## 6      7.658600      6.047694      4.901471      8.640304      4.514594
+    ##   GSM184373.cel GSM184374.cel GSM184375.cel GSM184376.cel GSM184377.cel
+    ## 1      7.611749      3.090289      8.436829      8.467565      8.664572
+    ## 2      9.062121      4.157721      9.092046      8.819445      8.890054
+    ## 3      8.754681      9.145964      7.182151      8.202873      8.864878
+    ## 4      6.892503      6.182081      4.762476      6.050174      3.302302
+    ## 5      7.871510      8.773259      9.687837     10.668285      9.043430
+    ## 6      8.241154      6.456680      5.949335      5.611783      5.454190
+    ##   GSM184378.cel
+    ## 1      7.769188
+    ## 2      9.785370
+    ## 3      8.989151
+    ## 4      6.503277
+    ## 5      7.622140
+    ## 6      8.309982
 
 ``` r
-data(mgp_LesnickCroppedMeta)
-mgp_LesnickCroppedMeta %>% head
+data(mgp_LesnickParkinsonsMeta)
+mgp_LesnickParkinsonsMeta %>% head
 ```
 
     ##         GSM disease
@@ -412,12 +432,12 @@ Primary function that deals with MGP estimation is `mgpEstimate`. This function 
 Below a basic estimation performed with other important variables briefly explained.
 
 ``` r
-estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
+estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
                            genes=mouseMarkerGenes$Midbrain,
                            geneColName='Gene.Symbol',
                            outlierSampleRemove=F, # should outlier samples removed. This is done using boxplot stats.
                            geneTransform =function(x){homologene::mouse2human(x)$humanGene}, # this is the default option for geneTransform
-                           groups=mgp_LesnickCroppedMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
+                           groups=mgp_LesnickParkinsonsMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
                            seekConsensus = FALSE, # ensures gene rotations are positive in both of the groups
                            removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
@@ -425,11 +445,16 @@ estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
 Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
 
 ``` r
+library(ggplot2)
+
 ls(estimations)
 ```
 
-    ## [1] "estimates"           "fullPCAs"            "groups"             
-    ## [4] "removedMarkerRatios" "rotations"           "trimmedPCAs"
+    ## [1] "estimates"                "fullPCAs"                
+    ## [3] "groups"                   "meanUsedMarkerExpression"
+    ## [5] "removedMarkerRatios"      "rotations"               
+    ## [7] "simpleScaledEstimation"   "trimmedPCAs"             
+    ## [9] "usedMarkerExpression"
 
 ``` r
 ls(estimations$estimates)
@@ -445,8 +470,126 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
                                check.names=FALSE)
 
-ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
+ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
     ogbox::geom_ogboxvio() # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
+
+To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
+
+``` r
+group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "control"]
+group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "parkinson's"]
+wilcox.test(group1,group2)
+```
+
+    ## 
+    ##  Wilcoxon rank sum test
+    ## 
+    ## data:  group1 and group2
+    ## W = 119, p-value = 0.006547
+    ## alternative hypothesis: true location shift is not equal to 0
+
+Based on these results we can say that there is indeed a significant difference between doparminergic marker gene profiles between control and parkinson's disease patients.
+
+This difference can be also observed by looking at gene expression of markers
+
+``` r
+estimations$usedMarkerExpression$Dopaminergic %>%
+    as.matrix %>%
+    gplots::heatmap.2(trace = 'none',
+                      scale='none',
+                      col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
+                      ColSideColors = estimations$groups$Dopaminergic %>% 
+                          ogbox::toColor(palette = c('control' = 'green',
+                                                     "parkinson's" = "blue")) %$% cols ,margins = c(5,5))
+```
+
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
+
+Indeed in general most marker genes have a high expression is control samples which are shown in green.
+
+It is important to note that not all marker genes are used in the estimation of marker gene profiles. Below we see all genes that are identified as dopaminergic cell markers with human orthologues. Yet not all these genes appear in the heatmap above
+
+``` r
+allGenes = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human() %$% humanGene
+print(allGenes)
+```
+
+    ##  [1] "CACNA2D2" "CADPS2"   "CHRNA6"   "MAPK8IP2" "NR4A2"    "NTN1"    
+    ##  [7] "PRKCG"    "SLC6A3"   "TENM1"    "TH"
+
+Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because the gene was filtered in the pre-processing stage due to low expression.
+
+``` r
+allGenes[!allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+```
+
+    ## [1] "CHRNA6"
+
+``` r
+allGenesInDataset = allGenes[allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+```
+
+Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
+
+``` r
+allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
+```
+
+    ## [1] "PRKCG"
+
+``` r
+genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
+```
+
+The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
+
+``` r
+estimations$removedMarkerRatios
+```
+
+    ##              Astrocyte        BrainstemCholin           Dopaminergic 
+    ##             0.12962963             0.37500000             0.11111111 
+    ##              Microglia   Microglia_activation Microglia_deactivation 
+    ##             0.09649123             0.08219178             0.10909091 
+    ##                  Oligo           Serotonergic 
+    ##             0.05882353             0.00000000
+
+The ratio for dopaminergic cells is fairly low. We can also look at the amount of varience explained in the first PC of marker gene expression. If this value is low, it can point to higher amounts of confounding noise or regulation.
+
+``` r
+estimations$trimmedPCAs$Dopaminergic %>% summary()
+```
+
+    ## Importance of components%s:
+    ##                           PC1    PC2     PC3     PC4     PC5     PC6
+    ## Standard deviation     2.3056 1.0829 0.87149 0.53287 0.45796 0.38075
+    ## Proportion of Variance 0.6645 0.1466 0.09494 0.03549 0.02622 0.01812
+    ## Cumulative Proportion  0.6645 0.8110 0.90597 0.94147 0.96768 0.98580
+    ##                            PC7     PC8
+    ## Standard deviation     0.28376 0.18177
+    ## Proportion of Variance 0.01006 0.00413
+    ## Cumulative Proportion  0.99587 1.00000
+
+For instance unlike dopaminergic cells, cholinergic cells seem to have a higher proportion of their marker genes removed. Looking at the variation explained by first PC reveals that first PC only explains 28% of all variance.
+
+``` r
+estimations$trimmedPCAs$BrainstemCholin %>% summary()
+```
+
+    ## Importance of components%s:
+    ##                           PC1    PC2    PC3    PC4    PC5    PC6     PC7
+    ## Standard deviation     1.7002 1.3215 1.2445 1.1559 0.8752 0.7804 0.68942
+    ## Proportion of Variance 0.2891 0.1746 0.1549 0.1336 0.0766 0.0609 0.04753
+    ## Cumulative Proportion  0.2891 0.4637 0.6186 0.7522 0.8288 0.8897 0.93725
+    ##                            PC8     PC9    PC10
+    ## Standard deviation     0.55879 0.44616 0.34094
+    ## Proportion of Variance 0.03122 0.01991 0.01162
+    ## Cumulative Proportion  0.96847 0.98838 1.00000
+
+Such a result can occur if
+
+-   Marker genes are highly regulated.
+-   There is little difference in cell type proportions or wholescale regulation of marker genes and MGP is driven by noise and other confounds.

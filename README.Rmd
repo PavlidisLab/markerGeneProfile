@@ -30,13 +30,20 @@ This package includes functions responsible for marker gene selection and marker
 Installation
 =============
 
-Use devtools to install. Additional github packages needs to be installed for it work
+Use devtools to install. Additional github packages needs to be installed for it work.
 ```
 devtools::install_github('oganm/homologene')
 devtools::install_github('oganm/ogbox')
 devtools::install_github('oganm/markerGeneProfile')
 ```
 
+In this document additional packages are used that are not package dependencies
+
+```
+install.packages(ggplot2)
+install.packages(gplots)
+install.packages(viridis)
+```
 
 Usage
 =============
@@ -190,16 +197,16 @@ names(mouseMarkerGenes)
 lapply(mouseMarkerGenes$Midbrain,head)
 ```
 
-Available Lesnick et al. data is stored in `mgp_LesnickCroppedExpression` and `mgp_LesnickCroppedMeta` objects
+Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_LesnickParkinsonsMeta` objects
 
 ```{r}
-data(mgp_LesnickCroppedExpression)
-mgp_LesnickCroppedExpression %>% head 
+data(mgp_LesnickParkinsonsExp)
+mgp_LesnickParkinsonsExp %>% head 
 ```
 
 ```{r}
-data(mgp_LesnickCroppedMeta)
-mgp_LesnickCroppedMeta %>% head
+data(mgp_LesnickParkinsonsMeta)
+mgp_LesnickParkinsonsMeta %>% head
 ```
 
 ### MGP estimation
@@ -209,12 +216,12 @@ Primary function that deals with MGP estimation is `mgpEstimate`. This function 
 Below a basic estimation performed with other important variables briefly explained.
 
 ```{r}
-estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
+estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
                            genes=mouseMarkerGenes$Midbrain,
                            geneColName='Gene.Symbol',
                            outlierSampleRemove=F, # should outlier samples removed. This is done using boxplot stats.
                            geneTransform =function(x){homologene::mouse2human(x)$humanGene}, # this is the default option for geneTransform
-                           groups=mgp_LesnickCroppedMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
+                           groups=mgp_LesnickParkinsonsMeta$disease, #if there are experimental groups provide them here. if not desired set to NULL
                            seekConsensus = FALSE, # ensures gene rotations are positive in both of the groups
                            removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
@@ -222,6 +229,8 @@ estimations =  mgpEstimate(exprData=mgp_LesnickCroppedExpression,
 Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
 
 ```{r}
+library(ggplot2)
+
 ls(estimations)
 
 ls(estimations$estimates)
@@ -230,7 +239,81 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
                                check.names=FALSE)
 
-ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
+ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
     ogbox::geom_ogboxvio() # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
+To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
+
+```{r}
+
+group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "control"]
+group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "parkinson's"]
+wilcox.test(group1,group2)
+```
+
+Based on these results we can say that there is indeed a significant difference between doparminergic marker gene profiles between control and parkinson's disease patients.
+
+This difference can be also observed by looking at gene expression of markers
+
+```{r}
+estimations$usedMarkerExpression$Dopaminergic %>%
+    as.matrix %>%
+    gplots::heatmap.2(trace = 'none',
+                      scale='none',
+                      col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
+                      ColSideColors = estimations$groups$Dopaminergic %>% 
+                          ogbox::toColor(palette = c('control' = 'green',
+                                                     "parkinson's" = "blue")) %$% cols ,margins = c(5,5))
+```
+
+Indeed in general most marker genes have a high expression is control samples which are shown in green.
+
+It is important to note that not all marker genes are used in the estimation of marker gene profiles. Below we see all genes that are identified
+as dopaminergic cell markers with human orthologues. Yet not all these genes appear in the heatmap above
+```{r}
+allGenes = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human() %$% humanGene
+print(allGenes)
+```
+
+Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because 
+the gene was filtered in the pre-processing stage due to low expression.
+
+```{r}
+allGenes[!allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+
+allGenesInDataset = allGenes[allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+```
+
+Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
+
+```{r}
+allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
+
+genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
+
+```
+
+The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other
+that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this 
+ratio ever exceeds 0.4
+
+```{r}
+estimations$removedMarkerRatios
+```
+
+The ratio for dopaminergic cells is fairly low. We can also look at the amount of varience explained in the first PC of marker gene expression. If this value is low, it can point to higher amounts of confounding noise or regulation.
+
+```{r}
+estimations$trimmedPCAs$Dopaminergic %>% summary()
+```
+
+For instance unlike dopaminergic cells, cholinergic cells seem to have a higher proportion of their marker genes removed. Looking at the variation explained by first PC reveals that first PC only explains 28% of all variance. 
+```{r}
+estimations$trimmedPCAs$BrainstemCholin %>% summary()
+```
+
+Such a result can occur if
+
+* Marker genes are highly regulated.
+* There is little difference in cell type proportions or wholescale regulation of marker genes and MGP is driven by noise and other confounds.
