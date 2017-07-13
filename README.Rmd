@@ -50,11 +50,11 @@ Usage
 
 Marker genes
 ------------------
-A marker gene list is needed in order to estimate cell type profiles. In this package, a copy of mouse brain cell type markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed steps below can be followed to create one
+A list of marker genes specific to or enriched in a cell type is required in order to estimate cell type profiles. In this package, a copy of mouse brain cell type-specific markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed, steps outlined below can be followed to create one from a new dataset.
 
 ### Sample data for marker gene selection
 
-The package includes a sample cell type profile dataset aimed to demonstrate the minimal information required for selection of marker genes.
+This package includes a sample cell type-specific transcriptomic dataset representing expression profiles from multiple purified cell types aimed to demonstrate the minimal information required for the selection of marker genes.
 
 `mgp_sampleProfilesMeta` includes the basic metadata required for the cell type specific expression dataset.
 
