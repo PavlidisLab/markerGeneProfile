@@ -36,14 +36,14 @@ In this document additional packages are used that are not package dependencies
 Usage
 =====
 
-Cell type-specific marker genes
+Marker genes
 ------------
 
-A list of marker genes specific to or enriched in a cell type is required in order to estimate cell type profiles. In this package, a copy of mouse brain cell type-specific markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed, steps outlined below can be followed to create one from a new dataset.
+A marker gene list is needed in order to estimate cell type profiles. In this package, a copy of mouse brain cell type markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed steps below can be followed to create one
 
 ### Sample data for marker gene selection
 
-This package includes a sample cell type-specific transcriptomic dataset representing expression profiles from multiple purified cell types aimed to demonstrate the minimal information required for the selection of marker genes.
+The package includes a sample cell type profile dataset aimed to demonstrate the minimal information required for selection of marker genes.
 
 `mgp_sampleProfilesMeta` includes the basic metadata required for the cell type specific expression dataset.
 
@@ -301,7 +301,7 @@ Marker gene profiles (MGP)
 
 ### Sample data for MGP estimation
 
-The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621). Lesnick et al. data available in this package is a subset of the whole expression matrix which only includes cell type markers from the midbrain to reduce the size of the package.
+The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621).
 
 Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
 
@@ -496,15 +496,23 @@ Based on these results we can say that there is indeed a significant difference 
 This difference can be also observed by looking at gene expression of markers
 
 ``` r
-estimations$usedMarkerExpression$Dopaminergic %>%
+estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
-                      scale='none',
+                      scale='row',Rowv = FALSE,Colv = FALSE,
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
                           ogbox::toColor(palette = c('control' = 'green',
                                                      "parkinson's" = "blue")) %$% cols ,margins = c(5,5))
 ```
+
+    ## Warning in gplots::heatmap.2(., trace = "none", scale = "row", Rowv =
+    ## FALSE, : Discrepancy: Rowv is FALSE, while dendrogram is `both'. Omitting
+    ## row dendogram.
+
+    ## Warning in gplots::heatmap.2(., trace = "none", scale = "row", Rowv =
+    ## FALSE, : Discrepancy: Colv is FALSE, while dendrogram is `column'. Omitting
+    ## column dendogram.
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
 

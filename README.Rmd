@@ -187,7 +187,7 @@ Marker gene profiles (MGP)
 ###Sample data for MGP estimation
 
 
-The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621). Lesnick et al. data available in this package is a subset of the whole expression matrix which only includes cell type markers from the midbrain to reduce the size of the package.
+The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621).
 
 Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
 ```{r}
@@ -257,10 +257,10 @@ Based on these results we can say that there is indeed a significant difference 
 This difference can be also observed by looking at gene expression of markers
 
 ```{r}
-estimations$usedMarkerExpression$Dopaminergic %>%
+estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
-                      scale='none',
+                      scale='row',Rowv = FALSE,Colv = FALSE,
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
                           ogbox::toColor(palette = c('control' = 'green',
