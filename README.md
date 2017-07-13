@@ -355,34 +355,34 @@ data(mgp_LesnickParkinsonsExp)
 mgp_LesnickParkinsonsExp %>% head %>% {.[,1:10]}
 ```
 
-    ##         Probe   Gene.Symbol
-    ## 1   205000_at         DDX3Y
-    ## 2   201909_at RPS4Y1|RPS4Y2
-    ## 3 202917_s_at        S100A8
-    ## 4 208291_s_at            TH
-    ## 5    36711_at          MAFF
-    ## 6   205857_at       SLC18A2
-    ##                                                           GeneNames
-    ## 1                                     DEAD-box helicase 3, Y-linked
-    ## 2 ribosomal protein S4, Y-linked 1|ribosomal protein S4, Y-linked 2
-    ## 3                                   S100 calcium binding protein A8
-    ## 4                                              tyrosine hydroxylase
-    ## 5                                   MAF bZIP transcription factor F
-    ## 6                                solute carrier family 18 member A2
-    ##       NCBIids GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel
-    ## 1        8653      2.954793      7.694810      2.977750      2.978962
-    ## 2 6192|140032      4.147991      9.324542      4.473757      5.099047
-    ## 3        6279      9.126349      5.034600     10.463754      8.103236
-    ## 4        7054      6.524368      5.538375      9.198448      7.090749
-    ## 5       23764      6.336297      4.422673      9.543631     10.681983
-    ## 6        6571      8.864810      7.220538     10.379606      8.892777
-    ##   GSM184358.cel GSM184359.cel
-    ## 1      3.122248      3.152198
-    ## 2      4.776180      4.434288
-    ## 3      9.267794      9.414326
-    ## 4      5.743301      7.398403
-    ## 5      5.690197      7.102226
-    ## 6      5.888305      9.018395
+    ##           Probe Gene.Symbol
+    ## 43955 1007_s_at        DDR1
+    ## 2278    1053_at        RFC2
+    ## 45312    117_at HSPA6|HSPA7
+    ## 43710    121_at        PAX8
+    ## 13573 1255_g_at      GUCA1A
+    ## 21022   1294_at        UBA7
+    ##                                                                                       GeneNames
+    ## 43955                                               discoidin domain receptor tyrosine kinase 1
+    ## 2278                                                             replication factor C subunit 2
+    ## 45312 heat shock protein family A (Hsp70) member 6|heat shock protein family A (Hsp70) member 7
+    ## 43710                                                                              paired box 8
+    ## 13573                                                            guanylate cyclase activator 1A
+    ## 21022                                               ubiquitin like modifier activating enzyme 7
+    ##         NCBIids GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel
+    ## 43955       780     10.236880      9.891552     10.498371      9.689925
+    ## 2278       5982      5.421790      5.280541      5.852467      5.324401
+    ## 45312 3310|3311      5.164445      4.651754      4.729189      4.963804
+    ## 43710      7849      7.076004      7.035090      6.698765      7.304183
+    ## 13573      2978      3.107388      3.418976      3.491832      3.464912
+    ## 21022      7318      6.644858      6.182664      5.982642      5.826462
+    ##       GSM184358.cel GSM184359.cel
+    ## 43955     10.171409     10.038812
+    ## 2278       4.890897      5.063115
+    ## 45312      4.227945      5.465825
+    ## 43710      7.207805      7.476721
+    ## 13573      3.303063      3.096387
+    ## 21022      6.400929      6.350412
 
 ``` r
 data(mgp_LesnickParkinsonsMeta)
@@ -396,6 +396,16 @@ mgp_LesnickParkinsonsMeta %>% head
     ## 4 GSM184357 control
     ## 5 GSM184358 control
     ## 6 GSM184359 control
+
+Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a maximum expression below the median
+
+``` r
+unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
+medExp = mgp_LesnickParkinsonsExp %>% ogbox::sepExpr() %>% {.[[2]]} %>% unlist %>% median
+
+# mostVariable function is part of this package that does probe selection and filtering for you
+mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,threshold = medExp, threshFun= median)
+```
 
 ### MGP estimation
 
@@ -446,7 +456,7 @@ ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) +
     ogbox::geom_ogboxvio() + geom_point() # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
 
 To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
 
@@ -486,7 +496,7 @@ estimations$usedMarkerExpression$Dopaminergic%>%
     ## FALSE, : Discrepancy: Colv is FALSE, while dendrogram is `column'. Omitting
     ## column dendogram.
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
 
 Indeed in general most marker genes have a high expression is control samples which are shown in green.
 
@@ -523,6 +533,52 @@ allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpress
 ``` r
 genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
 ```
+
+By looking at the unfiltered expression data, we can see how these two genes were unsuitable for MGP estimation
+
+``` r
+toPlot = unfilteredParkinsonsExp[unfilteredParkinsonsExp$Gene.Symbol %in%
+                                     homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene,] %>%
+    mostVariable(threshold = 0) 
+
+toPlot %>%
+    mostVariable(threshold = 0) %>% 
+    ogbox::sepExpr() %>%
+    {.[[2]]} %>% as.matrix() %>% 
+    apply(1,function(x){ogbox::scale01(x)}) %>%
+    t %>%
+    {rownames(.) = 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    geom_line() + 
+    cowplot::theme_cowplot() +
+    theme( axis.text.x= element_blank()) + 
+    ggtitle('Scaled expression of markers')
+```
+
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.png)
+
+``` r
+toPlot %>%
+    mostVariable(threshold = 0) %>% 
+    ogbox::sepExpr() %>%
+    {.[[2]]} %>% as.matrix()%>%
+    {rownames(.) = 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    geom_line() + 
+    cowplot::theme_cowplot() +
+    theme( axis.text.x= element_blank()) + 
+    ggtitle('Non-scaled expression of markers')
+```
+
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png) Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckyly lack of correlation reveals that it is not behaving as other marker genes.
 
 The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
 

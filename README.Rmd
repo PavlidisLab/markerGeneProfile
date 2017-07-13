@@ -204,12 +204,27 @@ data(mgp_LesnickParkinsonsExp)
 mgp_LesnickParkinsonsExp %>% head %>% {.[,1:10]}
 ```
 
+
 ```{r}
 data(mgp_LesnickParkinsonsMeta)
 mgp_LesnickParkinsonsMeta %>% head
 ```
 
+
+Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a maximum expression below the median
+
+```{r}
+unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
+medExp = mgp_LesnickParkinsonsExp %>% ogbox::sepExpr() %>% {.[[2]]} %>% unlist %>% median
+
+# mostVariable function is part of this package that does probe selection and filtering for you
+mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,threshold = medExp, threshFun= median)
+
+
+```
 ### MGP estimation
+
+
 
 Primary function that deals with MGP estimation is `mgpEstimate`. This function will take in expression data and marker gene lists to return MGPs. `exprData` is the expression matrix which should include gene identifiers as a column. Other columns can be present at the beginning of the data frame but should not be of class `double`. `genes` is the list of markers. It is assumed to be a list of character vectors, each vector containing gene names for a cell type. `geneColName` is the name of the column where gene names are found. `geneTransform` is a function that will be applied to the gene names provided in `genes`. Note that this by default tranforms mouse gene names to human gene names. Set it to NULL if this is not desired.
 
@@ -291,8 +306,51 @@ Other genes can be removed because mgpEstimate thinks they don't correlate well 
 allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
 
 genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
+```
+
+By looking at the unfiltered expression data, we can see how these two genes were unsuitable for MGP estimation
+
+```{r}
+toPlot = unfilteredParkinsonsExp[unfilteredParkinsonsExp$Gene.Symbol %in%
+                                     homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene,] %>%
+    mostVariable(threshold = 0) 
+
+toPlot %>%
+    mostVariable(threshold = 0) %>% 
+    ogbox::sepExpr() %>%
+    {.[[2]]} %>% as.matrix() %>% 
+    apply(1,function(x){ogbox::scale01(x)}) %>%
+    t %>%
+    {rownames(.) = 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    geom_line() + 
+    cowplot::theme_cowplot() +
+    theme( axis.text.x= element_blank()) + 
+    ggtitle('Scaled expression of markers')
+
+toPlot %>%
+    mostVariable(threshold = 0) %>% 
+    ogbox::sepExpr() %>%
+    {.[[2]]} %>% as.matrix()%>%
+    {rownames(.) = 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    geom_line() + 
+    cowplot::theme_cowplot() +
+    theme( axis.text.x= element_blank()) + 
+    ggtitle('Non-scaled expression of markers')
+
+
 
 ```
+Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckyly lack of correlation reveals that it is not behaving as other marker genes.
 
 The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other
 that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this 

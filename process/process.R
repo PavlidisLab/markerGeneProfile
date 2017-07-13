@@ -52,10 +52,12 @@ mpg_sampleRegionHiearchy = list(All = list('Region 1' ='',
                                            'Region 2' = ''))
 
 
-# cropped Lesnick et al
-loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsExp.rda')
+# Lesnick et al full expression data
+# loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsExp.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/lesnickPreLowExpression.rda')
 loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsMeta.rda')
 
+LesnickParkinsonsExp = annotated
 mgp_LesnickParkinsonsExp =  LesnickParkinsonsExp %>% select(-GOTerms,-GemmaIDs)
 
 
