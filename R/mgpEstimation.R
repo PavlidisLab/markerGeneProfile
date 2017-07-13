@@ -440,7 +440,7 @@ mgpEstimate = function(exprData,
                   trimmedPCAs = trimmedPCAs ,
                   fullPCAs = fullPCAs,
                   removedMarkerRatios = removedMarkerRatios,
-                  markerGeneExpression = markerGeneExpression,
+                  usedMarkerExpression = usedMarkerExpression,
                   meanUsedMarkerExpression = meanUsedMarkerExpression,
                   simpleScaledEstimation = simpleScaledEstimation)
 
