@@ -578,7 +578,9 @@ toPlot %>%
     ggtitle('Non-scaled expression of markers')
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png) Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckyly lack of correlation reveals that it is not behaving as other marker genes.
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png)
+
+Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckily lack of correlation reveals that it is not behaving as other marker genes.
 
 The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
 

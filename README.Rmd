@@ -350,7 +350,8 @@ toPlot %>%
 
 
 ```
-Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckyly lack of correlation reveals that it is not behaving as other marker genes.
+
+Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckily lack of correlation reveals that it is not behaving as other marker genes.
 
 The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other
 that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this 
