@@ -224,7 +224,9 @@ mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,threshold = med
 ```
 ### MGP estimation
 
-
+MGPs are simply the first principal component of marker gene expression. This method of marker
+gene profile estimation is similar to the methodology of multiple previous works that aim to estimate relative
+abundance of cell types in a whole tissue sample (Chikina et al., 2015; Westra et al., 2015; Xu et al., 2013).
 
 Primary function that deals with MGP estimation is `mgpEstimate`. This function will take in expression data and marker gene lists to return MGPs. `exprData` is the expression matrix which should include gene identifiers as a column. Other columns can be present at the beginning of the data frame but should not be of class `double`. `genes` is the list of markers. It is assumed to be a list of character vectors, each vector containing gene names for a cell type. `geneColName` is the name of the column where gene names are found. `geneTransform` is a function that will be applied to the gene names provided in `genes`. Note that this by default tranforms mouse gene names to human gene names. Set it to NULL if this is not desired.
 
