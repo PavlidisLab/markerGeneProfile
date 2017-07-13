@@ -35,18 +35,18 @@ test_that("Estimation in actual dataset",{
 })
 
 test_that('Wrong parameters',{
-    data(mgp_LesnickCroppedExpression)
-    data(mgp_LesnickCroppedMeta)
+    data(mgp_LesnickParkinsonsExp)
+    data(mgp_LesnickParkinsonsMeta)
     data(mouseMarkerGenes)
-    mockMouseGenes = mgp_LesnickCroppedExpression$Gene.Symbol %>% homologene::human2mouse()
+    mockMouseGenes = mgp_LesnickParkinsonsExp$Gene.Symbol %>% homologene::human2mouse()
 
-    mockMouseData = mgp_LesnickCroppedExpression[match(mockMouseGenes$humanGene,mgp_LesnickCroppedExpression$Gene.Symbol),]
+    mockMouseData = mgp_LesnickParkinsonsExp[match(mockMouseGenes$humanGene,mgp_LesnickParkinsonsExp$Gene.Symbol),]
     mockMouseData$Gene.Symbol = mockMouseGenes$mouseGene
     mockMouseData  = mockMouseData[!duplicated(mockMouseData$Gene.Symbol),]
 
     testthat::expect_warning(mgpEstimate(exprData = mockMouseData,
                             genes = mouseMarkerGenes$Midbrain,
                             geneColName = 'Gene.Symbol',
-                            groups = mgp_LesnickCroppedMeta$disease),regexp = 'geneTransform function reduces the number of matches')
+                            groups = mgp_LesnickParkinsonsMeta$disease),regexp = 'geneTransform function reduces the number of matches')
 
 })
