@@ -43,6 +43,7 @@ In this document additional packages are used that are not package dependencies
 install.packages(ggplot2)
 install.packages(gplots)
 install.packages(viridis)
+install.packages(dplyr)
 ```
 
 Usage
@@ -194,14 +195,16 @@ Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
 data(mouseMarkerGenes)
 names(mouseMarkerGenes)
 
-lapply(mouseMarkerGenes$Midbrain,head)
+lapply(mouseMarkerGenes$Midbrain[1:3],head, 14)
 ```
 
 Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_LesnickParkinsonsMeta` objects
 
 ```{r}
+library(dplyr)
+
 data(mgp_LesnickParkinsonsExp)
-mgp_LesnickParkinsonsExp %>% head %>% {.[,1:10]}
+mgp_LesnickParkinsonsExp %>% dplyr::select(-GeneNames) %>% head %>% {.[,1:6]}
 ```
 
 
@@ -243,7 +246,8 @@ estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
                            removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
 
-Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
+Dopamine
+rgic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
 
 ```{r}
 library(ggplot2)
@@ -257,7 +261,7 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                check.names=FALSE)
 
 ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio() + geom_point() # this is just a convenience function that outputs a list of ggplot elements.
+    ogbox::geom_ogboxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
 To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
@@ -280,8 +284,8 @@ estimations$usedMarkerExpression$Dopaminergic%>%
                       scale='row',Rowv = FALSE,Colv = FALSE,
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
-                          ogbox::toColor(palette = c('control' = 'green',
-                                                     "parkinson's" = "blue")) %$% cols ,margins = c(5,5))
+                          ogbox::toColor(palette = c('control' = 'blue',
+                                                     "parkinson's" = "red")) %$% cols ,margins = c(5,5))
 ```
 
 Indeed in general most marker genes have a high expression is control samples which are shown in green.
@@ -289,23 +293,24 @@ Indeed in general most marker genes have a high expression is control samples wh
 It is important to note that not all marker genes are used in the estimation of marker gene profiles. Below we see all genes that are identified
 as dopaminergic cell markers with human orthologues. Yet not all these genes appear in the heatmap above
 ```{r}
-allGenes = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human() %$% humanGene
-print(allGenes)
+mouseHumanGeneTable = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human()
+allHumanDopaGenes = mouseHumanGeneTable %$% humanGene
+mouseHumanGeneTable
 ```
 
 Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because 
 the gene was filtered in the pre-processing stage due to low expression.
 
 ```{r}
-allGenes[!allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+allHumanDopaGenes[!allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 
-allGenesInDataset = allGenes[allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+lesnickHumanDopaGenes = allHumanDopaGenes[allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 ```
 
 Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
 
 ```{r}
-allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
+lesnickHumanDopaGenes[!lesnickHumanDopaGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
 
 genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
 ```
