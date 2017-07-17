@@ -24,9 +24,9 @@ Imports:
     doSNOW,
     foreach,
     memoise,
-    doMC
 Enhances:
-    geneSynonym
+    geneSynonym,
+    doMC
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
