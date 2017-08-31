@@ -268,8 +268,8 @@ To see if the difference between the two groups is statistically significant we 
 
 ```{r}
 
-group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "control"]
-group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "parkinson's"]
+group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "Control"]
+group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "PD"]
 wilcox.test(group1,group2)
 ```
 
@@ -281,11 +281,11 @@ This difference can be also observed by looking at gene expression of markers
 estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
-                      scale='row',Rowv = FALSE,Colv = FALSE,
+                      scale='row',Rowv = FALSE,Colv = FALSE, dendrogram = 'none',
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
-                          ogbox::toColor(palette = c('control' = 'blue',
-                                                     "parkinson's" = "red")) %$% cols ,margins = c(5,5))
+                          ogbox::toColor(palette = c('Control' = 'blue',
+                                                     "PD" = "red")) %$% cols ,margins = c(5,5))
 ```
 
 Indeed in general most marker genes have a high expression is control samples which are shown in green.
@@ -331,9 +331,9 @@ toPlot %>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
     reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
-    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
-                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
-    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = '(CHRNA6) not expressed';.[Gene %in% 'PRKCG'] = '(PRKCG) not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
     theme( axis.text.x= element_blank()) + 
@@ -346,13 +346,13 @@ toPlot %>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
     reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
-    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
-                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
-    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'CHRNA6 - not expressed';.[Gene %in% 'PRKCG'] = 'PRKCG - not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
     theme( axis.text.x= element_blank()) + 
-    ggtitle('Non-scaled expression of markers')
+    ggtitle('Nonscaled expression of markers')
 
 
 

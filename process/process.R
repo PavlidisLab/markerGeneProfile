@@ -63,7 +63,7 @@ mgp_LesnickParkinsonsExp =  LesnickParkinsonsExp %>% select(-GOTerms,-GemmaIDs)
 
 mgp_LesnickParkinsonsMeta = LesnickParkinsonsMeta %>%
     mutate(disease = replaceElement(parkinson,
-                                    c('TRUE' = "parkinson's", 'FALSE' = 'control'))$newVector) %>%
+                                    c('TRUE' = "PD", 'FALSE' = 'Control'))$newVector) %>%
     select(GSM,disease)
 
 use_data(mgp_LesnickParkinsonsExp, overwrite = TRUE)

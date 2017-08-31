@@ -32,6 +32,7 @@ In this document additional packages are used that are not package dependencies
     install.packages(ggplot2)
     install.packages(gplots)
     install.packages(viridis)
+    install.packages(dplyr)
 
 Usage
 =====
@@ -136,9 +137,6 @@ markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                  cores = 16 # number of cores to use in parallelization 
                  )
 ```
-
-    ## [1] "max cores exceeded"
-    ## [1] "set core no to 8"
 
 This creates 3 directories in the output directory
 
@@ -317,72 +315,61 @@ names(mouseMarkerGenes)
     ## [13] "Subependymal"    "SubstantiaNigra" "Thalamus"
 
 ``` r
-lapply(mouseMarkerGenes$Midbrain,head)
+lapply(mouseMarkerGenes$Midbrain[1:3],head, 14)
 ```
 
     ## $Astrocyte
-    ## [1] "Aass"   "Acsbg1" "Acsl6"  "Acss1"  "Add3"   "Adhfe1"
+    ##  [1] "Aass"     "Acsbg1"   "Acsl6"    "Acss1"    "Add3"     "Adhfe1"  
+    ##  [7] "AI464131" "Aldh1l1"  "Aldh6a1"  "Antxr1"   "Aox1"     "Apoe"    
+    ## [13] "Aqp4"     "Axl"     
     ## 
     ## $BrainstemCholin
-    ## [1] "2310030G06Rik" "Anxa2"         "Cabp1"         "Calca"        
-    ## [5] "Calcb"         "Cd24a"        
+    ##  [1] "2310030G06Rik" "Anxa2"         "Cabp1"         "Calca"        
+    ##  [5] "Calcb"         "Cd24a"         "Cd55"          "Cda"          
+    ##  [9] "Chodl"         "Ecel1"         "Fxyd7"         "Hebp2"        
+    ## [13] "Hspb1"         "Hspb8"        
     ## 
     ## $Dopaminergic
-    ## [1] "Cacna2d2" "Cadps2"   "Chrna6"   "Mapk8ip2" "Nr4a2"    "Ntn1"    
-    ## 
-    ## $Microglia
-    ## [1] "1700017B05Rik" "Abhd15"        "Adap2"         "Adgre1"       
-    ## [5] "Akna"          "Alas2"        
-    ## 
-    ## $Microglia_activation
-    ## [1] "Asxl1"   "Atp7a"   "B4galt1" "Bach1"   "Birc3"   "C1qa"   
-    ## 
-    ## $Microglia_deactivation
-    ## [1] "2810474O19Rik" "Abcc3"         "Adrb1"         "Adrb2"        
-    ## [5] "Afp"           "Aif1"         
-    ## 
-    ## $Oligo
-    ## [1] "Gal3st1" "Gamt"    "Gjb1"    "Gsn"     "Josd2"   "Lims2"  
-    ## 
-    ## $Serotonergic
-    ## [1] "2010204K13Rik" "Apol9a|Apol9b" "Ceacam10"      "Cited1"       
-    ## [5] "Crct1"         "Ctla2a"
+    ##  [1] "Cacna2d2" "Cadps2"   "Chrna6"   "Mapk8ip2" "Nr4a2"    "Ntn1"    
+    ##  [7] "Prkcg"    "Rian"     "Scn2a"    "Slc6a3"   "Snhg11"   "Tenm1"   
+    ## [13] "Th"       "Zim3"
 
 Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_LesnickParkinsonsMeta` objects
 
 ``` r
-data(mgp_LesnickParkinsonsExp)
-mgp_LesnickParkinsonsExp %>% head %>% {.[,1:10]}
+library(dplyr)
 ```
 
-    ##           Probe Gene.Symbol
-    ## 43955 1007_s_at        DDR1
-    ## 2278    1053_at        RFC2
-    ## 45312    117_at HSPA6|HSPA7
-    ## 43710    121_at        PAX8
-    ## 13573 1255_g_at      GUCA1A
-    ## 21022   1294_at        UBA7
-    ##                                                                                       GeneNames
-    ## 43955                                               discoidin domain receptor tyrosine kinase 1
-    ## 2278                                                             replication factor C subunit 2
-    ## 45312 heat shock protein family A (Hsp70) member 6|heat shock protein family A (Hsp70) member 7
-    ## 43710                                                                              paired box 8
-    ## 13573                                                            guanylate cyclase activator 1A
-    ## 21022                                               ubiquitin like modifier activating enzyme 7
-    ##         NCBIids GSM184354.cel GSM184355.cel GSM184356.cel GSM184357.cel
-    ## 43955       780     10.236880      9.891552     10.498371      9.689925
-    ## 2278       5982      5.421790      5.280541      5.852467      5.324401
-    ## 45312 3310|3311      5.164445      4.651754      4.729189      4.963804
-    ## 43710      7849      7.076004      7.035090      6.698765      7.304183
-    ## 13573      2978      3.107388      3.418976      3.491832      3.464912
-    ## 21022      7318      6.644858      6.182664      5.982642      5.826462
-    ##       GSM184358.cel GSM184359.cel
-    ## 43955     10.171409     10.038812
-    ## 2278       4.890897      5.063115
-    ## 45312      4.227945      5.465825
-    ## 43710      7.207805      7.476721
-    ## 13573      3.303063      3.096387
-    ## 21022      6.400929      6.350412
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+data(mgp_LesnickParkinsonsExp)
+mgp_LesnickParkinsonsExp %>% dplyr::select(-GeneNames) %>% head %>% {.[,1:6]}
+```
+
+    ##           Probe Gene.Symbol   NCBIids GSM184354.cel GSM184355.cel
+    ## 43955 1007_s_at        DDR1       780     10.236880      9.891552
+    ## 2278    1053_at        RFC2      5982      5.421790      5.280541
+    ## 45312    117_at HSPA6|HSPA7 3310|3311      5.164445      4.651754
+    ## 43710    121_at        PAX8      7849      7.076004      7.035090
+    ## 13573 1255_g_at      GUCA1A      2978      3.107388      3.418976
+    ## 21022   1294_at        UBA7      7318      6.644858      6.182664
+    ##       GSM184356.cel
+    ## 43955     10.498371
+    ## 2278       5.852467
+    ## 45312      4.729189
+    ## 43710      6.698765
+    ## 13573      3.491832
+    ## 21022      5.982642
 
 ``` r
 data(mgp_LesnickParkinsonsMeta)
@@ -390,12 +377,12 @@ mgp_LesnickParkinsonsMeta %>% head
 ```
 
     ##         GSM disease
-    ## 1 GSM184354 control
-    ## 2 GSM184355 control
-    ## 3 GSM184356 control
-    ## 4 GSM184357 control
-    ## 5 GSM184358 control
-    ## 6 GSM184359 control
+    ## 1 GSM184354 Control
+    ## 2 GSM184355 Control
+    ## 3 GSM184356 Control
+    ## 4 GSM184357 Control
+    ## 5 GSM184358 Control
+    ## 6 GSM184359 Control
 
 Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a maximum expression below the median
 
@@ -426,7 +413,7 @@ estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
                            removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
 
-Dopaminergic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
+Dopamine rgic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
 
 ``` r
 library(ggplot2)
@@ -455,7 +442,7 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                check.names=FALSE)
 
 ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio() + geom_point() # this is just a convenience function that outputs a list of ggplot elements.
+    ogbox::geom_ogboxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
@@ -463,8 +450,8 @@ ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) +
 To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
 
 ``` r
-group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "control"]
-group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "parkinson's"]
+group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "Control"]
+group2 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "PD"]
 wilcox.test(group1,group2)
 ```
 
@@ -483,20 +470,12 @@ This difference can be also observed by looking at gene expression of markers
 estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
-                      scale='row',Rowv = FALSE,Colv = FALSE,
+                      scale='row',Rowv = FALSE,Colv = FALSE, dendrogram = 'none',
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
-                          ogbox::toColor(palette = c('control' = 'green',
-                                                     "parkinson's" = "blue")) %$% cols ,margins = c(5,5))
+                          ogbox::toColor(palette = c('Control' = 'blue',
+                                                     "PD" = "red")) %$% cols ,margins = c(5,5))
 ```
-
-    ## Warning in gplots::heatmap.2(., trace = "none", scale = "row", Rowv =
-    ## FALSE, : Discrepancy: Rowv is FALSE, while dendrogram is `both'. Omitting
-    ## row dendogram.
-
-    ## Warning in gplots::heatmap.2(., trace = "none", scale = "row", Rowv =
-    ## FALSE, : Discrepancy: Colv is FALSE, while dendrogram is `column'. Omitting
-    ## column dendogram.
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
 
@@ -505,29 +484,39 @@ Indeed in general most marker genes have a high expression is control samples wh
 It is important to note that not all marker genes are used in the estimation of marker gene profiles. Below we see all genes that are identified as dopaminergic cell markers with human orthologues. Yet not all these genes appear in the heatmap above
 
 ``` r
-allGenes = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human() %$% humanGene
-print(allGenes)
+mouseHumanGeneTable = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human()
+allHumanDopaGenes = mouseHumanGeneTable %$% humanGene
+mouseHumanGeneTable
 ```
 
-    ##  [1] "CACNA2D2" "CADPS2"   "CHRNA6"   "MAPK8IP2" "NR4A2"    "NTN1"    
-    ##  [7] "PRKCG"    "SLC6A3"   "TENM1"    "TH"
+    ##    mouseGene humanGene
+    ## 1   Cacna2d2  CACNA2D2
+    ## 2     Cadps2    CADPS2
+    ## 3     Chrna6    CHRNA6
+    ## 4   Mapk8ip2  MAPK8IP2
+    ## 5      Nr4a2     NR4A2
+    ## 6       Ntn1      NTN1
+    ## 7      Prkcg     PRKCG
+    ## 8     Slc6a3    SLC6A3
+    ## 9      Tenm1     TENM1
+    ## 10        Th        TH
 
 Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because the gene was filtered in the pre-processing stage due to low expression.
 
 ``` r
-allGenes[!allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+allHumanDopaGenes[!allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 ```
 
     ## [1] "CHRNA6"
 
 ``` r
-allGenesInDataset = allGenes[allGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+lesnickHumanDopaGenes = allHumanDopaGenes[allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 ```
 
 Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
 
 ``` r
-allGenesInDataset[!allGenesInDataset %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
+lesnickHumanDopaGenes[!lesnickHumanDopaGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
 ```
 
     ## [1] "PRKCG"
@@ -552,9 +541,9 @@ toPlot %>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
     reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
-    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
-                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
-    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = '(CHRNA6) not expressed';.[Gene %in% 'PRKCG'] = '(PRKCG) not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
     theme( axis.text.x= element_blank()) + 
@@ -571,13 +560,13 @@ toPlot %>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
     reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
-    dplyr::mutate(notUsed = rep('used',length(Gene)) %>%
-                      {.[Gene %in% 'CHRNA6'] = 'not expressed';.[Gene %in% 'PRKCG'] = 'not correlated';.}) %>% 
-    ggplot(aes(y = Expression, x = Sample, group = Gene, color = notUsed)) + 
+    dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
+                      {.[Gene %in% 'CHRNA6'] = 'CHRNA6 - not expressed';.[Gene %in% 'PRKCG'] = 'PRKCG - not correlated';.}) %>% 
+    ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
     theme( axis.text.x= element_blank()) + 
-    ggtitle('Non-scaled expression of markers')
+    ggtitle('Nonscaled expression of markers')
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png)
