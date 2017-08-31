@@ -443,9 +443,10 @@ ls(estimations$estimates)
     ## [7] "Oligo"                  "Serotonergic"
 
 ``` r
-dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopaminergic, 
-                               state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
-                               check.names=FALSE)
+dopaminergicFrame =
+    data.frame(`Dopaminergic MGP` = estimations$estimates$Dopaminergic, 
+               state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
+               check.names=FALSE)
 
 ggplot2::ggplot(dopaminergicFrame, 
                 aes(x = state, y = `Dopaminergic MGP`)) + 
