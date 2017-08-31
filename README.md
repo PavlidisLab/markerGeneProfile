@@ -353,7 +353,9 @@ library(dplyr)
 
 ``` r
 data(mgp_LesnickParkinsonsExp)
-mgp_LesnickParkinsonsExp %>% dplyr::select(-GeneNames) %>% head %>% {.[,1:6]}
+mgp_LesnickParkinsonsExp %>%
+    dplyr::select(-GeneNames) %>%
+    head %>% {.[,1:6]}
 ```
 
     ##           Probe Gene.Symbol   NCBIids GSM184354.cel GSM184355.cel
@@ -388,10 +390,14 @@ Before MGP estimation, it is important to filter expression data of low expresse
 
 ``` r
 unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
-medExp = mgp_LesnickParkinsonsExp %>% ogbox::sepExpr() %>% {.[[2]]} %>% unlist %>% median
+medExp = mgp_LesnickParkinsonsExp %>% 
+    ogbox::sepExpr() %>% {.[[2]]} %>%
+    unlist %>% median
 
 # mostVariable function is part of this package that does probe selection and filtering for you
-mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,threshold = medExp, threshFun= median)
+mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,
+                                        threshold = medExp, 
+                                        threshFun= median)
 ```
 
 ### MGP estimation
@@ -441,7 +447,8 @@ dopaminergicFrame = data.frame(`Dopaminergic MGP` = estimations$estimates$Dopami
                                state = estimations$groups$Dopaminergic, # note that unless outlierSampleRemove is TRUE this will be always the same as the groups input
                                check.names=FALSE)
 
-ggplot2::ggplot(dopaminergicFrame, aes(x = state, y = `Dopaminergic MGP`)) + 
+ggplot2::ggplot(dopaminergicFrame, 
+                aes(x = state, y = `Dopaminergic MGP`)) + 
     ogbox::geom_ogboxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
@@ -474,7 +481,8 @@ estimations$usedMarkerExpression$Dopaminergic%>%
                       col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
                           ogbox::toColor(palette = c('Control' = 'blue',
-                                                     "PD" = "red")) %$% cols ,margins = c(5,5))
+                                                     "PD" = "red")) %$% cols ,
+                      margins = c(5,5))
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
@@ -528,7 +536,8 @@ genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
 By looking at the unfiltered expression data, we can see how these two genes were unsuitable for MGP estimation
 
 ``` r
-toPlot = unfilteredParkinsonsExp[unfilteredParkinsonsExp$Gene.Symbol %in%
+toPlot = 
+    unfilteredParkinsonsExp[unfilteredParkinsonsExp$Gene.Symbol %in%
                                      homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene,] %>%
     mostVariable(threshold = 0) 
 
@@ -539,8 +548,10 @@ toPlot %>%
     apply(1,function(x){ogbox::scale01(x)}) %>%
     t %>%
     {rownames(.) = 
-        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
-    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% 
+                               homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% 
+    {colnames(.) = c('Gene','Sample','Expression');.} %>% 
     dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
                       {.[Gene %in% 'CHRNA6'] = '(CHRNA6) not expressed';.[Gene %in% 'PRKCG'] = '(PRKCG) not correlated';.}) %>% 
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
@@ -558,8 +569,10 @@ toPlot %>%
     ogbox::sepExpr() %>%
     {.[[2]]} %>% as.matrix()%>%
     {rownames(.) = 
-        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
-    reshape2::melt() %>% {colnames(.) = c('Gene','Sample','Expression');.} %>% 
+        toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% 
+                               homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene];.} %>%
+    reshape2::melt() %>% 
+    {colnames(.) = c('Gene','Sample','Expression');.} %>% 
     dplyr::mutate(`Is used?` = rep('used',length(Gene)) %>%
                       {.[Gene %in% 'CHRNA6'] = 'CHRNA6 - not expressed';.[Gene %in% 'PRKCG'] = 'PRKCG - not correlated';.}) %>% 
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
