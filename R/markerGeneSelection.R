@@ -452,7 +452,9 @@ rotateSelect = function(rotationOut,rotSelOut,cores=4, lilah=F, ...){
             print(paste('set core no to',cores))
         }
     }
-    doMC::registerDoMC(cores)
+    cl<-parallel::makeCluster(cores)
+    doSNOW::registerDoSNOW(cl)
+
 
     dirFols = list.dirs(rotationOut, recursive = F)
 
