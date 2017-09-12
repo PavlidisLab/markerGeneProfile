@@ -1,8 +1,8 @@
 #' Create cell type annotations per region.
 #' @description For each brain region, based on a defined hierarchy, it choses which samples to take in
 #' @param design A data.frame containing the design information
-#' @param regionNames a string naming the collumn of the design table that indicates the region names
-#' @param groupNames a string vector naming  the collumns of the design table that indicates cell type naming schemes.
+#' @param regionNames a string naming the column of the design table that indicates the region names
+#' @param groupNames a string vector naming  the columns of the design table that indicates cell type naming schemes.
 #' @param regionHierarchy a list of lists that represents the region hierarchy.
 #' @return A list containing character vectors that annotates samples. If the sample will not be considered for the region
 #' it will be represented as an NA, otherwise it'll have the cell type name indicated in the region

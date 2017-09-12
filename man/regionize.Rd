@@ -9,9 +9,9 @@ regionize(design, regionNames, groupNames, regionHierarchy = NULL)
 \arguments{
 \item{design}{A data.frame containing the design information}
 
-\item{regionNames}{a string naming the collumn of the design table that indicates the region names}
+\item{regionNames}{a string naming the column of the design table that indicates the region names}
 
-\item{groupNames}{a string vector naming  the collumns of the design table that indicates cell type naming schemes.}
+\item{groupNames}{a string vector naming  the columns of the design table that indicates cell type naming schemes.}
 
 \item{regionHierarchy}{a list of lists that represents the region hierarchy.}
 }
