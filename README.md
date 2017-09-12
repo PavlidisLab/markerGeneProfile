@@ -519,13 +519,13 @@ allHumanDopaGenes[!allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
     ## [1] "CHRNA6"
 
 ``` r
-lesnickHumanDopaGenes = allHumanDopaGenes[allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
+allGenes = allHumanDopaGenes[allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 ```
 
 Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
 
 ``` r
-lesnickHumanDopaGenes[!lesnickHumanDopaGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
+allGenes[!allGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
 ```
 
     ## [1] "PRKCG"
@@ -587,7 +587,7 @@ toPlot %>%
 
 Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckily lack of correlation reveals that it is not behaving as other marker genes.
 
-The ratio of `genesUsed` and `allGenesInDataset` can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
+The ratio of `genesUsed` and `allGenes` (all markers available in the study) can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
 
 ``` r
 estimations$removedMarkerRatios

@@ -9,9 +9,7 @@
 mgp_LesnickParkinsonsExp
 }
 \description{
-This dataset is provided to be used as an example for marker gene estimation. Only relevant marker
-genes are selected from the full dataset. Full dataset is available in the analysis package from
-Mancarci et al.
+This dataset is provided to be used as an example for marker gene estimation.
 }
 \seealso{
 \code{\link{mgp_LesnickCroppedMeta}}
