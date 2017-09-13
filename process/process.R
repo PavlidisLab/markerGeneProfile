@@ -70,7 +70,7 @@ use_data(mgp_LesnickParkinsonsExp, overwrite = TRUE)
 use_data(mgp_LesnickParkinsonsMeta, overwrite = TRUE)
 
 
-ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/regionize.R',lines = 5:18 )
+ogbox::loadGithub('oganm/neuroExpressoAnalysis/data/regionHierarchy.rda')
 mouseRegionHierarchy = regionHierarchy
 use_data(mouseRegionHierarchy, overwrite = TRUE)
 
