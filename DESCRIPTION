@@ -29,6 +29,7 @@ Enhances:
 Remotes:
     oganm/ogbox
     oganm/homologene
+    oganm/geneSynonym
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
