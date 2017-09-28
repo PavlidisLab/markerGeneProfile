@@ -23,8 +23,6 @@ Installation
 
 Use devtools to install. Additional github packages needs to be installed for it work.
 
-    devtools::install_github('oganm/homologene')
-    devtools::install_github('oganm/ogbox')
     devtools::install_github('oganm/markerGeneProfile')
 
 In this document additional packages are used that are not package dependencies
@@ -137,6 +135,9 @@ markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                  cores = 16 # number of cores to use in parallelization 
                  )
 ```
+
+    ## [1] "max cores exceeded"
+    ## [1] "set core no to 8"
 
 This creates 3 directories in the output directory
 

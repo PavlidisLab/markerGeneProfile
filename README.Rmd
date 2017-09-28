@@ -32,8 +32,6 @@ Installation
 
 Use devtools to install. Additional github packages needs to be installed for it work.
 ```
-devtools::install_github('oganm/homologene')
-devtools::install_github('oganm/ogbox')
 devtools::install_github('oganm/markerGeneProfile')
 ```
 
