@@ -26,6 +26,9 @@ Imports:
     memoise,
 Enhances:
     geneSynonym
+Remotes:
+    oganm/ogbox
+    oganm/homologene
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
