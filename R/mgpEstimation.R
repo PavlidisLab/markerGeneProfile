@@ -218,12 +218,12 @@ mgpEstimate = function(exprData,
                        seekConsensus = FALSE, # seeking concensus accross groups
                        removeMinority = TRUE,
                        plotType = c('groupBased','cummulative'), # group based plot requires groups
-                       permuations = 0,
-                       PC = 1){
+                       permutations = 0,
+                       PC = 1,
+                       cores= 1){
     if(exprData[[geneColName]] %>% duplicated %>% any){
         warning('You have duplicate genes in your expression data. Function will fail if marker genes have duplicates. Please summarize your data to gene level.')
     }
-    browser()
 
     if(!is.null(geneTransform)){
         transformedGenes = genes %>% lapply(geneTransform)
@@ -234,6 +234,31 @@ mgpEstimate = function(exprData,
         }
         genes = transformedGenes
 
+    }
+    # remove genes that are not included
+    genes %<>% lapply(function(x){
+        x[x %in% exprData[[geneColName]]]
+    })
+
+    if(permutations > 0){
+        randomGenes = genes %>% unlist %>% matchingGenes(exprData,n = permutations) %>% relist(genes)
+        randomEstimations = parallel::mclapply(1:permutations,function(i){
+            randoms = randomGenes %>% lapply(function(x){
+                x[i,] %>% unlist
+            })
+            mgpEstimate(exprData = exprData,
+                        genes = randoms,
+                        geneColName = geneColName,
+                        outlierSampleRemove = outlierSampleRemove,
+                        geneTransform = NULL,
+                        groups = groups,
+                        tableOut = NULL,
+                        indivGenePlot = NULL,
+                        seekConsensus =seekConsensus,
+                        removeMinority = removeMinority,
+                        PC = PC,
+                        permutations = 0)
+        },mc.cores= cores)
     }
 
     if(is.null(groups)){
@@ -436,6 +461,16 @@ mgpEstimate = function(exprData,
                    paste(problematic,collapse = ', ')))
     }
 
+    browser(expr = {permutations !=0})
+
+    if(permutations > 0){
+        randomCorrelations = names(estimateOut) %>% lapply(function(x){
+            estimations = randomEstimations %>%  sapply(function(y){
+                y$estimates[[x]]
+            })
+        })
+    }
+
     output = list(estimates=estimateOut,
                   groups=groupsOut,
                   rotations  = rotations,
@@ -450,11 +485,11 @@ mgpEstimate = function(exprData,
 }
 
 
-matchingGenes = function(genes,exprData, geneColName = 'Gene.Symbol',fun = median, tolerance=0.05){
+matchingGenes = function(genes,exprData, geneColName = 'Gene.Symbol',fun = median,n= 500 ,tolerance=0.05){
     medExpression = exprData %>% ogbox::sepExpr() %>% {.[[2]]} %>%  apply(1,fun)
     names(medExpression) = exprData[[geneColName]]
 
-    ogbox::pickRandom(labels = genes, allValues = medExpression, tolerance = tolerance)
+    ogbox::pickRandom(labels = genes, allValues = medExpression, tolerance = tolerance,n = n)
 
 }
 

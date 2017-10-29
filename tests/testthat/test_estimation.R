@@ -19,7 +19,7 @@ test_that("Estimation in actual dataset",{
     estimates = mgpEstimate(exprData = mgp_LesnickParkinsonsExp,
                 genes = mouseMarkerGenes$Midbrain,
                 geneColName = 'Gene.Symbol',
-                groups = mgp_LesnickParkinsonsMeta$disease)
+                groups = mgp_LesnickParkinsonsMeta$disease,permutations = 500,cores = 15)
     cells = names(mouseMarkerGenes$Midbrain)
 
     less = sapply(1:length(estimates$estimates),function(i){
