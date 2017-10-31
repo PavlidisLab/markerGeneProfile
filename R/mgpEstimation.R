@@ -468,8 +468,28 @@ mgpEstimate = function(exprData,
             estimations = randomEstimations %>%  sapply(function(y){
                 y$estimates[[x]]
             })
+            if(!is.null(groups)){
+                for (z in unique(groups)){
+                    print(z)
+                    estimations[groups %in% z,] %>% cor %>%abs %>% density %>% plot(main = paste(x,z,'random'))
+                    cor(estimateOut[[x]][groups %in% z],estimations[groups %in% z,]) %>% abs %>% density %>% plot(main = paste(x,z,'with real'))
+                }
+            } else{
+                # meanRandomEstimate = estimations %>% apply(1,mean)
+                #
+                # cor(estimations) %>% density %>% plot(main = paste0(x,' random'))
+                # cor(estimations) %>% mean
+                #
+                # cor(estimateOut[[x]],estimations) %>% density %>% plot(main = paste0(x,' with real'))
+                # cor(estimateOut[[x]],meanRandomEstimate)
+                #
+                # cor(estimateOut[[x]],estimations) %>% mean
+            }
+            cor(estimations) %>% abs %>% density %>% plot(main = paste0(x,' random'))
+            cor(estimateOut[[x]],estimations) %>% abs %>% density %>% plot(main = paste0(x,' with real'))
         })
-    }
+
+        }
 
     output = list(estimates=estimateOut,
                   groups=groupsOut,
