@@ -449,19 +449,6 @@ mgpEstimate = function(exprData,
     return(output)
 }
 
-
-matchingGenes = function(genes,exprData, geneColName = 'Gene.Symbol',fun = median, tolerance=0.05){
-    medExpression = exprData %>% ogbox::sepExpr() %>% {.[[2]]} %>%  apply(1,fun)
-    names(medExpression) = exprData[[geneColName]]
-
-    ogbox::pickRandom(labels = genes, allValues = medExpression, tolerance = tolerance)
-
-}
-
-
-
-
-
 #' Calculates rotations based on each group
 #' @param exprData data.frame. Expression data. First collumns of the expression data should include gene names in the
 #' same format as the ones specified in the marker gene lists. Any other non-expression related fields must not be of
