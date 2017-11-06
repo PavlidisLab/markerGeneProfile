@@ -38,10 +38,11 @@ devtools::install_github('oganm/markerGeneProfile')
 In this document additional packages are used that are not package dependencies
 
 ```
-install.packages(ggplot2)
-install.packages(gplots)
-install.packages(viridis)
-install.packages(dplyr)
+install.packages('ggplot2')
+install.packages('gplots')
+install.packages('viridis')
+install.packages('dplyr')
+install.packages('knitr')
 ```
 
 Usage
@@ -59,7 +60,7 @@ This package includes a sample cell type-specific transcriptomic dataset represe
 
 ```{r}
 data(mgp_sampleProfilesMeta)
-kable(head(mgp_sampleProfilesMeta))
+knitr::kable(head(mgp_sampleProfilesMeta))
 ```
 
 **sampleName:** name of the samples. This needs to correspond to column names in the expression file.
@@ -80,7 +81,7 @@ kable(head(mgp_sampleProfilesMeta))
 
 ```{r}
 data(mgp_sampleProfiles)
-kable(mgp_sampleProfiles)
+knitr::kable(mgp_sampleProfiles)
 ```
 
 `mpg_sampleRegionHiearchy` is a sample region hiearchy. It is a nested named list.
@@ -121,7 +122,7 @@ list.files('README_files/quickSelection')
 The `CellType` directory is a list of marker genes that disregards all region specifications (redundant with `All_CellType` in this case) while `Region 2_CellType` and `All_CellType` directories inlcude cell types from the relevant region. Note the absence of `Region 1_CellType` since that region only has a single cell type. 
 
 ```{r}
-read.table('README_files/quickSelection/All_CellType/Cell C') %>% kable
+read.table('README_files/quickSelection/All_CellType/Cell C') %>% knitr::kable()
 ```
 
 This file shows the candidate genes for cell type `Cell C` in region `All`. The first column is the gene identifier, the second is change in expression in log_2 scale and the third one is the silhouette coefficient. Note that `Gene6` is absent since its expression level was below the minimum level allowed. `markerCandidates` function does not apply a threshold for silhouette coefficient it also doesn't check to see if a gene satisfies fold change threshold for multiple genes. `pickMarkers` function does that.
@@ -283,16 +284,16 @@ Based on these results we can say that there is indeed a significant difference 
 
 This difference can be also observed by looking at gene expression of markers
 
-```{r}
+```{r,fig.height=8,fig.width=10}
 estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
                       scale='row',Rowv = FALSE,Colv = FALSE, dendrogram = 'none',
-                      col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
+                      col= viridis::viridis(10),cexRow = 1.5, cexCol = 1,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
                           ogbox::toColor(palette = c('Control' = 'blue',
                                                      "PD" = "red")) %$% cols ,
-                      margins = c(5,5))
+                      margins = c(7,8))
 ```
 
 Indeed in general most marker genes have a high expression is control samples which are shown in green.
@@ -324,7 +325,7 @@ genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
 
 By looking at the unfiltered expression data, we can see how these two genes were unsuitable for MGP estimation
 
-```{r}
+```{r,fig.height=8,fig.width=12}
 toPlot = 
     unfilteredParkinsonsExp[unfilteredParkinsonsExp$Gene.Symbol %in%
                                      homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic)$humanGene,] %>%
@@ -346,7 +347,12 @@ toPlot %>%
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
-    theme( axis.text.x= element_blank()) + 
+    theme( axis.text.x= element_blank(),
+           axis.title = element_text(size = 20),
+           legend.text = element_text(size = 17),
+           legend.title = element_text(size=22),
+           plot.title = element_text(size = 20)
+           ) + 
     ggtitle('Scaled expression of markers')
 
 toPlot %>%
@@ -363,7 +369,12 @@ toPlot %>%
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
-    theme( axis.text.x= element_blank()) + 
+       theme( axis.text.x= element_blank(),
+           axis.title = element_text(size = 20),
+           legend.text = element_text(size = 17),
+           legend.title = element_text(size=22),
+           plot.title = element_text(size = 20)
+           )+ 
     ggtitle('Nonscaled expression of markers')
 
 
