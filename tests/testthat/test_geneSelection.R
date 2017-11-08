@@ -17,7 +17,7 @@ test_that('single run gene selection',{
                      minimumExpression = 8,
                      regionHierarchy = mpg_sampleRegionHiearchy,
                      geneID = 'Gene.Symbol',
-                     cores = 1)
+                     cores = 1,rotate = 0.33)
     testthat::expect_that(list.files(file.path(tempDir,'markers')),
                 testthat::equals(c("All_CellType", "CellType", "Region 2_CellType")))
     markers = pickMarkersAll(file.path(tempDir,'markers'))
