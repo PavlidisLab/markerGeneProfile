@@ -223,7 +223,6 @@ mgpEstimate = function(exprData,
     if(exprData[[geneColName]] %>% duplicated %>% any){
         warning('You have duplicate genes in your expression data. Function will fail if marker genes have duplicates. Please summarize your data to gene level.')
     }
-    browser()
 
     if(!is.null(geneTransform)){
         transformedGenes = genes %>% lapply(geneTransform)
