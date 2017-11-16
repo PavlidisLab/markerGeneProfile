@@ -23,16 +23,15 @@ Installation
 
 Use devtools to install. Additional github packages needs to be installed for it work.
 
-    devtools::install_github('oganm/homologene')
-    devtools::install_github('oganm/ogbox')
     devtools::install_github('oganm/markerGeneProfile')
 
 In this document additional packages are used that are not package dependencies
 
-    install.packages(ggplot2)
-    install.packages(gplots)
-    install.packages(viridis)
-    install.packages(dplyr)
+    install.packages('ggplot2')
+    install.packages('gplots')
+    install.packages('viridis')
+    install.packages('dplyr')
+    install.packages('knitr')
 
 Usage
 =====
@@ -50,7 +49,7 @@ This package includes a sample cell type-specific transcriptomic dataset represe
 
 ``` r
 data(mgp_sampleProfilesMeta)
-kable(head(mgp_sampleProfilesMeta))
+knitr::kable(head(mgp_sampleProfilesMeta))
 ```
 
 | sampleName |  replicate|  PMID| CellType | region   | RegionToParent | RegionToChildren |
@@ -80,7 +79,7 @@ kable(head(mgp_sampleProfilesMeta))
 
 ``` r
 data(mgp_sampleProfiles)
-kable(mgp_sampleProfiles)
+knitr::kable(mgp_sampleProfiles)
 ```
 
 | Gene.Symbol |  Sample01|  Sample02|  Sample03|  Sample04|  Sample05|  Sample06|  Sample07|  Sample08|  Sample09|  Sample10|  Sample11|  Sample12|  Sample13|  Sample14|  Sample15|  Sample16|  Sample17|  Sample18|
@@ -107,7 +106,7 @@ mpg_sampleRegionHiearchy
     ## [1] ""
 
 ``` r
-ogbox::nametree(mpg_sampleRegionHiearchy)
+nametree(mpg_sampleRegionHiearchy)
 ```
 
     ## All
@@ -149,7 +148,7 @@ list.files('README_files/quickSelection')
 The `CellType` directory is a list of marker genes that disregards all region specifications (redundant with `All_CellType` in this case) while `Region 2_CellType` and `All_CellType` directories inlcude cell types from the relevant region. Note the absence of `Region 1_CellType` since that region only has a single cell type.
 
 ``` r
-read.table('README_files/quickSelection/All_CellType/Cell C') %>% kable
+read.table('README_files/quickSelection/All_CellType/Cell C') %>% knitr::kable()
 ```
 
 | V1    |   V2|   V3|   V4|
@@ -391,7 +390,7 @@ Before MGP estimation, it is important to filter expression data of low expresse
 ``` r
 unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
 medExp = mgp_LesnickParkinsonsExp %>% 
-    ogbox::sepExpr() %>% {.[[2]]} %>%
+    sepExpr() %>% {.[[2]]} %>%
     unlist %>% median
 
 # mostVariable function is part of this package that does probe selection and filtering for you
@@ -450,7 +449,7 @@ dopaminergicFrame =
 
 ggplot2::ggplot(dopaminergicFrame, 
                 aes(x = state, y = `Dopaminergic MGP`)) + 
-    ogbox::geom_ogboxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
+    geom_boxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
@@ -479,11 +478,11 @@ estimations$usedMarkerExpression$Dopaminergic%>%
     as.matrix %>%
     gplots::heatmap.2(trace = 'none',
                       scale='row',Rowv = FALSE,Colv = FALSE, dendrogram = 'none',
-                      col= viridis::viridis(10),cexRow = 1, cexCol = 0.5,
+                      col= viridis::viridis(10),cexRow = 1.5, cexCol = 1,
                       ColSideColors = estimations$groups$Dopaminergic %>% 
-                          ogbox::toColor(palette = c('Control' = 'blue',
+                          toColor(palette = c('Control' = 'blue',
                                                      "PD" = "red")) %$% cols ,
-                      margins = c(5,5))
+                      margins = c(7,8))
 ```
 
 ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
@@ -544,9 +543,9 @@ toPlot =
 
 toPlot %>%
     mostVariable(threshold = 0) %>% 
-    ogbox::sepExpr() %>%
+    sepExpr() %>%
     {.[[2]]} %>% as.matrix() %>% 
-    apply(1,function(x){ogbox::scale01(x)}) %>%
+    apply(1,function(x){scale01(x)}) %>%
     t %>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% 
@@ -558,7 +557,12 @@ toPlot %>%
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
-    theme( axis.text.x= element_blank()) + 
+    theme( axis.text.x= element_blank(),
+           axis.title = element_text(size = 20),
+           legend.text = element_text(size = 17),
+           legend.title = element_text(size=22),
+           plot.title = element_text(size = 20)
+           ) + 
     ggtitle('Scaled expression of markers')
 ```
 
@@ -567,7 +571,7 @@ toPlot %>%
 ``` r
 toPlot %>%
     mostVariable(threshold = 0) %>% 
-    ogbox::sepExpr() %>%
+    sepExpr() %>%
     {.[[2]]} %>% as.matrix()%>%
     {rownames(.) = 
         toPlot$Gene.Symbol[toPlot$Gene.Symbol %in% 
@@ -579,7 +583,12 @@ toPlot %>%
     ggplot(aes(y = Expression, x = Sample, group = Gene, color = `Is used?`)) + 
     geom_line() + 
     cowplot::theme_cowplot() +
-    theme( axis.text.x= element_blank()) + 
+       theme( axis.text.x= element_blank(),
+           axis.title = element_text(size = 20),
+           legend.text = element_text(size = 17),
+           legend.title = element_text(size=22),
+           plot.title = element_text(size = 20)
+           )+ 
     ggtitle('Nonscaled expression of markers')
 ```
 

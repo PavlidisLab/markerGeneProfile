@@ -8,7 +8,7 @@ mgpEstimate(exprData, genes, geneColName = "Gene.Symbol",
   outlierSampleRemove = FALSE, geneTransform = function(x) {    
   homologene::mouse2human(x)$humanGene }, groups = NULL, tableOut = NULL,
   indivGenePlot = NULL, seekConsensus = FALSE, removeMinority = TRUE,
-  plotType = c("groupBased", "cummulative"), PC = 1)
+  plotType = c("groupBased", "cummulative"), permuations = 0, PC = 1)
 }
 \arguments{
 \item{exprData}{data.frame. Expression data. First collumns of the expression data should include gene names in the

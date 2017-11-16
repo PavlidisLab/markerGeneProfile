@@ -208,17 +208,18 @@ plotEstimates = function(estimates,groups,plotNames= NULL, sigTest =  wilcox.tes
 #' }
 #' @export
 mgpEstimate = function(exprData,
-                            genes,
-                            geneColName = 'Gene.Symbol',
-                            outlierSampleRemove = FALSE,
-                            geneTransform = function(x){homologene::mouse2human(x)$humanGene},
-                            groups = NULL, # a vector designating the groups. must be defined.
-                            tableOut = NULL,
-                            indivGenePlot = NULL, # where should it plot individual gene expression plots.
-                            seekConsensus = FALSE, # seeking concensus accross groups
-                            removeMinority = TRUE,
-                            plotType = c('groupBased','cummulative'), # group based plot requires groups
-                            PC = 1){
+                       genes,
+                       geneColName = 'Gene.Symbol',
+                       outlierSampleRemove = FALSE,
+                       geneTransform = function(x){homologene::mouse2human(x)$humanGene},
+                       groups = NULL, # a vector designating the groups. must be defined.
+                       tableOut = NULL,
+                       indivGenePlot = NULL, # where should it plot individual gene expression plots.
+                       seekConsensus = FALSE, # seeking concensus accross groups
+                       removeMinority = TRUE,
+                       plotType = c('groupBased','cummulative'), # group based plot requires groups
+                       permuations = 0,
+                       PC = 1){
     if(exprData[[geneColName]] %>% duplicated %>% any){
         warning('You have duplicate genes in your expression data. Function will fail if marker genes have duplicates. Please summarize your data to gene level.')
     }
@@ -380,9 +381,9 @@ mgpEstimate = function(exprData,
                        fileConn)
             close(fileConn)
             utils::write.table(pca$rotation[,PC,drop=F],
-                        file = tableOut[i],
-                        quote = F, row.names = T, col.names = F, sep='\t',
-                        append = T)
+                               file = tableOut[i],
+                               quote = F, row.names = T, col.names = F, sep='\t',
+                               append = T)
         }
 
 
@@ -494,7 +495,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         allRotations[[i]] = rotations
         if (!is.null(outDir)){
             utils::write.table(rotations[order(apply(rotations,1,sum),decreasing=T),],
-                        file = paste0(outDir,'/',names(genes)[i], ' groupRots'), quote=F,sep = '\t')
+                               file = paste0(outDir,'/',names(genes)[i], ' groupRots'), quote=F,sep = '\t')
         }
     }
     names(allRotations) = names(genes)

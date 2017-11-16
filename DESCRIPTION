@@ -8,7 +8,6 @@ Description: This package is for estimation of cell type marker gene profiles
 Depends:
     R (>= 3.1)
 Imports:
-    ogbox,
     homologene,
     ggplot2,
     dplyr,
@@ -26,6 +25,9 @@ Imports:
     memoise,
 Enhances:
     geneSynonym
+Remotes:
+    oganm/homologene,
+    oganm/geneSynonym
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false

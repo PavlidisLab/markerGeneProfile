@@ -9,8 +9,6 @@
 \alias{reexports}
 \alias{\%$\%}
 \alias{reexports}
-\alias{list}
-\alias{reexports}
 \alias{\%dorng\%}
 \alias{reexports}
 \alias{\%dopar\%}
@@ -26,7 +24,5 @@ below to see their documentation.
   \item{foreach}{\code{\link[foreach]{\%dopar\%}}}
 
   \item{magrittr}{\code{\link[magrittr]{\%>\%}}, \code{\link[magrittr]{\%<>\%}}, \code{\link[magrittr]{\%$\%}}}
-
-  \item{ogbox}{\code{\link[ogbox]{list}}}
 }}
 
