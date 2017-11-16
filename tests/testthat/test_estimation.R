@@ -13,7 +13,7 @@ test_that("Estimation in actual dataset",{
     data(mgp_LesnickParkinsonsExp)
     data(mgp_LesnickParkinsonsMeta)
     data(mouseMarkerGenes)
-    medExp = mgp_LesnickParkinsonsExp %>% ogbox::sepExpr() %>% {.[[2]]} %>% unlist %>% median
+    medExp = mgp_LesnickParkinsonsExp %>% sepExpr() %>% {.[[2]]} %>% unlist %>% median
     mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,threshold = medExp, threshFun= median)
 
     estimates = mgpEstimate(exprData = mgp_LesnickParkinsonsExp,
