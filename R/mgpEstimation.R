@@ -50,8 +50,8 @@ fullEstimate = function(exprData, # expression data
                                  removeMinority = removeMinority,
                                  PC = PC,
                                  geneTransform = geneTransform)
-    estimates$estimates = ogbox::trimNAs(estimates$estimates)
-    estimates$groups = ogbox::trimNAs(estimates$groups)
+    estimates$estimates = trimNAs(estimates$estimates)
+    estimates$groups = trimNAs(estimates$groups)
 
 
     if (!is.null(estimateFile) & !outlierSampleRemove){
@@ -236,7 +236,7 @@ mgpEstimate = function(exprData,
 
     if(is.null(groups)){
         assertthat::assert_that(seekConsensus == FALSE & is.null(groups))
-        list[, exp] = ogbox::sepExpr(exprData)
+        list[, exp] = sepExpr(exprData)
         groups = rep(1,ncol(exp))
     }
     if (!is.null(indivGenePlot[1])){
@@ -281,7 +281,7 @@ mgpEstimate = function(exprData,
         # some repetition here because I want to capture the original PCA's before removing anything else/
         relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
         rownames(relevantData) = relevantData[, geneColName]
-        list[,relevantExpr] = ogbox::sepExpr(relevantData)
+        list[,relevantExpr] = sepExpr(relevantData)
         if (nrow(relevantData)==0){
             estimateOut[[i]]=NA
             groupsOut[[i]]=NA
@@ -309,7 +309,7 @@ mgpEstimate = function(exprData,
         }
 
         rownames(relevantData) = relevantData[, geneColName]
-        list[,relevantExpr] = ogbox::sepExpr(relevantData)
+        list[,relevantExpr] = sepExpr(relevantData)
 
 
         if (!is.null(indivGenePlot[1])){
@@ -389,7 +389,7 @@ mgpEstimate = function(exprData,
         pca$x = t(as.matrix(t(scale(t(relevantExpr))))) %*% as.matrix(pca$rotation)
 
         # experimental simple scaling -----
-        simpleScaleWeights = ogbox::scale01(pca$rotation[,PC])/(sum(ogbox::scale01(pca$rotation[,PC])))
+        simpleScaleWeights = scale01(pca$rotation[,PC])/(sum(scale01(pca$rotation[,PC])))
         simpleScale =  apply((relevantExpr * simpleScaleWeights),2,sum)
         simpleScaledEstimation[[i]] = simpleScale # this is an experimental output
 
@@ -481,7 +481,7 @@ groupRotations = function(exprData, genes,geneColName, groups, outDir,
         }
 
         rownames(relevantData) = relevantData[, geneColName]
-        list[,relevantExpr] = ogbox::sepExpr(relevantData)
+        list[,relevantExpr] = sepExpr(relevantData)
 
         for (j in 1:length(unique(groups))){
             pca = stats::prcomp(t(relevantExpr[groups %in% unique(groups)[j]]), scale = T)

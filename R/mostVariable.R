@@ -7,7 +7,7 @@
 #' @param threshFun If filtering should be done, function to apply to the gene row to compare with the threshold. By default genes are removed if maximum expression is below 6
 #' @export
 mostVariable = function(x,genes = 'Gene.Symbol', threshold = 6, threshFun = max){
-    list[,exprData]= ogbox::sepExpr(x)
+    list[,exprData]= sepExpr(x)
     rowmax = apply(exprData, 1, threshFun)
     discludeGenes = (rowmax<threshold)
     x = x[!discludeGenes,]

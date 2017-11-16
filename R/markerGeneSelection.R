@@ -105,7 +105,7 @@ markerCandidates = function(design,
             data = (exprData[ (1:nrow(design) %in% c(groupInfo1, groupInfo2)),  daGeneIndex])
             cluster = list(clustering = clustering, data = data)
             silo = cluster::silhouette(cluster,stats::dist(data))
-            if(!is.na(silo)){
+            if(!is.na(silo[1])){
                 return(mean(silo[,3]))
             } else{
                 2*(exprData[1:nrow(design) %in% groupInfo1,daGeneIndex] > exprData[1:nrow(design) %in% groupInfo2,daGeneIndex])-1
@@ -122,7 +122,7 @@ markerCandidates = function(design,
     #design = read.design(designLoc)
 
     #expression = read.csv(exprLoc, header = T)
-    list[geneData, exprData] = ogbox::sepExpr(expression)
+    list[geneData, exprData] = sepExpr(expression)
 
     if (!all(colnames(exprData) %in% design[[sampleName]])){
         if(is.null(rotate)){
@@ -160,7 +160,7 @@ markerCandidates = function(design,
     for (i in 1:length(groupNamesEn)){
         nameGroups[[i]] = design[,groupNamesEn[i]]
     }
-    nameGroups = nameGroups[unlist(lapply(lapply(lapply(nameGroups,unique),ogbox::trimNAs),length)) > 1]
+    nameGroups = nameGroups[unlist(lapply(lapply(lapply(nameGroups,unique), trimNAs),length)) > 1]
     #debug exclude
     if (!is.null(debug)){
         nameGroups = nameGroups[names(nameGroups) %in% debug]
@@ -174,10 +174,11 @@ markerCandidates = function(design,
     } else {
         doRNG::registerDoRNG()
     }
-    foreach::foreach (i = 1:length(nameGroups)) %dorng% {
+    foreach::foreach (i = 1:length(nameGroups), .export = c('trimNAs')) %dorng% {
+    # for(i in 1:length(nameGroups)){
         # for (i in 1:length(nameGroups)){
         #debub point for groups
-        typeNames = ogbox::trimNAs(unique(nameGroups[[i]]))
+        typeNames = trimNAs(unique(nameGroups[[i]]))
         realGroups = vector(mode = 'list', length = length(typeNames))
         names(realGroups) = typeNames
         for (j in 1:length(typeNames)){
@@ -407,7 +408,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,minSilhou
     # place later since the point of this function was supposed to be filtering the genes as well
     if (ncol(fileContents[[1]])!=1){
         for (i in 1:length(geneList)){
-            puristList[[i]] = ogbox::trimElement(geneList[[i]], unlist(geneList[-i]))
+            puristList[[i]] = trimElement(geneList[[i]], unlist(geneList[-i]))
         }
     } else {
         puristList = geneList
@@ -428,7 +429,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,minSilhou
 #' @export
 findGene = function(gene,list){
     out = lapply(list, function(x){
-        ogbox::findInList(gene,x)
+        findInList(gene,x)
     })
     matches = out[lapply(out,length)>0]
     if (length(matches)<1){
@@ -460,7 +461,7 @@ rotateSelect = function(rotationOut,rotSelOut,cores=4, lilah=F, ...){
 
     loopAround = list.dirs(dirFols[1],full.names = F)
 
-    # in server version full.names input of list.dirs do not work. This fixes it. Might add this to ogbox as an overwrite.
+    # in server version full.names input of list.dirs do not work. This fixes it.
     loopAround = gsub(paste0(dirFols[1],'/'),'',loopAround)
     loopAround = loopAround[!grepl(dirFols[1],loopAround)]
 

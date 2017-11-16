@@ -28,7 +28,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
 
     # some non used samples have undefined regions, trim those since you don't use them anyway
     regionsData = design[design[,groupNames, drop=F]%>% apply(1,function(x){all(!is.na(x))}),
-                         regionNames] %>% as.character %>% strsplit(',') %>% unlist %>% (ogbox::trimNAs) %>% unique
+                         regionNames] %>% as.character %>% strsplit(',') %>% unlist %>% (trimNAs) %>% unique
 
     # ensure that every region in the dataset is somewhere in the tree
     assertthat::assert_that(length(regionsData[!(regionsData %in%  regionsTree)]) == 0)
@@ -94,7 +94,7 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
                 }) %>% all
                 if (!override){
                     toChild = regionBased$region[i] %>%
-                        grepl(paste0('^',ogbox::regexMerge( regionList[[j]], exact=TRUE)), .)
+                        grepl(paste0('^',regexMerge( regionList[[j]], exact=TRUE)), .)
                     inReg = inReg | toChild
                 }
 
