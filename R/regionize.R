@@ -87,11 +87,24 @@ regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
             if(design[j,'RegionToChildren']){
                 # take a quick peek to make sure the cell type doesn't exist in a region closer to the core region
                 otherSamples = regionList[design[,regionBased$groupName[i]] == design[j,regionBased$groupName[i]]] %>% .[sapply(.,function(x){!is.null(x)})]
-                otherSamples %<>% unlist
+
+
+                # only look at samples that are ancestors of the target region
+                allowedRegions = regionBased$region[i] %>% strsplit('\\.') %>% {.[[1]]}
+                allowedRegions = seq_along(allowedRegions) %>% sapply(function(n){
+                    paste(allowedRegions[seq_len(n)],collapse ='.')
+                })
+                otherSamples %<>% unlist %>% {.[. %in% allowedRegions]}
+
                 override  = regionList[[j]] %>% sapply(function(x){
+                    if(!grepl(x = regionBased$region[i],pattern = x,fixed = TRUE)){
+                        # this checks to see if the compared region is related to the target region
+                        return(TRUE)
+                    }
                     gsub(paste0('\\Q',x,'\\E'),'', otherSamples[grepl(paste0('\\Q',x,'\\E'), otherSamples)]) %>%
                         nchar %>% {.>0} %>% any
                 }) %>% all
+
                 if (!override){
                     toChild = regionBased$region[i] %>%
                         grepl(paste0('^',regexMerge( regionList[[j]], exact=TRUE)), .)
