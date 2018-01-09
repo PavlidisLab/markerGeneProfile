@@ -133,7 +133,7 @@ markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                  background = 6, # background level of expression (default is 6)
                  regionHierarchy = mpg_sampleRegionHiearchy, # hierarchy of brain regions to be used
                  geneID = 'Gene.Symbol', # column name with with gene idenditifers
-                 cores = 16 # number of cores to use in parallelization 
+                 cores = 8 # number of cores to use in parallelization 
                  )
 ```
 
@@ -230,7 +230,7 @@ for (i in 1:10){
                      background = 6, # background level of expression (default is 6)
                      regionHierarchy = mpg_sampleRegionHiearchy, # hierarchy of brain regions to be used
                      geneID = 'Gene.Symbol', # column name with with gene idenditifers
-                     cores = 16, # number of cores to use in parallelization 
+                     cores = 8, # number of cores to use in parallelization 
                      rotate = 0.33,
                      seed = i
     )
@@ -242,7 +242,7 @@ This creates multiple selection directories. `rotateSelect` can be used to count
 ``` r
 rotateSelect(rotationOut='README_files/Rotation',
                  rotSelOut='README_files/RotSel',
-                 cores = 16,
+                 cores = 8,
                  foldChange = 1 # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
              )
 ```
@@ -385,7 +385,7 @@ mgp_LesnickParkinsonsMeta %>% head
     ## 5 GSM184358 Control
     ## 6 GSM184359 Control
 
-Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a maximum expression below the median
+Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a median expression below the median expression of the dataset.
 
 ``` r
 unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
@@ -452,7 +452,7 @@ ggplot2::ggplot(dopaminergicFrame,
     geom_boxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-17-1.png)
 
 To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
 
@@ -485,7 +485,7 @@ estimations$usedMarkerExpression$Dopaminergic%>%
                       margins = c(7,8))
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 Indeed in general most marker genes have a high expression is control samples which are shown in green.
 
@@ -566,7 +566,7 @@ toPlot %>%
     ggtitle('Scaled expression of markers')
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
 ``` r
 toPlot %>%
@@ -592,7 +592,7 @@ toPlot %>%
     ggtitle('Nonscaled expression of markers')
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-23-2.png)
+![](README_files/figure-markdown_github/unnamed-chunk-23-2.png)
 
 Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckily lack of correlation reveals that it is not behaving as other marker genes.
 

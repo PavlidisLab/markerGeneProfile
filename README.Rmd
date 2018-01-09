@@ -112,7 +112,7 @@ markerCandidates(design = mgp_sampleProfilesMeta, # the design file
                  background = 6, # background level of expression (default is 6)
                  regionHierarchy = mpg_sampleRegionHiearchy, # hierarchy of brain regions to be used
                  geneID = 'Gene.Symbol', # column name with with gene idenditifers
-                 cores = 16 # number of cores to use in parallelization 
+                 cores = 8 # number of cores to use in parallelization 
                  )
 ```
 This creates 3 directories in the output directory 
@@ -160,7 +160,7 @@ for (i in 1:10){
                      background = 6, # background level of expression (default is 6)
                      regionHierarchy = mpg_sampleRegionHiearchy, # hierarchy of brain regions to be used
                      geneID = 'Gene.Symbol', # column name with with gene idenditifers
-                     cores = 16, # number of cores to use in parallelization 
+                     cores = 8, # number of cores to use in parallelization 
                      rotate = 0.33,
                      seed = i
     )
@@ -171,7 +171,7 @@ This creates multiple selection directories. `rotateSelect` can be used to count
 ```{r, results= 'hide'}
 rotateSelect(rotationOut='README_files/Rotation',
                  rotSelOut='README_files/RotSel',
-                 cores = 16,
+                 cores = 8,
                  foldChange = 1 # this is a fixed fold change threshold that ignores some leniency that comes from markerCandidates. setting it to 1 makes it irrelevant
              )
 ```
@@ -215,7 +215,7 @@ mgp_LesnickParkinsonsMeta %>% head
 ```
 
 
-Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a maximum expression below the median
+Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a median expression below the median expression of the dataset.
 
 ```{r}
 unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
