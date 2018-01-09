@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/oganm/markerGeneProfile.svg?branch=master)](https://travis-ci.org/oganm/markerGeneProfile)[![codecov](https://codecov.io/gh/oganm/markerGeneProfile/branch/master/graph/badge.svg)](https://codecov.io/gh/oganm/markerGeneProfile)
+[![Build Status](https://travis-ci.org/PavlidisLab/markerGeneProfile.svg?branch=master)](https://travis-ci.org/PavlidisLab/markerGeneProfile)[![codecov](https://codecov.io/gh/PavlidisLab/markerGeneProfile/branch/master/graph/badge.svg)](https://codecov.io/gh/PavlidisLab/markerGeneProfile)
 
 markerGeneProfile
 =================
