@@ -220,6 +220,9 @@ mgpEstimate = function(exprData,
                        plotType = c('groupBased','cummulative'), # group based plot requires groups
                        permuations = 0,
                        PC = 1){
+
+    exprData %<>% as.data.frame
+
     if(exprData[[geneColName]] %>% duplicated %>% any){
         warning('You have duplicate genes in your expression data. Function will fail if marker genes have duplicates. Please summarize your data to gene level.')
     }

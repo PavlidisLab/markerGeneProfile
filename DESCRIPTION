@@ -23,6 +23,8 @@ Imports:
     doSNOW,
     foreach,
     memoise,
+Suggests:
+    tibble
 Enhances:
     geneSynonym
 Remotes:
