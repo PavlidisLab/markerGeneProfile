@@ -9,7 +9,7 @@ test_that("Basic estimation works",{
 })
 
 test_that("Basic estimation with tibbles",{
-    temp = tibble(Gene.Symbol = 'EpicMarker', sample1 = 4,sample2 = 8)
+    temp = tibble::tibble(Gene.Symbol = 'EpicMarker', sample1 = 4,sample2 = 8)
     genes = list(epicCellType = 'EpicMarker')
     estimates = mgpEstimate(exprData = temp,genes = genes,geneColName = 'Gene.Symbol', geneTransform = NULL)
     expect_that(estimates$estimates$epicCellType['sample2'],
