@@ -4,7 +4,7 @@
 markerGeneProfile
 =================
 
-This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et al. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
+This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in [Mancarci et al. 2017](http://www.eneuro.org/content/4/6/ENEURO.0212-17.2017). It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
 -   [markerGeneProfile](#markergeneprofile)
 -   [Table of Contents](#table-of-contents)
@@ -497,17 +497,17 @@ allHumanDopaGenes = mouseHumanGeneTable %$% humanGene
 mouseHumanGeneTable
 ```
 
-    ##    mouseGene humanGene
-    ## 1   Cacna2d2  CACNA2D2
-    ## 2     Cadps2    CADPS2
-    ## 3     Chrna6    CHRNA6
-    ## 4   Mapk8ip2  MAPK8IP2
-    ## 5      Nr4a2     NR4A2
-    ## 6       Ntn1      NTN1
-    ## 7      Prkcg     PRKCG
-    ## 8     Slc6a3    SLC6A3
-    ## 9      Tenm1     TENM1
-    ## 10        Th        TH
+    ##    mouseGene humanGene mouseID humanID
+    ## 1   Cacna2d2  CACNA2D2   56808    9254
+    ## 2     Cadps2    CADPS2  320405   93664
+    ## 3     Chrna6    CHRNA6   11440    8973
+    ## 4   Mapk8ip2  MAPK8IP2   60597   23542
+    ## 5      Nr4a2     NR4A2   18227    4929
+    ## 6       Ntn1      NTN1   18208    9423
+    ## 7      Prkcg     PRKCG   18752    5582
+    ## 8     Slc6a3    SLC6A3   13162    6531
+    ## 9      Tenm1     TENM1   23963   10178
+    ## 10        Th        TH   21823    7054
 
 Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because the gene was filtered in the pre-processing stage due to low expression.
 

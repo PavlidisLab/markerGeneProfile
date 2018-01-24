@@ -14,7 +14,7 @@ devtools::load_all()
 
 markerGeneProfile
 ==================
-This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in Mancarci et al. 2017. It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
+This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in [Mancarci et al. 2017](http://www.eneuro.org/content/4/6/ENEURO.0212-17.2017). It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
 
    * [markerGeneProfile](#markergeneprofile)
    * [Table of Contents](#table-of-contents)
