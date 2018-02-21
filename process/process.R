@@ -7,12 +7,23 @@ library(devtools)
 library(viridis)
 #loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
 load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenes.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesNCBI.rda')
+
 load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeep.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeepNCBI.rda')
+
 load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombined.rda')
+load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombinedNCBI.rda')
 
 use_data(mouseMarkerGenes,overwrite = TRUE)
+use_data(mouseMarkerGenesNCBI,overwrite = TRUE)
+
 use_data(mouseMarkerGenesPyramidalDeep,overwrite = TRUE)
+use_data(mouseMarkerGenesPyramidalDeepNCBI,overwrite = TRUE)
+
 use_data(mouseMarkerGenesCombined,overwrite = TRUE)
+use_data(mouseMarkerGenesCombinedNCBI,overwrite = TRUE)
+
 
 
 mgp_sampleProfiles = data.frame(
