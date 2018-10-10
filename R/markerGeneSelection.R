@@ -21,7 +21,7 @@
 #' @param foldChangeThresh minimum fold change required for selection
 #' @param minimumExpression minimum level of expression for a marker gene in its cell type
 #' @param background level of expression that should be considered as background level
-#' @param regionHiearchy hiearchy of regions.
+#' @param regionHierarchy hiearchy of regions.
 #' @param seed seed for random generation. if NULL will be set to random
 #' @export
 markerCandidates = function(design,
@@ -139,6 +139,12 @@ markerCandidates = function(design,
         regionNames = 'dummy'
         design[,regionNames] = 'dummy'
         noReg = T
+    }
+    if(!'RegionToParent' %in% colnames(design)){
+        design$RegionToParent = TRUE
+    }
+    if(!"RegionToChildren" %in% colnames(design)){
+        design$RegionToChildren = TRUE
     }
 
 
