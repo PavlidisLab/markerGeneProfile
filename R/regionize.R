@@ -8,6 +8,7 @@
 #' it will be represented as an NA, otherwise it'll have the cell type name indicated in the region
 #' @export
 regionize = function(design,regionNames,groupNames, regionHierarchy = NULL){
+    design %<>% as.data.frame
     # if a hierarchy is not provided, create one with a single layer
     if (is.null(regionHierarchy)){
         regionHierarchy = vector(mode='list',

@@ -41,6 +41,8 @@ markerCandidates = function(design,
                             regionHierarchy = NULL,
                             geneID = 'Gene.Symbol',
                             seed = NULL){
+
+    design %<>% as.data.frame()
     # source('R/regionHierarchy.R')
     # so that I wont fry my laptop
     if (parallel::detectCores()<cores){
