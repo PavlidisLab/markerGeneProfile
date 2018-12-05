@@ -24,6 +24,9 @@ Imports:
     foreach,
     memoise,
 Suggests:
+    testthat,
+    knitr,
+    rmarkdown,
     tibble
 Enhances:
     geneSynonym
@@ -34,7 +37,4 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: false
 RoxygenNote: 6.0.1
-Suggests: testthat,
-    knitr,
-    rmarkdown
 VignetteBuilder: knitr
