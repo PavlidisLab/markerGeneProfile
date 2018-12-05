@@ -4,7 +4,8 @@
 \alias{mostVariable}
 \title{Select most variable probeset}
 \usage{
-mostVariable(x, genes = "Gene.Symbol", threshold = 6, threshFun = max)
+mostVariable(x, genes = "Gene.Symbol", threshold = 6,
+  threshFun = max)
 }
 \arguments{
 \item{x}{Expression dataset to filter. A data frame. Gene names must be present as a column before the expression data}

@@ -4,13 +4,9 @@
 \name{reexports}
 \alias{reexports}
 \alias{\%>\%}
-\alias{reexports}
 \alias{\%<>\%}
-\alias{reexports}
 \alias{\%$\%}
-\alias{reexports}
 \alias{\%dorng\%}
-\alias{reexports}
 \alias{\%dopar\%}
 \title{Objects exported from other packages}
 \keyword{internal}

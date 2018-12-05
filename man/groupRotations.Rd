@@ -5,7 +5,8 @@
 \title{Calculates rotations based on each group}
 \usage{
 groupRotations(exprData, genes, geneColName, groups, outDir,
-  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene })
+  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene
+  })
 }
 \arguments{
 \item{exprData}{data.frame. Expression data. First collumns of the expression data should include gene names in the

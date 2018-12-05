@@ -7,9 +7,9 @@
 fullEstimate(exprData, genes, geneColName, groups, outDir,
   seekConsensus = FALSE, groupRotations = FALSE,
   outlierSampleRemove = FALSE, removeMinority = TRUE,
-  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene },
-  comparisons = "all", pAdjMethod = stats::p.adjust.methods, PC = 1,
-  estimateFile = NULL)
+  geneTransform = function(x) {     homologene::mouse2human(x)$humanGene
+  }, comparisons = "all", pAdjMethod = stats::p.adjust.methods,
+  PC = 1, estimateFile = NULL)
 }
 \arguments{
 \item{exprData}{data.frame. Expression data. First collumns of the expression data should include gene names in the same format

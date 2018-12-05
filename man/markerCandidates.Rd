@@ -4,11 +4,12 @@
 \alias{markerCandidates}
 \title{Write candidate marker genes to a file}
 \usage{
-markerCandidates(design, expression, outLoc, groupNames, regionNames = NULL,
-  PMID = "PMID", rotate = NULL, cores = 1, debug = NULL,
-  sampleName = "sampleName", replicates = "originalIndex",
-  foldChangeThresh = 10, minimumExpression = 8, background = 6,
-  regionHierarchy = NULL, geneID = "Gene.Symbol", seed = NULL)
+markerCandidates(design, expression, outLoc, groupNames,
+  regionNames = NULL, PMID = "PMID", rotate = NULL, cores = 1,
+  debug = NULL, sampleName = "sampleName",
+  replicates = "originalIndex", foldChangeThresh = 10,
+  minimumExpression = 8, background = 6, regionHierarchy = NULL,
+  geneID = "Gene.Symbol", seed = NULL)
 }
 \arguments{
 \item{design}{data.frame. Metadata for the samples.}
@@ -42,9 +43,9 @@ from the same study}
 
 \item{background}{level of expression that should be considered as background level}
 
-\item{seed}{seed for random generation. if NULL will be set to random}
+\item{regionHierarchy}{hiearchy of regions.}
 
-\item{regionHiearchy}{hiearchy of regions.}
+\item{seed}{seed for random generation. if NULL will be set to random}
 }
 \description{
 Writes candidate marker genes to a file along with other required information (fold change and silhouette coefficient)
