@@ -423,6 +423,8 @@ mgpEstimate = function(exprData,
         estimateOut[[i]]=(pca$x[,PC])
     } # end of main loop over genes
     names(usedMarkerExpression) =  names(genes)
+    names(allMarkerExpression) =  names(genes)
+
     names(meanUsedMarkerExpression) =  names(genes)
 
     names(estimateOut) = names(genes)
