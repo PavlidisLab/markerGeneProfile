@@ -279,6 +279,7 @@ mgpEstimate = function(exprData,
     meanUsedMarkerExpression = vector(mode = 'list', length = length(genes))
     usedMarkerExpression = vector(mode = 'list', length = length(genes))
     simpleScaledEstimation = vector(mode = 'list', length = length(genes))
+    allMarkerExpression = vector(mode = 'list', length = length(genes))
 
 
     for (i in 1:length(genes)){
@@ -286,6 +287,8 @@ mgpEstimate = function(exprData,
         relevantData = exprData[exprData[, geneColName] %in% genes[[i]],]
         rownames(relevantData) = relevantData[, geneColName]
         list[,relevantExpr] = sepExpr(relevantData)
+
+        allMarkerExpression[[i]] = relevantExpr
         if (nrow(relevantData)==0){
             estimateOut[[i]]=NA
             groupsOut[[i]]=NA
@@ -446,7 +449,8 @@ mgpEstimate = function(exprData,
                   removedMarkerRatios = removedMarkerRatios,
                   usedMarkerExpression = usedMarkerExpression,
                   meanUsedMarkerExpression = meanUsedMarkerExpression,
-                  simpleScaledEstimation = simpleScaledEstimation)
+                  simpleScaledEstimation = simpleScaledEstimation,
+                  allMarkerExpression = allMarkerExpression)
 
     return(output)
 }

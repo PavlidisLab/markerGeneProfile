@@ -1,6 +1,6 @@
 Package: markerGeneProfile
 Title: Cell type marker gene profiles in whole tissue samples
-Version: 1.0.1.9000
+Version: 1.0.2.9000
 Authors@R: person("B. Ogan", "Mancarci", email = "ogan.mancarci@msl.ubc.ca", role = c("aut", "cre"))
 Description: This package is for estimation of cell type marker gene profiles
     (MGP) in whole tissue samples. It includes functions for MGP estimation and
