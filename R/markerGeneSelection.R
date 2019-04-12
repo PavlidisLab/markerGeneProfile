@@ -407,7 +407,7 @@ pickMarkers = function(geneLoc, rotationThresh = 0.95,silhouette = 0.5,minSilhou
             geneList[[i]] = as.character(fileContents[[i]]$V1[as.numeric(as.character(fileContents[[i]]$V2))>rotationThresh])
         }
     } else {
-        stop('What kind of gibberish is this')
+        stop('File format not recognized')
     }
 
     puristList = vector(mode = 'list', length = length(geneList))
