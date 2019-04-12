@@ -497,7 +497,7 @@ rotateSelect = function(rotationOut,rotSelOut,cores=4, lilah=F, ...){
             pureConfidence = mapply(c,pureSample,pureConfidence,SIMPLIFY=FALSE)
             #print(names(pureConfidence))
             if(length(pureConfidence)>length(files)){
-                stop('dafaq man')
+                stop('Not all directories have the same content. The permutation process was probably interrupted. Check the directories and repeat the process if necessary.')
             }
         }
         confidence = lapply(pureConfidence,function(x){table(x)/length(dirFols)})
