@@ -1,31 +1,40 @@
 
-[![Build Status](https://travis-ci.org/PavlidisLab/markerGeneProfile.svg?branch=master)](https://travis-ci.org/PavlidisLab/markerGeneProfile)[![codecov](https://codecov.io/gh/PavlidisLab/markerGeneProfile/branch/master/graph/badge.svg)](https://codecov.io/gh/PavlidisLab/markerGeneProfile)
+[![Build
+Status](https://travis-ci.org/PavlidisLab/markerGeneProfile.svg?branch=master)](https://travis-ci.org/PavlidisLab/markerGeneProfile)[![codecov](https://codecov.io/gh/PavlidisLab/markerGeneProfile/branch/master/graph/badge.svg)](https://codecov.io/gh/PavlidisLab/markerGeneProfile)
 
-markerGeneProfile
-=================
+# markerGeneProfile
 
-This package includes functions responsible for marker gene selection and marker gene profile estimation estimation as described in [Mancarci et al. 2017](http://www.eneuro.org/content/4/6/ENEURO.0212-17.2017). It also includes a copy of mouse brain cell type markers from the [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis) package for convenience along with mock data for easy testing.
+This package includes functions responsible for marker gene selection
+and marker gene profile estimation estimation as described in [Mancarci
+et al. 2017](http://www.eneuro.org/content/4/6/ENEURO.0212-17.2017). It
+also includes a copy of mouse brain cell type markers from the
+[neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis)
+package for convenience along with mock data for easy testing.
 
--   [markerGeneProfile](#markergeneprofile)
--   [Table of Contents](#table-of-contents)
--   [Installation](#installation)
--   [Usage](#usage)
-    -   [Marker genes](#marker-genes)
-        -   [Sample data for marker gene selection](#sample-data-for-marker-gene-selection)
-        -   [Selection of marker genes](#selection-of-marker-genes)
-        -   [Better selection of marker genes](#better-selection-of-marker-genes)
-    -   [Marker gene profiles (MGP)](#marker-gene-profiles-mgp)
-        -   [Sample data for MGP estimation](#sample-data-for-mgp-estimation)
-        -   [MGP estimation](#mgp-estimation)
+  - [markerGeneProfile](#markergeneprofile)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+      - [Marker genes](#marker-genes)
+          - [Sample data for marker gene
+            selection](#sample-data-for-marker-gene-selection)
+          - [Selection of marker genes](#selection-of-marker-genes)
+          - [Better selection of marker
+            genes](#better-selection-of-marker-genes)
+      - [Marker gene profiles (MGP)](#marker-gene-profiles-mgp)
+          - [Sample data for MGP
+            estimation](#sample-data-for-mgp-estimation)
+          - [MGP estimation](#mgp-estimation)
 
-Installation
-============
+# Installation
 
-Use devtools to install. Additional github packages needs to be installed for it work.
+Use devtools to install. Additional github packages needs to be
+installed for it work.
 
     devtools::install_github('oganm/markerGeneProfile')
 
-In this document additional packages are used that are not package dependencies
+In this document additional packages are used that are not package
+dependencies
 
     install.packages('ggplot2')
     install.packages('gplots')
@@ -33,65 +42,91 @@ In this document additional packages are used that are not package dependencies
     install.packages('dplyr')
     install.packages('knitr')
 
-Usage
-=====
+# Usage
 
-Marker genes
-------------
+## Marker genes
 
-A list of marker genes specific to or enriched in a cell type is required in order to estimate cell type profiles. In this package, a copy of mouse brain cell type-specific markers from [neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis), the package that summarizes the entire analysis performed in Mancarci et al. 2017 is included (`mouseMarkerGenes`). If an different marker gene set is needed, steps outlined below can be followed to create one from a new dataset.
+A list of marker genes specific to or enriched in a cell type is
+required in order to estimate cell type profiles. In this package, a
+copy of mouse brain cell type-specific markers from
+[neuroExpressoAnalysis](https://github.com/oganm/neuroExpressoAnalysis),
+the package that summarizes the entire analysis performed in Mancarci et
+al. 2017 is included (`mouseMarkerGenes`). If an different marker gene
+set is needed, steps outlined below can be followed to create one from a
+new dataset.
 
 ### Sample data for marker gene selection
 
-This package includes a sample cell type-specific transcriptomic dataset representing expression profiles from multiple purified cell types aimed to demonstrate the minimal information required for the selection of marker genes.
+This package includes a sample cell type-specific transcriptomic dataset
+representing expression profiles from multiple purified cell types aimed
+to demonstrate the minimal information required for the selection of
+marker genes.
 
-`mgp_sampleProfilesMeta` includes the basic metadata required for the cell type specific expression dataset.
+`mgp_sampleProfilesMeta` includes the basic metadata required for the
+cell type specific expression dataset.
 
 ``` r
 data(mgp_sampleProfilesMeta)
 knitr::kable(head(mgp_sampleProfilesMeta))
 ```
 
-| sampleName |  replicate|  PMID| CellType | region   | RegionToParent | RegionToChildren |
-|:-----------|----------:|-----:|:---------|:---------|:---------------|:-----------------|
-| Sample01   |          1|     1| Cell A   | Region 1 | TRUE           | TRUE             |
-| Sample02   |          1|     1| Cell A   | Region 1 | TRUE           | TRUE             |
-| Sample03   |          1|     1| Cell A   | Region 1 | TRUE           | TRUE             |
-| Sample04   |          2|     2| Cell A   | Region 1 | TRUE           | TRUE             |
-| Sample05   |          2|     2| Cell A   | Region 1 | TRUE           | TRUE             |
-| Sample06   |          2|     2| Cell A   | Region 1 | TRUE           | TRUE             |
+| sampleName | replicate | PMID | CellType | region   | RegionToParent | RegionToChildren |
+| :--------- | --------: | ---: | :------- | :------- | :------------- | :--------------- |
+| Sample01   |         1 |    1 | Cell A   | Region 1 | TRUE           | TRUE             |
+| Sample02   |         1 |    1 | Cell A   | Region 1 | TRUE           | TRUE             |
+| Sample03   |         1 |    1 | Cell A   | Region 1 | TRUE           | TRUE             |
+| Sample04   |         2 |    2 | Cell A   | Region 1 | TRUE           | TRUE             |
+| Sample05   |         2 |    2 | Cell A   | Region 1 | TRUE           | TRUE             |
+| Sample06   |         2 |    2 | Cell A   | Region 1 | TRUE           | TRUE             |
 
-**sampleName:** name of the samples. This needs to correspond to column names in the expression file.
+**sampleName:** name of the samples. This needs to correspond to column
+names in the expression file.
 
-**replicate:** A vector marking which samples are replicates of each other.
+**replicate:** A vector marking which samples are replicates of each
+other.
 
-**PMID: ** A vector marking which samples come from the same study. Normally taking PMIDs of the papers is a good idea.
+**PMID: ** A vector marking which samples come from the same study.
+Normally taking PMIDs of the papers is a good idea.
 
-**CellType:** A vector marking the cell types that the samples represent.
+**CellType:** A vector marking the cell types that the samples
+represent.
 
-**region:** The regions samples are extracted from. Only needed if region specific genes are to be selected.
+**region:** The regions samples are extracted from. Only needed if
+region specific genes are to be selected.
 
-**RegionToParent:** If region specific genes are to be selected and a region hierarchy is to be used, this column controls whether or not the sample should be included in the parent regions of the indicated region. If not provided it will default to `TRUE`. The name of this column is hard coded and should not be changed.
+**RegionToParent:** If region specific genes are to be selected and a
+region hierarchy is to be used, this column controls whether or not the
+sample should be included in the parent regions of the indicated region.
+If not provided it will default to `TRUE`. The name of this column is
+hard coded and should not be changed.
 
-**RegionToChildren:** Same as above except it controls if the sample should be included in the children regions. If not provided it will default to `TRUE`. The name of this column is hard coded and should not be changed.
+**RegionToChildren:** Same as above except it controls if the sample
+should be included in the children regions. If not provided it will
+default to `TRUE`. The name of this column is hard coded and should not
+be changed.
 
-`mgp_sampleProfiles` is a sample expression data. **Gene.Symbol** column is the gene identifier that should be composed of unique IDs while the rest are sample names that corresponds to the relevant column in the metadata file. Other columns can be present before the sample data but they should not be of class `double`.
+`mgp_sampleProfiles` is a sample expression data. **Gene.Symbol** column
+is the gene identifier that should be composed of unique IDs while the
+rest are sample names that corresponds to the relevant column in the
+metadata file. Other columns can be present before the sample data but
+they should not be of class `double`.
 
 ``` r
 data(mgp_sampleProfiles)
 knitr::kable(mgp_sampleProfiles)
 ```
 
-| Gene.Symbol |  Sample01|  Sample02|  Sample03|  Sample04|  Sample05|  Sample06|  Sample07|  Sample08|  Sample09|  Sample10|  Sample11|  Sample12|  Sample13|  Sample14|  Sample15|  Sample16|  Sample17|  Sample18|
-|:------------|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|
-| Gene1       |        16|        16|        16|        16|        16|        16|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|
-| Gene2       |         1|         1|         1|         1|         1|         1|        16|        16|        16|        16|        16|        16|         1|         1|         1|         1|         1|         1|
-| Gene3       |         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|        16|        16|        16|        16|        16|        16|
-| Gene4       |         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|        13|        13|        13|        13|        13|        13|
-| Gene5       |         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         9|         9|         9|         9|         9|         9|
-| Gene6       |         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         1|         7|         7|         7|         7|         7|         7|
+| Gene.Symbol | Sample01 | Sample02 | Sample03 | Sample04 | Sample05 | Sample06 | Sample07 | Sample08 | Sample09 | Sample10 | Sample11 | Sample12 | Sample13 | Sample14 | Sample15 | Sample16 | Sample17 | Sample18 |
+| :---------- | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: | -------: |
+| Gene1       |       16 |       16 |       16 |       16 |       16 |       16 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |
+| Gene2       |        1 |        1 |        1 |        1 |        1 |        1 |       16 |       16 |       16 |       16 |       16 |       16 |        1 |        1 |        1 |        1 |        1 |        1 |
+| Gene3       |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |       16 |       16 |       16 |       16 |       16 |       16 |
+| Gene4       |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |       13 |       13 |       13 |       13 |       13 |       13 |
+| Gene5       |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        9 |        9 |        9 |        9 |        9 |        9 |
+| Gene6       |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        1 |        7 |        7 |        7 |        7 |        7 |        7 |
 
-`mpg_sampleRegionHiearchy` is a sample region hiearchy. It is a nested named list.
+`mpg_sampleRegionHiearchy` is a sample region hiearchy. It is a nested
+named list.
 
 ``` r
 data(mpg_sampleRegionHiearchy)
@@ -117,7 +152,12 @@ In this example `Region 1` and `Region 2` are subsets of `All` region
 
 ### Selection of marker genes
 
-Marker gene selection is performed using three functions: `markerCandidates`, `pickMarkers` and `rotateSelect`. By default `markerCandidates` will return files for each cell type in a region that lists the gene that are above a given silhouette and fold change thresholds. Other variables are briefly explained below but see the package documentation for in depth explanations
+Marker gene selection is performed using three functions:
+`markerCandidates`, `pickMarkers` and `rotateSelect`. By default
+`markerCandidates` will return files for each cell type in a region that
+lists the gene that are above a given silhouette and fold change
+thresholds. Other variables are briefly explained below but see the
+package documentation for in depth explanations
 
 ``` r
 markerCandidates(design = mgp_sampleProfilesMeta, # the design file
@@ -145,19 +185,31 @@ list.files('README_files/quickSelection')
 
     ## [1] "All_CellType"      "CellType"          "Region 2_CellType"
 
-The `CellType` directory is a list of marker genes that disregards all region specifications (redundant with `All_CellType` in this case) while `Region 2_CellType` and `All_CellType` directories inlcude cell types from the relevant region. Note the absence of `Region 1_CellType` since that region only has a single cell type.
+The `CellType` directory is a list of marker genes that disregards all
+region specifications (redundant with `All_CellType` in this case) while
+`Region 2_CellType` and `All_CellType` directories inlcude cell types
+from the relevant region. Note the absence of `Region 1_CellType` since
+that region only has a single cell
+type.
 
 ``` r
 read.table('README_files/quickSelection/All_CellType/Cell C') %>% knitr::kable()
 ```
 
-| V1    |   V2|   V3|   V4|
-|:------|----:|----:|----:|
-| Gene3 |   15|    1|    1|
-| Gene4 |   12|    1|    1|
-| Gene5 |    8|    1|    1|
+| V1    | V2 | V3 | V4 |
+| :---- | -: | -: | -: |
+| Gene3 | 15 |  1 |  1 |
+| Gene4 | 12 |  1 |  1 |
+| Gene5 |  8 |  1 |  1 |
 
-This file shows the candidate genes for cell type `Cell C` in region `All`. The first column is the gene identifier, the second is change in expression in log\_2 scale and the third one is the silhouette coefficient. Note that `Gene6` is absent since its expression level was below the minimum level allowed. `markerCandidates` function does not apply a threshold for silhouette coefficient it also doesn't check to see if a gene satisfies fold change threshold for multiple genes. `pickMarkers` function does that.
+This file shows the candidate genes for cell type `Cell C` in region
+`All`. The first column is the gene identifier, the second is change in
+expression in log\_2 scale and the third one is the silhouette
+coefficient. Note that `Gene6` is absent since its expression level was
+below the minimum level allowed. `markerCandidates` function does not
+apply a threshold for silhouette coefficient it also doesn’t check to
+see if a gene satisfies fold change threshold for multiple genes.
+`pickMarkers` function does that.
 
 ``` r
 pickMarkers('README_files/quickSelection/All_CellType/',
@@ -213,7 +265,13 @@ pickMarkersAll('README_files/quickSelection',
 
 ### Better selection of marker genes
 
-The above method is a quick way to pick markers but it does not handle bimodality in expression distribution well. To ensure robustness of the results it is better to perform multiple selections with permutations. `markerCandidates` function has variables to handle permutations for you. `rotate` controls what is the percentage of samples that should be removed every time. seed controls the random seed and is there to ensure reproducibility.
+The above method is a quick way to pick markers but it does not handle
+bimodality in expression distribution well. To ensure robustness of the
+results it is better to perform multiple selections with permutations.
+`markerCandidates` function has variables to handle permutations for
+you. `rotate` controls what is the percentage of samples that should be
+removed every time. seed controls the random seed and is there to ensure
+reproducibility.
 
 ``` r
 for (i in 1:10){
@@ -237,7 +295,11 @@ for (i in 1:10){
 }
 ```
 
-This creates multiple selection directories. `rotateSelect` can be used to count the number of times a gene is selected for each cell type in each region. This creates another directory similar to the output of `markerCandidates`. Again, valid markers can be acquired using `pickMarkers`
+This creates multiple selection directories. `rotateSelect` can be used
+to count the number of times a gene is selected for each cell type in
+each region. This creates another directory similar to the output of
+`markerCandidates`. Again, valid markers can be acquired using
+`pickMarkers`
 
 ``` r
 rotateSelect(rotationOut='README_files/Rotation',
@@ -293,14 +355,17 @@ pickMarkersAll('README_files/RotSel',rotationThresh = 0.95)
     ## $`Region 2_CellType`$`Cell C`
     ## [1] "Gene3" "Gene4" "Gene5"
 
-Marker gene profiles (MGP)
---------------------------
+## Marker gene profiles (MGP)
 
-### Sample data for MGP estimation
+\#\#\#Sample data for MGP estimation
 
-The package includes mouse brain cell type markers published in Mancarci et al. 2017 and gene expression data from substantia nigra samples from healthy donors and Parkinson's disease patients by [Lesnick et al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621).
+The package includes mouse brain cell type markers published in Mancarci
+et al. 2017 and gene expression data from substantia nigra samples from
+healthy donors and Parkinson’s disease patients by [Lesnick et
+al. 2007](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7621).
 
-Mouse marker genes is available in `mouseMarkerGenes` object as a nested list.
+Mouse marker genes is available in `mouseMarkerGenes` object as a nested
+list.
 
 ``` r
 data(mouseMarkerGenes)
@@ -333,7 +398,8 @@ lapply(mouseMarkerGenes$Midbrain[1:3],head, 14)
     ##  [7] "Prkcg"    "Rian"     "Scn2a"    "Slc6a3"   "Snhg11"   "Tenm1"   
     ## [13] "Th"       "Zim3"
 
-Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp` and `mgp_LesnickParkinsonsMeta` objects
+Available Lesnick et al. data is stored in `mgp_LesnickParkinsonsExp`
+and `mgp_LesnickParkinsonsMeta` objects
 
 ``` r
 library(dplyr)
@@ -341,6 +407,10 @@ library(dplyr)
 
     ## 
     ## Attaching package: 'dplyr'
+
+    ## The following object is masked from 'package:testthat':
+    ## 
+    ##     matches
 
     ## The following objects are masked from 'package:stats':
     ## 
@@ -358,19 +428,19 @@ mgp_LesnickParkinsonsExp %>%
 ```
 
     ##           Probe Gene.Symbol   NCBIids GSM184354.cel GSM184355.cel
-    ## 43955 1007_s_at        DDR1       780     10.236880      9.891552
-    ## 2278    1053_at        RFC2      5982      5.421790      5.280541
-    ## 45312    117_at HSPA6|HSPA7 3310|3311      5.164445      4.651754
-    ## 43710    121_at        PAX8      7849      7.076004      7.035090
-    ## 13573 1255_g_at      GUCA1A      2978      3.107388      3.418976
-    ## 21022   1294_at        UBA7      7318      6.644858      6.182664
+    ## 3366  1007_s_at        DDR1       780     10.236880      9.891552
+    ## 44099   1053_at        RFC2      5982      5.421790      5.280541
+    ## 14880    117_at HSPA7|HSPA6 3311|3310      5.164445      4.651754
+    ## 11594    121_at        PAX8      7849      7.076004      7.035090
+    ## 11907 1255_g_at      GUCA1A      2978      3.107388      3.418976
+    ## 2069    1294_at        UBA7      7318      6.644858      6.182664
     ##       GSM184356.cel
-    ## 43955     10.498371
-    ## 2278       5.852467
-    ## 45312      4.729189
-    ## 43710      6.698765
-    ## 13573      3.491832
-    ## 21022      5.982642
+    ## 3366      10.498371
+    ## 44099      5.852467
+    ## 14880      4.729189
+    ## 11594      6.698765
+    ## 11907      3.491832
+    ## 2069       5.982642
 
 ``` r
 data(mgp_LesnickParkinsonsMeta)
@@ -385,7 +455,11 @@ mgp_LesnickParkinsonsMeta %>% head
     ## 5 GSM184358 Control
     ## 6 GSM184359 Control
 
-Before MGP estimation, it is important to filter expression data of low expressed genes and make sure all genes are represented only once in the dataset. While there are many probeset summarization and methods, for this work we chose the most variable probeset and remove all probes with a median expression below the median expression of the dataset.
+Before MGP estimation, it is important to filter expression data of low
+expressed genes and make sure all genes are represented only once in the
+dataset. While there are many probeset summarization and methods, for
+this work we chose the most variable probeset and remove all probes with
+a median expression below the median expression of the dataset.
 
 ``` r
 unfilteredParkinsonsExp = mgp_LesnickParkinsonsExp # keep this for later
@@ -401,11 +475,26 @@ mgp_LesnickParkinsonsExp = mostVariable(mgp_LesnickParkinsonsExp,
 
 ### MGP estimation
 
-MGPs are simply the first principal component of marker gene expression. This method of marker gene profile estimation is similar to the methodology of multiple previous works that aim to estimate relative abundance of cell types in a whole tissue sample (Chikina et al., 2015; Westra et al., 2015; Xu et al., 2013).
+MGPs are simply the first principal component of marker gene expression.
+This method of marker gene profile estimation is similar to the
+methodology of multiple previous works that aim to estimate relative
+abundance of cell types in a whole tissue sample (Chikina et al., 2015;
+Westra et al., 2015; Xu et al., 2013).
 
-Primary function that deals with MGP estimation is `mgpEstimate`. This function will take in expression data and marker gene lists to return MGPs. `exprData` is the expression matrix which should include gene identifiers as a column. Other columns can be present at the beginning of the data frame but should not be of class `double`. `genes` is the list of markers. It is assumed to be a list of character vectors, each vector containing gene names for a cell type. `geneColName` is the name of the column where gene names are found. `geneTransform` is a function that will be applied to the gene names provided in `genes`. Note that this by default tranforms mouse gene names to human gene names. Set it to NULL if this is not desired.
+Primary function that deals with MGP estimation is `mgpEstimate`. This
+function will take in expression data and marker gene lists to return
+MGPs. `exprData` is the expression matrix which should include gene
+identifiers as a column. Other columns can be present at the beginning
+of the data frame but should not be of class `double`. `genes` is the
+list of markers. It is assumed to be a list of character vectors, each
+vector containing gene names for a cell type. `geneColName` is the name
+of the column where gene names are found. `geneTransform` is a function
+that will be applied to the gene names provided in `genes`. Note that
+this by default tranforms mouse gene names to human gene names. Set it
+to NULL if this is not desired.
 
-Below a basic estimation performed with other important variables briefly explained.
+Below a basic estimation performed with other important variables
+briefly explained.
 
 ``` r
 estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
@@ -418,7 +507,9 @@ estimations =  mgpEstimate(exprData=mgp_LesnickParkinsonsExp,
                            removeMinority = TRUE) # removes genes if they are the minority in terms of rotation sign from estimation process
 ```
 
-Dopamine rgic cell loss is a known effect of Parkinson's Disease. To see if this effect can be observed we can look at dopaminergic MGPs in healthy donors vs Parkinson's Disease patients
+Dopamine rgic cell loss is a known effect of Parkinson’s Disease. To see
+if this effect can be observed we can look at dopaminergic MGPs in
+healthy donors vs Parkinson’s Disease patients
 
 ``` r
 library(ggplot2)
@@ -426,11 +517,11 @@ library(ggplot2)
 ls(estimations)
 ```
 
-    ## [1] "estimates"                "fullPCAs"                
-    ## [3] "groups"                   "meanUsedMarkerExpression"
-    ## [5] "removedMarkerRatios"      "rotations"               
-    ## [7] "simpleScaledEstimation"   "trimmedPCAs"             
-    ## [9] "usedMarkerExpression"
+    ##  [1] "allMarkerExpression"      "estimates"               
+    ##  [3] "fullPCAs"                 "groups"                  
+    ##  [5] "meanUsedMarkerExpression" "removedMarkerRatios"     
+    ##  [7] "rotations"                "simpleScaledEstimation"  
+    ##  [9] "trimmedPCAs"              "usedMarkerExpression"
 
 ``` r
 ls(estimations$estimates)
@@ -452,9 +543,14 @@ ggplot2::ggplot(dopaminergicFrame,
     geom_boxvio() + geom_jitter(width = .05) # this is just a convenience function that outputs a list of ggplot elements.
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-To see if the difference between the two groups is statistically significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a non parametric tests that does not make assumptions about the distribution of the data. We chose to use it because marker gene profiles are not normally distributed.
+To see if the difference between the two groups is statistically
+significant we use wilcoxon test (Mann-Whitney test). Wilcoxon-test is a
+non parametric tests that does not make assumptions about the
+distribution of the data. We chose to use it because marker gene
+profiles are not normally
+distributed.
 
 ``` r
 group1 = estimations$estimates$Dopaminergic[estimations$groups$Dopaminergic %in% "Control"]
@@ -469,9 +565,12 @@ wilcox.test(group1,group2)
     ## W = 119, p-value = 0.006547
     ## alternative hypothesis: true location shift is not equal to 0
 
-Based on these results we can say that there is indeed a significant difference between doparminergic marker gene profiles between control and parkinson's disease patients.
+Based on these results we can say that there is indeed a significant
+difference between doparminergic marker gene profiles between control
+and parkinson’s disease patients.
 
-This difference can be also observed by looking at gene expression of markers
+This difference can be also observed by looking at gene expression of
+markers
 
 ``` r
 estimations$usedMarkerExpression$Dopaminergic%>%
@@ -485,11 +584,16 @@ estimations$usedMarkerExpression$Dopaminergic%>%
                       margins = c(7,8))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](README_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
-Indeed in general most marker genes have a high expression is control samples which are shown in green.
+Indeed in general most marker genes have a high expression is control
+samples which are shown in green.
 
-It is important to note that not all marker genes are used in the estimation of marker gene profiles. Below we see all genes that are identified as dopaminergic cell markers with human orthologues. Yet not all these genes appear in the heatmap above
+It is important to note that not all marker genes are used in the
+estimation of marker gene profiles. Below we see all genes that are
+identified as dopaminergic cell markers with human orthologues. Yet not
+all these genes appear in the heatmap
+above
 
 ``` r
 mouseHumanGeneTable = mouseMarkerGenes$Midbrain$Dopaminergic %>% homologene::mouse2human()
@@ -509,7 +613,10 @@ mouseHumanGeneTable
     ## 9      Tenm1     TENM1   23963   10178
     ## 10        Th        TH   21823    7054
 
-Some of these genes are removed because they are not included in our dataset, either because they are not in the platform, or because the gene was filtered in the pre-processing stage due to low expression.
+Some of these genes are removed because they are not included in our
+dataset, either because they are not in the platform, or because the
+gene was filtered in the pre-processing stage due to low
+expression.
 
 ``` r
 allHumanDopaGenes[!allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
@@ -521,7 +628,10 @@ allHumanDopaGenes[!allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 allGenes = allHumanDopaGenes[allHumanDopaGenes %in% mgp_LesnickParkinsonsExp$Gene.Symbol]
 ```
 
-Other genes can be removed because mgpEstimate thinks they don't correlate well with the rest of the genes. Details of this process can be found in Mancarci et al. 2017 manuscript
+Other genes can be removed because mgpEstimate thinks they don’t
+correlate well with the rest of the genes. Details of this process can
+be found in Mancarci et al. 2017
+manuscript
 
 ``` r
 allGenes[!allGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
@@ -533,7 +643,8 @@ allGenes[!allGenes %in% rownames(estimations$usedMarkerExpression$Dopaminergic)]
 genesUsed =  rownames(estimations$usedMarkerExpression$Dopaminergic)
 ```
 
-By looking at the unfiltered expression data, we can see how these two genes were unsuitable for MGP estimation
+By looking at the unfiltered expression data, we can see how these two
+genes were unsuitable for MGP estimation
 
 ``` r
 toPlot = 
@@ -566,7 +677,7 @@ toPlot %>%
     ggtitle('Scaled expression of markers')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](README_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ``` r
 toPlot %>%
@@ -592,30 +703,41 @@ toPlot %>%
     ggtitle('Nonscaled expression of markers')
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-23-2.png)
+![](README_files/figure-gfm/unnamed-chunk-23-2.png)<!-- -->
 
-Both of these genes seem to be non-expressed though PRKCG managed to be just above the removal threshold. Luckily lack of correlation reveals that it is not behaving as other marker genes.
+Both of these genes seem to be non-expressed though PRKCG managed to be
+just above the removal threshold. Luckily lack of correlation reveals
+that it is not behaving as other marker genes.
 
-The ratio of `genesUsed` and `allGenes` (all markers available in the study) can be used as a confidence metric. If a significant portion of the genes do not correlate well with each other that may point to presence of non cell type specific signal (regulation or noise). For all cell types this ratio is outputted. You'll see a warning if this ratio ever exceeds 0.4
+The ratio of `genesUsed` and `allGenes` (all markers available in the
+study) can be used as a confidence metric. If a significant portion of
+the genes do not correlate well with each other that may point to
+presence of non cell type specific signal (regulation or noise). For all
+cell types this ratio is outputted. You’ll see a warning if this ratio
+ever exceeds
+    0.4
 
 ``` r
 estimations$removedMarkerRatios
 ```
 
     ##              Astrocyte        BrainstemCholin           Dopaminergic 
-    ##             0.12962963             0.37500000             0.11111111 
+    ##             0.12264151             0.35294118             0.11111111 
     ##              Microglia   Microglia_activation Microglia_deactivation 
-    ##             0.09649123             0.08219178             0.10909091 
+    ##             0.09734513             0.08333333             0.12149533 
     ##                  Oligo           Serotonergic 
     ##             0.05882353             0.00000000
 
-The ratio for dopaminergic cells is fairly low. We can also look at the amount of varience explained in the first PC of marker gene expression. If this value is low, it can point to higher amounts of confounding noise or regulation.
+The ratio for dopaminergic cells is fairly low. We can also look at the
+amount of varience explained in the first PC of marker gene expression.
+If this value is low, it can point to higher amounts of confounding
+noise or regulation.
 
 ``` r
 estimations$trimmedPCAs$Dopaminergic %>% summary()
 ```
 
-    ## Importance of components%s:
+    ## Importance of components:
     ##                           PC1    PC2     PC3     PC4     PC5     PC6
     ## Standard deviation     2.3056 1.0829 0.87149 0.53287 0.45796 0.38075
     ## Proportion of Variance 0.6645 0.1466 0.09494 0.03549 0.02622 0.01812
@@ -625,23 +747,28 @@ estimations$trimmedPCAs$Dopaminergic %>% summary()
     ## Proportion of Variance 0.01006 0.00413
     ## Cumulative Proportion  0.99587 1.00000
 
-For instance unlike dopaminergic cells, cholinergic cells seem to have a higher proportion of their marker genes removed. Looking at the variation explained by first PC reveals that first PC only explains 28% of all variance.
+For instance unlike dopaminergic cells, cholinergic cells seem to have a
+higher proportion of their marker genes removed. Looking at the
+variation explained by first PC reveals that first PC only explains 28%
+of all variance.
 
 ``` r
 estimations$trimmedPCAs$BrainstemCholin %>% summary()
 ```
 
-    ## Importance of components%s:
-    ##                           PC1    PC2    PC3    PC4    PC5    PC6     PC7
-    ## Standard deviation     1.7002 1.3215 1.2445 1.1559 0.8752 0.7804 0.68942
-    ## Proportion of Variance 0.2891 0.1746 0.1549 0.1336 0.0766 0.0609 0.04753
-    ## Cumulative Proportion  0.2891 0.4637 0.6186 0.7522 0.8288 0.8897 0.93725
-    ##                            PC8     PC9    PC10
-    ## Standard deviation     0.55879 0.44616 0.34094
-    ## Proportion of Variance 0.03122 0.01991 0.01162
-    ## Cumulative Proportion  0.96847 0.98838 1.00000
+    ## Importance of components:
+    ##                           PC1    PC2    PC3    PC4    PC5     PC6     PC7
+    ## Standard deviation     1.7194 1.4430 1.2543 1.1992 0.8893 0.82035 0.77928
+    ## Proportion of Variance 0.2688 0.1893 0.1430 0.1307 0.0719 0.06118 0.05521
+    ## Cumulative Proportion  0.2688 0.4581 0.6011 0.7318 0.8037 0.86491 0.92012
+    ##                            PC8     PC9    PC10    PC11
+    ## Standard deviation     0.59534 0.48891 0.44505 0.29527
+    ## Proportion of Variance 0.03222 0.02173 0.01801 0.00793
+    ## Cumulative Proportion  0.95234 0.97407 0.99207 1.00000
 
 Such a result can occur if
 
--   Marker genes are highly regulated.
--   There is little difference in cell type proportions or wholescale regulation of marker genes and MGP is driven by noise and other confounds.
+  - Marker genes are highly regulated.
+  - There is little difference in cell type proportions or wholescale
+    regulation of marker genes and MGP is driven by noise and other
+    confounds.

@@ -5,15 +5,27 @@ library(magrittr)
 library(dplyr)
 library(devtools)
 library(viridis)
-#loadGithub('oganm/neuroExpressoAnalysis/data/mouseMarkerGenes.rda')
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenes.rda')
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesNCBI.rda')
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenes.rda')
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesNCBI.rda')
+#
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeep.rda')
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeepNCBI.rda')
+#
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombined.rda')
+# load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombinedNCBI.rda')
+token = readLines('process/auth')
 
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeep.rda')
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesPyramidalDeepNCBI.rda')
 
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombined.rda')
-load('../../wholeOtto/omancarci/brainGenesManuscript/data/mouseMarkerGenesCombinedNCBI.rda')
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenes.rda',token = token)
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenesNCBI.rda',token = token)
+
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenesPyramidalDeep.rda',token = token)
+
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenesPyramidalDeepNCBI.rda',token = token)
+
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenesCombined.rda',token = token)
+
+loadGithub('PavlidisLab/neuroExpressoAnalysis/data/mouseMarkerGenesCombinedNCBI.rda',token = token)
 
 use_data(mouseMarkerGenes,overwrite = TRUE)
 use_data(mouseMarkerGenesNCBI,overwrite = TRUE)
@@ -67,8 +79,10 @@ mpg_sampleRegionHiearchy = list(All = list('Region 1' ='',
 
 # Lesnick et al full expression data
 # loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsExp.rda')
-load('../../wholeOtto/omancarci/brainGenesManuscript/lesnickPreLowExpression.rda')
-loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsMeta.rda')
+# load('../../wholeOtto/omancarci/brainGenesManuscript/lesnickPreLowExpression.rda')
+loadGithub('oganm/neuroExpressoAnalysis/data/LesnickParkinsonsMeta.rda',token = token)
+
+loadGithub('oganm/neuroExpressoAnalysis/data/lesnickPreLowExpression.rda',token = token)
 
 LesnickParkinsonsExp = annotated
 mgp_LesnickParkinsonsExp =  LesnickParkinsonsExp %>% select(-GOTerms,-GemmaIDs)
@@ -83,10 +97,12 @@ use_data(mgp_LesnickParkinsonsExp, overwrite = TRUE)
 use_data(mgp_LesnickParkinsonsMeta, overwrite = TRUE)
 
 
-ogbox::loadGithub('oganm/neuroExpressoAnalysis/data/regionHierarchy.rda')
+ogbox::loadGithub('oganm/neuroExpressoAnalysis/data/regionHierarchy.rda',token = token)
+
 mouseRegionHierarchy = regionHierarchy
 use_data(mouseRegionHierarchy, overwrite = TRUE)
 
 ogbox::sourceGithub('oganm/neuroExpressoAnalysis/R/cellColors.R')
+
 mouseCellColor = cellColors()
 use_data(mouseCellColor, overwrite = TRUE)
