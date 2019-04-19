@@ -25,6 +25,7 @@ package for convenience along with mock data for easy testing.
           - [Sample data for MGP
             estimation](#sample-data-for-mgp-estimation)
           - [MGP estimation](#mgp-estimation)
+          - [Note about homologene](#note-about-homologene)
 
 # Installation
 
@@ -772,3 +773,31 @@ Such a result can occur if
   - There is little difference in cell type proportions or wholescale
     regulation of marker genes and MGP is driven by noise and other
     confounds.
+
+### Note about homologene
+
+In this tutorial homologene database is used through
+[homologene](https://cran.r-project.org/web/packages/homologene/index.html)
+package. Note that the default version of this database is somewhat old
+which means some annotations may have been changed. The `homologene`
+package also includes an updated version of the homologene package to
+make sure you get all the correct matches.
+
+If we look at dopaminergic cell markers for instance we could have
+gotten an extra gene (SCN2A) if we used the updated
+version.
+
+``` r
+homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic) %$% humanGene
+```
+
+    ##  [1] "CACNA2D2" "CADPS2"   "CHRNA6"   "MAPK8IP2" "NR4A2"    "NTN1"    
+    ##  [7] "PRKCG"    "SLC6A3"   "TENM1"    "TH"
+
+``` r
+homologene::mouse2human(mouseMarkerGenes$Midbrain$Dopaminergic,
+                        db = homologene::homologeneData2) %$% humanGene
+```
+
+    ##  [1] "CACNA2D2" "CADPS2"   "CHRNA6"   "MAPK8IP2" "NR4A2"    "NTN1"    
+    ##  [7] "PRKCG"    "SCN2A"    "SLC6A3"   "TENM1"    "TH"
