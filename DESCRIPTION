@@ -31,7 +31,6 @@ Suggests:
 Enhances:
     geneSynonym
 Remotes:
-    oganm/homologene,
     oganm/geneSynonym
 License: MIT + file LICENSE
 Encoding: UTF-8
